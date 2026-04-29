@@ -55,70 +55,83 @@ Legend / 标记说明:
 ### A2. Multi-robot scaling on MRPB (N ∈ {2, 3, 5}) · `🚧 BLOCKED`
 
 **EN — what to do.**
-Run the MRPB simulator at three team sizes (N=2, N=3, N=5) for **two
-methods** — full MSO (`ours_multi_ours_orb`) and the frontier baseline
-(`nearest-multi-our-orb`). Use the **same 10 MRPB scenes** as Sec 4.3 of the
-paper, **5 random seeds per (scene, N, method) cell**.
+Run **full MSO only** (`ours_multi_ours_orb`) at two new team sizes (N=3
+and N=5). Use the **same 10 MRPB scenes** as Sec 4.3 of the paper, **5 random
+seeds per (scene, N) cell** = **50 runs per N**.
+
+We do not rerun the frontier baseline at N=3/5: frontier-multi does not share
+predicted maps across robots and scales by pure geometric coverage only, so
+its N=3/5 curves add little signal beyond the existing N=2 reference. The
+appendix figure plots full MSO at N=2/3/5 against the frontier-multi N=2
+baseline already in `Exp/4.3/all_metrics/`.
 
 Total runs:
-- N=2: 10 scenes × 5 seeds × 2 methods = **100 runs** (already covered by
-  the existing main-paper data, no rerun needed if those CSVs are reused)
-- N=3: 10 × 5 × 2 = **100 runs** (new)
-- N=5: 10 × 5 × 2 = **100 runs** (new — headline reviewer ask)
+- N=2: existing main-paper data, **no rerun** (50 runs full MSO already in
+  `Exp/4.3/all_metrics/ours_multi_ours_orb.csv`)
+- N=3: 10 scenes × 5 seeds = **50 runs** (new)
+- N=5: 10 scenes × 5 seeds = **50 runs** (new — headline reviewer ask)
 
-So new work is **200 runs**. If N=5 is not feasible (compute / communication
-limit), drop it and keep N ∈ {2, 3} as a fallback — but N=5 is strongly
-preferred because reviewers explicitly asked for "5+ robot scaling".
+**New work total: 100 runs.** If N=5 is not feasible (compute or
+communication-bandwidth limit), drop to N ∈ {2, 3} (50 new runs) — but N=5
+is strongly preferred because the reviewer asked specifically for
+"5+ robot scaling".
 
 **EN — file naming convention.** Each (scene, seed, N) cell produces one
 CSV with columns
 `step, coverage, predicted_map_quality, topological_understanding`. Place at:
 
 ```
-Exp/4.3_v2/scaling/<method>_N<n>_scene<i>_seed<j>.csv
+Exp/4.3_v2/scaling/ours_multi_ours_orb_N<n>_scene<i>_seed<j>.csv
 ```
 
-`<method>` ∈ `{ours_multi_ours_orb, nearest-multi-our-orb}`,
-`<n>` ∈ `{2, 3, 5}`, `<i>` ∈ `0..9`, `<j>` ∈ `0..4`.
-Robots start from the same paired poses across runs of the same (scene, seed)
-so cross-N curves are comparable.
+`<n>` ∈ `{3, 5}`, `<i>` ∈ `0..9`, `<j>` ∈ `0..4`. Robots start from a
+paired-pose configuration that is **deterministic in (scene, seed)** so
+cross-N curves remain directly comparable for a fixed (scene, seed).
 
 **CN — 要做什么.**
-在三种 team 规模（N=2, 3, 5）下跑 MRPB simulator，**两个 method**：full
-MSO (`ours_multi_ours_orb`) 和 frontier 基线 (`nearest-multi-our-orb`)。沿用
-论文 Sec 4.3 同 **10 个 MRPB 场景**，**每个 (scene, N, method) 跑 5 个
-seed**。
+**只跑 full MSO**（`ours_multi_ours_orb`），在两个新 team 规模（N=3、N=5）
+下跑。沿用论文 Sec 4.3 同 **10 个 MRPB 场景**，**每个 (scene, N) 跑 5 个
+seed = 每个 N 50 runs**。
+
+不重跑 frontier baseline 在 N=3/5 上：frontier-multi 不共享 predicted map，
+纯靠几何覆盖扩展，N=3/5 曲线相比已有 N=2 基线没有额外信息。appendix 图把
+full MSO 在 N=2/3/5 与 frontier-multi N=2（已有数据）对照即可。
 
 总数：
-- N=2：100 runs（复用主论文 CSV）
-- N=3：100 runs（新跑）
-- N=5：100 runs（新跑，**审稿人主线诉求**）
+- N=2：复用主论文 CSV，**不用重跑**（已在 `Exp/4.3/all_metrics/ours_multi_ours_orb.csv`）
+- N=3：10 scenes × 5 seeds = **50 runs**（新跑）
+- N=5：10 scenes × 5 seeds = **50 runs**（新跑，**审稿人主线诉求**）
 
-新工作量 **200 runs**。如果 N=5 算力或通信带宽吃不消，退到 N ∈ {2, 3}，
-但 N=5 是审稿人明确点名的"5+ robot scaling"。
+**新工作量 100 runs**。N=5 算力或通信带宽吃不消可以退到 N ∈ {2, 3}（新工作量
+减为 50 runs）；但 N=5 是审稿人明确点名的"5+ robot scaling"，强烈建议保留。
 
 **CN — 文件命名约定.** 每个 (scene, seed, N) cell 输出一个 CSV，列必须是
-`step, coverage, predicted_map_quality, topological_understanding`，放在：
+`step, coverage, predicted_map_quality, topological_understanding`，路径：
 
 ```
-Exp/4.3_v2/scaling/<method>_N<n>_scene<i>_seed<j>.csv
+Exp/4.3_v2/scaling/ours_multi_ours_orb_N<n>_scene<i>_seed<j>.csv
 ```
 
-同 (scene, seed) 跨不同 N 的 run 必须从同一对 paired 起点出发，保证曲线可比。
+同 (scene, seed) 跨不同 N 的 run 必须从同一组 paired 起点出发（起点应由
+(scene, seed) **确定性**生成），保证曲线可比。
 
 **Acceptance / 验收**
 
-- [ ] Simulator accepts `--robot_count={2, 3, 5}` (extend if missing)
+- [ ] Simulator accepts `--robot_count={3, 5}` (extend if missing)
 - [ ] Simulator accepts `--seed=<int>` and respects it for start-pose
-      sampling, planner tie-breaking, sensor noise
-- [ ] Smoke test: 1 scene × 1 seed × 3 robot counts × 2 methods = 6 CSVs land
-      at the expected paths before kicking off the full 200-run sweep
-- [ ] All 200 expected CSVs land at `Exp/4.3_v2/scaling/...` (any missing run
-      blocks plotting — `plot_scaling_multirobot.py` will detect and bail)
-- [ ] Ping me with **"A2 done"** — I will write `plot_scaling_multirobot.py`,
-      render `figs/appendix/scaling_multirobot.png`, replace the placeholder
-      in Appendix `app:scaling`, and update the caption with the actual
-      seed count and observed std
+      sampling, planner tie-breaking, sensor noise (deterministic across
+      `--robot_count` for the same seed)
+- [ ] Smoke test: 1 scene × 1 seed × N ∈ {3, 5} = 2 CSVs land at the
+      expected paths before kicking off the full 100-run sweep
+- [ ] All 100 expected CSVs land at `Exp/4.3_v2/scaling/...` (any missing
+      run blocks plotting — `plot_scaling_multirobot.py` will detect and
+      bail)
+- [ ] Ping me with **"A2 done"** — I will write
+      `plot_scaling_multirobot.py`, render
+      `figs/appendix/scaling_multirobot.png` (3 MSO curves at N=2/3/5 plus
+      a frontier N=2 reference), replace the placeholder in Appendix
+      `app:scaling`, and update the caption with the actual seed count and
+      observed std
 
 **Reviewer hook.** Reviewer #3 explicitly asked for 3+ robot results and
 flagged "scaling beyond two agents" as an open question.
