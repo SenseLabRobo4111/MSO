@@ -190,6 +190,120 @@ KTH 是 **in-distribution**，appendix 已经写明，不要误称 held-out。
 
 ---
 
+### A5. Single-robot real-world deployment of MapEx / IG-Hector / UPEN / MSO · `🚧 BLOCKED`
+
+**EN — what to do.**
+Deploy four single-robot exploration methods on the same physical robot
+platform used in Sec 4.4 (Jetson AGX Orin 32 GB, Livox Mid-360 LiDAR,
+self-built omnidirectional base) in **one of the existing indoor arenas**
+(6.75 × 4.05 m). Run each method **twice** (2 trials, distinct start poses)
+for **8 deployments total**. For each deployment record both a third-person
+**video** (overhead UAV or handheld) and a **rosbag2** capturing all topics
+listed below.
+
+The four methods to deploy:
+
+| Method | Source repo / module | Predicted-map topic |
+|---|---|---|
+| **MapEx** | upstream LaMa-based predictor (single robot variant) | `/mapex/predicted_map_global` |
+| **IG-Hector** | classical info-gain frontier (no learned predictor) | n/a |
+| **UPEN** | uncertainty-based predictor | `/upen/predicted_map_global` |
+| **MSO** | this repo, `predict_map.py` | `/mso/predicted_map_global` |
+
+**Recording layout / 录制目录结构**
+```
+Exp/realworld_single/
+├── arena{1|2|3}/
+│   ├── mapex_trial1/       (rosbag dir + video.mp4)
+│   ├── mapex_trial2/
+│   ├── ighector_trial1/
+│   ├── ighector_trial2/
+│   ├── upen_trial1/
+│   ├── upen_trial2/
+│   ├── mso_trial1/
+│   └── mso_trial2/
+└── notes.md                (per-trial start-pose, weather, anomalies)
+```
+
+Each `<method>_trial<i>/` directory contains:
+- One rosbag2 store (`metadata.yaml` + `rosbag2_*.db3`)
+- One `video.mp4` synchronised to `metadata.yaml`'s `starting_time` (mark a
+  visible "start" gesture in the first frame so we can align visually)
+- One `start_pose.json` recording the robot's $(x, y, \theta)$ at $t=0$
+
+**Required rosbag topics / rosbag 必须包含的话题**
+
+Aim for ROS 2 Humble, `sqlite3` storage, single-file rotation
+(`--max-bag-duration 0`). Drop these into a `record.launch.py` or directly
+via `ros2 bag record`:
+
+| Topic | Type | Rate | Why we need it |
+|---|---|---|---|
+| `/odom` (or `/robot_0/odom`) | `nav_msgs/msg/Odometry` | 50 Hz | trajectory reconstruction |
+| `/livox/lidar` (or raw LiDAR) | `sensor_msgs/msg/PointCloud2` | ≥10 Hz | sensor regression / replay |
+| `/map` (or `/robot_0/map`) | `nav_msgs/msg/OccupancyGrid` | ≥1 Hz | observed occupancy ground truth |
+| `<method>/predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | ≥0.5 Hz | for prediction methods only (MapEx / UPEN / MSO) |
+| `/cmd_vel` | `geometry_msgs/msg/Twist` | ≥10 Hz | controller behaviour for fairness check |
+| `/way_point` or `/goal` | `geometry_msgs/msg/PoseStamped` | event-driven | frontier / planner output |
+| `/tf`, `/tf_static` | `tf2_msgs/msg/TFMessage` | high freq | required for any post-hoc registration |
+| `/explored_volume` (if available) | `std_msgs/msg/Float32` | ≥1 Hz | coverage telemetry |
+| `/explored_areas` (if available) | `sensor_msgs/msg/PointCloud2` | ≥1 Hz | coverage visualisation |
+| `/rosout` | `rcl_interfaces/msg/Log` | event | crash / warning forensics |
+
+Per-method extras:
+- **MSO**: `/mso/feature_packet` (sparse ORB descriptors, event-driven), if
+  the deployment node publishes it
+- **MapEx**: `/mapex/uncertainty` if available
+- **UPEN**: `/upen/uncertainty` if available
+
+**Stop condition / 终止条件.** Each trial runs until the robot reports
+$\geq\!95\%$ coverage of the arena (or 180 s, whichever comes first). Record
+the wall-clock duration in `notes.md`.
+
+**CN — 要做什么.**
+在 Sec 4.4 的同一个物理平台（Jetson AGX Orin 32 GB、Livox Mid-360 LiDAR、
+自建全向底盘）上，**单机器人**部署 4 个 baseline：MapEx、IG-Hector、UPEN、
+MSO。在 **现有 3 个 arena 中选一个**（6.75 × 4.05 m），每个 method 跑 2 个
+trial（不同起始位姿），共 **8 次部署**。每次部署同时录制 **第三视角视频**
+（无人机或手持）和 **rosbag2**。
+
+**录制目录结构** 见上方英文表格。
+
+**rosbag 必须包含的话题** 见上方英文表格，关键点：
+- `/odom`, `/livox/lidar`, `/map`, `/tf`, `/tf_static`, `/cmd_vel`,
+  `/way_point` 是所有方法都要录的
+- prediction 类方法（MapEx / UPEN / MSO）要额外录
+  `<method>/predicted_map_global`
+- IG-Hector 没有 predicted map，可以不录这条
+- 录制工具：`ros2 bag record -s sqlite3 -o <method>_trial<i> ...`
+
+**终止条件**：每个 trial 跑到机器人报告覆盖率 ≥ 95% 或 180 s 上限，先到先终止。
+把实际墙钟时长写到 `notes.md`。
+
+**Acceptance / 验收**
+
+- [ ] All 8 directories under `Exp/realworld_single/arena<X>/` created
+      (4 methods × 2 trials)
+- [ ] Each contains: 1 rosbag2 store, 1 `video.mp4`, 1 `start_pose.json`
+- [ ] Smoke test on 1 trial: `py -3 corl_2026/measure_rosbag_bandwidth.py`
+      successfully parses the rosbag and lists every required topic with
+      non-zero `count`
+- [ ] `notes.md` records per-trial start pose, duration, final coverage,
+      anomalies
+- [ ] Ping me with **"A5 done"** — I will:
+  1. Extend `measure_rosbag_bandwidth.py` to handle the new directory layout
+  2. Add a real-world single-robot comparison subsection (Sec 4.4 paragraph
+     or Appendix `app:single-baselines`) with coverage / time / final-map-
+     accuracy bars across the four methods
+  3. Embed a representative frame from each method's video into the figure
+
+**Reviewer hook.** Directly answers Reviewer #2's critique that the
+real-world experiments compare only against a frontier baseline. Showing
+MapEx / IG-Hector / UPEN / MSO on the same hardware gives the strongest
+possible "physical-deployment" parity argument.
+
+---
+
 ## Medium priority / 中等优先级
 
 ### A4. MSO fusion-only ablation · `🚧 BLOCKED + 🟡 OPTIONAL`
