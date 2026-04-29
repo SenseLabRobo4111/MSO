@@ -52,76 +52,225 @@ Legend / 标记说明:
 
 ## High priority / 高优先级
 
-### A2. 3-robot scaling sweep · `🚧 BLOCKED`
-**EN.** Re-run the MRPB simulator with `robot_count=3` for `ours_multi_ours_orb`
-and `nearest-multi-our-orb` over 10 MRPB scenes × 5 random seeds (= 50 runs/method).
-Drop per-(scene, seed) CSVs into `Exp/4.3_v2/all_metrics/<method>_3robot_seed<i>.csv`.
-Once data lands, the figure goes into Appendix `app:scaling`.
+### A2. Multi-robot scaling on MRPB (N ∈ {2, 3, 5}) · `🚧 BLOCKED`
 
-**CN.** 用 `robot_count=3` 重跑 MRPB simulator，`ours_multi_ours_orb` 和
-`nearest-multi-our-orb` 两个 method × 10 scenes × 5 seeds = 50 runs/method。
-per-seed CSV 命名 `<method>_3robot_seed<i>.csv`，丢到 `Exp/4.3_v2/all_metrics/`。
-数据到位后绘图填进 Appendix `app:scaling`。
+**EN — what to do.**
+Run the MRPB simulator at three team sizes (N=2, N=3, N=5) for **two
+methods** — full MSO (`ours_multi_ours_orb`) and the frontier baseline
+(`nearest-multi-our-orb`). Use the **same 10 MRPB scenes** as Sec 4.3 of the
+paper, **5 random seeds per (scene, N, method) cell**.
 
-- [ ] Configure simulator with `N=3` robots
-- [ ] Run 50 × 2 = 100 simulations
-- [ ] Drop per-seed CSVs into the canonical location
-- **Reviewer hook.** Reviewer #3 explicitly asked for 3+ robot scaling.
+Total runs:
+- N=2: 10 scenes × 5 seeds × 2 methods = **100 runs** (already covered by
+  the existing main-paper data, no rerun needed if those CSVs are reused)
+- N=3: 10 × 5 × 2 = **100 runs** (new)
+- N=5: 10 × 5 × 2 = **100 runs** (new — headline reviewer ask)
+
+So new work is **200 runs**. If N=5 is not feasible (compute / communication
+limit), drop it and keep N ∈ {2, 3} as a fallback — but N=5 is strongly
+preferred because reviewers explicitly asked for "5+ robot scaling".
+
+**EN — file naming convention.** Each (scene, seed, N) cell produces one
+CSV with columns
+`step, coverage, predicted_map_quality, topological_understanding`. Place at:
+
+```
+Exp/4.3_v2/scaling/<method>_N<n>_scene<i>_seed<j>.csv
+```
+
+`<method>` ∈ `{ours_multi_ours_orb, nearest-multi-our-orb}`,
+`<n>` ∈ `{2, 3, 5}`, `<i>` ∈ `0..9`, `<j>` ∈ `0..4`.
+Robots start from the same paired poses across runs of the same (scene, seed)
+so cross-N curves are comparable.
+
+**CN — 要做什么.**
+在三种 team 规模（N=2, 3, 5）下跑 MRPB simulator，**两个 method**：full
+MSO (`ours_multi_ours_orb`) 和 frontier 基线 (`nearest-multi-our-orb`)。沿用
+论文 Sec 4.3 同 **10 个 MRPB 场景**，**每个 (scene, N, method) 跑 5 个
+seed**。
+
+总数：
+- N=2：100 runs（复用主论文 CSV）
+- N=3：100 runs（新跑）
+- N=5：100 runs（新跑，**审稿人主线诉求**）
+
+新工作量 **200 runs**。如果 N=5 算力或通信带宽吃不消，退到 N ∈ {2, 3}，
+但 N=5 是审稿人明确点名的"5+ robot scaling"。
+
+**CN — 文件命名约定.** 每个 (scene, seed, N) cell 输出一个 CSV，列必须是
+`step, coverage, predicted_map_quality, topological_understanding`，放在：
+
+```
+Exp/4.3_v2/scaling/<method>_N<n>_scene<i>_seed<j>.csv
+```
+
+同 (scene, seed) 跨不同 N 的 run 必须从同一对 paired 起点出发，保证曲线可比。
+
+**Acceptance / 验收**
+
+- [ ] Simulator accepts `--robot_count={2, 3, 5}` (extend if missing)
+- [ ] Simulator accepts `--seed=<int>` and respects it for start-pose
+      sampling, planner tie-breaking, sensor noise
+- [ ] Smoke test: 1 scene × 1 seed × 3 robot counts × 2 methods = 6 CSVs land
+      at the expected paths before kicking off the full 200-run sweep
+- [ ] All 200 expected CSVs land at `Exp/4.3_v2/scaling/...` (any missing run
+      blocks plotting — `plot_scaling_multirobot.py` will detect and bail)
+- [ ] Ping me with **"A2 done"** — I will write `plot_scaling_multirobot.py`,
+      render `figs/appendix/scaling_multirobot.png`, replace the placeholder
+      in Appendix `app:scaling`, and update the caption with the actual
+      seed count and observed std
+
+**Reviewer hook.** Reviewer #3 explicitly asked for 3+ robot results and
+flagged "scaling beyond two agents" as an open question.
+
+---
 
 ### A3. KTH benchmark sweep · `🚧 BLOCKED`
-**EN.** Run multi-robot exploration on 5 large KTH scenes × 5 seeds for
-`ours_multi_ours_orb`, `nearest-multi-our-orb`, and
-`ours_multi_ours_orb_nomerge` (= 75 runs total). Output to
-`Exp/4.3_v2/kth/<method>_scene<i>_seed<j>.csv`. KTH is **in-distribution**
-(predictor saw KTH layout statistics during training, never these specific
-scenes); frame the appendix accordingly.
 
-**CN.** 在 5 个大型 KTH 场景 × 5 seeds 跑 `ours_multi_ours_orb` /
-`nearest-multi-our-orb` / `ours_multi_ours_orb_nomerge` 共 75 runs，输出到
-`Exp/4.3_v2/kth/<method>_scene<i>_seed<j>.csv`。KTH 是 **in-distribution**，
-appendix 措辞要明确，不要混作 held-out。
+**EN — what to do.**
+Run multi-robot exploration on **5 large KTH scenes** (held out — predictor
+never saw these specific layouts, but did see KTH-like statistics during
+training) for **3 methods**: `ours_multi_ours_orb`, `nearest-multi-our-orb`,
+`ours_multi_ours_orb_nomerge`, **5 seeds each**. Two-robot teams to match the
+main MRPB benchmark.
 
-- [ ] Pick 5 large held-out KTH scenes (predictor never saw these)
-- [ ] Run 75 simulations
-- [ ] Drop per-seed CSVs
-- **Reviewer hook.** Answers "3 scenes is too few" critique.
+Total runs: 5 scenes × 5 seeds × 3 methods = **75 runs**.
+
+**EN — file naming convention.**
+```
+Exp/4.3_v2/kth/<method>_scene<i>_seed<j>.csv
+```
+`<method>` ∈ `{ours_multi_ours_orb, nearest-multi-our-orb, ours_multi_ours_orb_nomerge}`,
+`<i>` ∈ `0..4`, `<j>` ∈ `0..4`.
+
+KTH is **in-distribution** (predictor saw KTH layout statistics in training
+but never these specific test scenes); the appendix already states this so
+it cannot be mistaken for held-out generalisation.
+
+**CN — 要做什么.**
+在 **5 个大型 KTH 场景**（训练 held-out，predictor 没见过具体布局但见过同
+分布的 KTH 数据）上跑 **3 个 method**：`ours_multi_ours_orb`、
+`nearest-multi-our-orb`、`ours_multi_ours_orb_nomerge`，每个 method × 5 seeds。
+两机器人 team，与主 MRPB 实验对齐。
+
+总数：5 × 5 × 3 = **75 runs**。
+
+**CN — 文件命名约定.**
+```
+Exp/4.3_v2/kth/<method>_scene<i>_seed<j>.csv
+```
+KTH 是 **in-distribution**，appendix 已经写明，不要误称 held-out。
+
+**Acceptance / 验收**
+
+- [ ] 5 specific KTH scenes selected and listed in
+      `Exp/4.3_v2/kth/SCENES.txt` (one path per line)
+- [ ] Smoke test: 1 scene × 1 seed × 3 methods → 3 CSVs land at expected
+      paths before full sweep
+- [ ] All 75 expected CSVs land at `Exp/4.3_v2/kth/...`
+- [ ] Ping me with **"A3 done"** — I will write `plot_kth_curves.py`, render
+      `figs/appendix/kth_curves.png`, replace the placeholder in Appendix
+      `app:kth`, update the caption.
+
+**Reviewer hook.** Adds a second simulated benchmark; answers
+"3 scenes is too few".
+
+---
 
 ## Medium priority / 中等优先级
 
 ### A4. MSO fusion-only ablation · `🚧 BLOCKED + 🟡 OPTIONAL`
-**EN.** Run MSO with the predictor disabled (use observed-only maps as fusion
-input) on the same 50 runs/method as A2. Requires simulator support for a
-`--predictor=none` flag. If infeasible, mark as future work — do not block
-release on this.
 
-**CN.** 关掉 predictor 用 observed-only 地图喂 fusion，跑同样 50 runs/method。
-需要 simulator 支持 `--predictor=none` 开关。做不了就跳过，标 future work。
+**EN — what to do.**
+Run MSO with the predictor disabled (use observed-only maps as fusion input)
+on the same N=2 × 10 scenes × 5 seeds = 50 runs grid as A2. Requires
+simulator support for a `--predictor=none` flag (or equivalent constructor
+argument that bypasses the predictor and feeds the observed map straight to
+fusion). If implementing the flag is more than ~1 hour of simulator work,
+skip and mark as future work — do not block release.
 
-- [ ] Add `--predictor=none` flag to simulator (if not present)
-- [ ] Run 50 simulations OR confirm "infeasible"
+**CN — 要做什么.**
+关掉 predictor 用 observed-only 地图喂 fusion，跑 N=2 × 10 scenes × 5 seeds
+= 50 runs（与 A2 同网格）。需要 simulator 支持 `--predictor=none`。改动若超过
+1 小时就跳过，标 future work，不能阻塞发版。
+
+**Output path / 输出路径.**
+```
+Exp/4.3_v2/ablation/ours_multi_fusion_only_scene<i>_seed<j>.csv
+```
+
+**Acceptance / 验收**
+
+- [ ] Simulator wires `--predictor=none` (or equivalent) so fusion consumes
+      observed-only occupancy as input
+- [ ] 50 CSVs land at the path above
+- [ ] OR explicit "infeasible" confirmation — I will add a one-line note in
+      the Limitations section
+
+---
 
 ### P4-2. Topology / wall-connectivity metric · `🟢 READY 🟡 OPTIONAL`
-**EN.** Post-processing script for predicted maps: skeletonisation →
-connected-component count → doorway-preservation rate. Add a new column to
-`tab:quantitative-results(a)` to complement PSNR/SSIM/LPIPS/FID/KID.
 
-**CN.** 给 predicted map 写后处理脚本：骨架化 → 连通分量计数 → 门洞保留率，
-补到 `tab:quantitative-results(a)` 一列。
+**EN — what to do.**
+Write a post-processing script that, for every predicted map in the held-out
+KTH/HouseExpo test split (1,356 samples), computes:
 
-- [ ] Confirm predictor checkpoint is locally accessible
-- [ ] Write metric script (~1–2 hours)
-- **Reviewer hook.** Reviewer #6 noted FID/KID don't directly reflect
-  downstream robot behaviour.
+1. **Skeletonisation IoU** — Zhang–Suen thinning of the obstacle channel,
+   compared to ground-truth skeleton via IoU.
+2. **Connected-component delta** — number of obstacle CCs in prediction
+   minus number in ground truth (signed; closer to 0 is better).
+3. **Doorway preservation rate** — fraction of ground-truth narrow gaps
+   (1-pixel doorways) that remain traversable in the prediction.
+
+Add three new columns to `tab:quantitative-results(a)` next to FID/KID.
+Per-sample dump to `Exp/4.1_topology/<method>_topology.csv`.
+
+**EN — what I need from you.**
+Confirm the predictor checkpoint and the test-split tensors are locally
+accessible (or tell me where they live), then ping me — I will write the
+script (~1–2 hours).
+
+**CN — 要做什么.**
+对 held-out KTH/HouseExpo 测试集（1,356 样本）的每张 predicted map 算三个
+指标：(1) 骨架化 IoU；(2) 连通分量差；(3) 门洞保留率。作为
+PSNR/SSIM/LPIPS/FID/KID 的补充，加进 `tab:quantitative-results(a)` 三列。
+
+**Acceptance / 验收**
+
+- [ ] Confirm predictor checkpoint path
+- [ ] Confirm KTH/HouseExpo test-split tensor location
+- [ ] Ping me to write the metric script
+- [ ] Three new columns appear in Tab 2(a) without breaking the table's
+      `\arraystretch` / page geometry
+
+**Reviewer hook.** Reviewer #6 noted FID/KID don't directly reflect
+downstream robot behaviour.
+
+---
 
 ## Low priority / 低优先级
 
 ### P4-4. Rebuttal letter · `🚧 BLOCKED on phase decision`
-**EN.** Bullet-by-bullet response to the seven concrete reviewer questions.
-Only needed if currently in the **rebuttal** phase.
 
-**CN.** 对审稿人 7 条具体问题逐条回应。**仅** rebuttal 阶段需要。
+**EN — what to do.**
+Bullet-by-bullet response to the seven concrete reviewer questions
+collected in the original review (fusion success rate, hallucination
+sensitivity, predicted-free-space safety, communication payload, robot
+scaling, MapEx/IG-Hector real-world omission, real-world stat reporting).
+Only needed if currently in the **rebuttal** phase, not in the camera-ready
+revision.
 
-- [ ] Confirm: rebuttal phase or camera-ready revision?
+**CN — 要做什么.**
+对审稿人原始 review 中 7 条具体问题逐条回应（fusion 成功率、hallucination
+敏感性、predicted free-space 安全性、通信带宽、robot 规模、MapEx/IG-Hector
+真机缺席、真机统计报告）。**仅** rebuttal 阶段需要。
+
+**Acceptance / 验收**
+
+- [ ] Confirm phase: rebuttal vs camera-ready
+- [ ] If rebuttal, ping me with the exact reviewer text — I will draft a
+      response letter targeting CoRL's word limit (typically 5,000 chars
+      per reviewer, 2,000 char meta)
 
 ---
 
