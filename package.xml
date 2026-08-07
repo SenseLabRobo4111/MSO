@@ -5,7 +5,10 @@
   <version>0.1.0</version>
   <description>Lightweight local occupancy-map prediction for multirobot exploration.</description>
   <maintainer email="qiaofei@tsinghua.edu.cn">Fei Qiao</maintainer>
+  <!-- No general repository-wide licence is granted. Third-party material and
+       draft peer-review terms are documented at the repository root. -->
   <license>Proprietary</license>
+  <url type="repository">https://github.com/SenseLabRobo4111/MSO</url>
 
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>

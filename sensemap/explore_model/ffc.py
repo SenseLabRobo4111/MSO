@@ -1,3 +1,9 @@
+# Portions of this file are adapted from the official Fast Fourier Convolution
+# implementation at https://github.com/pkumivision/FFC (Apache-2.0).
+# The MSO version updates the FFT calls for current PyTorch and adds
+# project-specific residual wrappers. See THIRD_PARTY_NOTICES.md and
+# third_party/licenses/Apache-2.0.txt.
+
 import torch
 import torch.nn as nn
 

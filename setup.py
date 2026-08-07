@@ -19,7 +19,7 @@ setup(
     maintainer='Fei Qiao',
     maintainer_email='qiaofei@tsinghua.edu.cn',
     description='Lightweight local occupancy-map prediction for multirobot exploration',
-    license='Proprietary',
+    license='Proprietary (no general licence; see repository review terms)',
     entry_points={
         'console_scripts': [
             'sensemap_predictor = sensemap.predict_map:main',

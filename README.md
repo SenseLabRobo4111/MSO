@@ -37,6 +37,24 @@ It does not establish building-disjoint generalisation, operation through
 communication failures, online recovery after an incorrect map commit, or
 physical scaling beyond the evaluated two-robot arenas.
 
+## Reviewed version
+
+The canonical development and review branch is `main`. The immutable snapshot
+prepared for the current manuscript is tagged `nc-submission-2026-08-07`.
+Retrieve and verify that snapshot with:
+
+```bash
+git fetch origin --tags
+git switch main
+git pull --ff-only origin main
+git switch --detach nc-submission-2026-08-07
+git rev-parse HEAD
+```
+
+The tag and full commit identifier, rather than a moving branch name, should be
+recorded in any evaluation report. The older `journal-submission` branch is a
+historical alias and is not the canonical entry point.
+
 ## Repository layout
 
 ```text
@@ -204,12 +222,23 @@ ROS package tests additionally require the normal ROS 2 ament test plugins.
 
 ## Citation and contact
 
-Until an article DOI and archival software record are available, cite the exact
-Git commit used.
+No article DOI or archival software DOI exists for this release. Cite the
+`nc-submission-2026-08-07` tag together with the exact Git commit returned by
+`git rev-parse HEAD`.
 
 Correspondence: Fei Qiao, `qiaofei@tsinghua.edu.cn`.
 
-## Licence
+## Licence and provenance
 
-No software licence is granted by this repository revision. A reusable archival
-release requires an author-approved licence and review of third-party assets.
+No general software licence is granted for the repository as a whole. The
+public repository can be inspected, but reuse and redistribution of the authors'
+contributions require a later rights-cleared release. Proposed terms for
+editorial and peer-review use are recorded in
+[`REVIEW_ACCESS_TERMS.md`](REVIEW_ACCESS_TERMS.md) and still require explicit
+author approval before they can be relied on.
+
+Some files include or adapt material distributed under separate upstream
+licences. Their origins, affected paths, modification status and retained terms
+are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). Those upstream
+permissions apply only to the relevant material and do not license the rest of
+this repository.
