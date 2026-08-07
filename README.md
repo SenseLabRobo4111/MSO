@@ -1,6 +1,6 @@
 # MSO
 
-**Predictive map exchange under resource constraints for multirobot indoor exploration**
+**A predictive system for multirobot indoor exploration under resource constraints**
 
 [中文说明](README.zh.md)
 
@@ -10,8 +10,8 @@ pairwise map registration, and observation-constrained planning. Predicted
 structure may support registration and target ranking, while measured occupancy
 remains authoritative for collision checking and persistent-map updates.
 
-This repository accompanies the manuscript **“Predictive Map Exchange under
-Resource Constraints for Multirobot Indoor Exploration.”** It currently exposes
+This repository accompanies the manuscript **“A Predictive System for
+Multirobot Indoor Exploration under Resource Constraints.”** It currently exposes
 the predictor network definitions and ROS 2 inference interface. It is not a
 complete archival reproduction package for the reported training or experiments.
 
