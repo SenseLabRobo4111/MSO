@@ -1,6 +1,6 @@
 # MSO
 
-**面向多机器人探索的轻量局部地图预测与融合**
+**面向室内多机器人探索的资源受限预测地图交换**
 
 [English](README.md)
 
@@ -8,8 +8,8 @@ MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研�
 轻量局部占据地图预测器与成对地图配准结合，使机器人在没有预先已知全局相对位姿
 的情况下利用预测结构。
 
-本仓库对应论文 **“Lightweight Local Map Prediction and Fusion for Multirobot
-Exploration”**。当前版本包含预测器网络、ROS 2 推理节点、launch 文件以及训练
+本仓库对应论文 **“Resource Constrained Predictive Map Exchange for Multirobot
+Indoor Exploration”**。当前版本包含预测器网络、ROS 2 推理节点、launch 文件以及训练
 相关模型组件。完整归档版本还将提供论文结果所对应的冻结评估工具、配置和版本化
 模型权重。
 
