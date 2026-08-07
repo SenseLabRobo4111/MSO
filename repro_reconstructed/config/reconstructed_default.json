@@ -1,0 +1,19 @@
+{
+  "status": "reconstructed",
+  "image_size": 256,
+  "student_dim": 4,
+  "teacher_dim": 4,
+  "epochs": 500,
+  "batch_size": 16,
+  "num_workers": 4,
+  "learning_rate": 0.001,
+  "adam_betas": [0.0, 0.99],
+  "weight_decay": 0.0,
+  "loss_weights": {
+    "adversarial": 10.0,
+    "feature_reconstruction": 30.0,
+    "pixel_l2": 1.0,
+    "distillation": 5.0
+  },
+  "seed": 0
+}

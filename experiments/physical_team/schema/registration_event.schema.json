@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Physical-team registration event",
+  "type": "object",
+  "required": [
+    "schema_version", "event_id", "run_id", "timestamp_ns",
+    "source_robot_id", "target_robot_id", "state", "estimate", "gate"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "event_id": {"type": "string", "minLength": 1},
+    "parent_event_id": {"type": ["string", "null"]},
+    "run_id": {"type": "string", "minLength": 3},
+    "timestamp_ns": {"type": "integer", "minimum": 1},
+    "source_robot_id": {"type": "integer", "minimum": 0},
+    "target_robot_id": {"type": "integer", "minimum": 0},
+    "state": {
+      "enum": ["candidate", "accepted", "rejected", "committed", "recovered"]
+    },
+    "estimate": {
+      "type": "object",
+      "required": ["tx_m", "ty_m", "yaw_deg"],
+      "properties": {
+        "tx_m": {"type": "number"},
+        "ty_m": {"type": "number"},
+        "yaw_deg": {"type": "number"}
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "type": "object",
+      "required": ["decision", "reason"],
+      "properties": {
+        "decision": {"enum": ["accept", "reject", "not_applicable"]},
+        "reason": {"type": "string"},
+        "score": {"type": ["number", "null"]},
+        "threshold": {"type": ["number", "null"]},
+        "support": {"type": ["integer", "null"], "minimum": 0},
+        "inlier_ratio": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "overlap": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+      },
+      "additionalProperties": true
+    },
+    "map_revision_before": {"type": ["integer", "null"], "minimum": 0},
+    "map_revision_after": {"type": ["integer", "null"], "minimum": 0}
+  },
+  "additionalProperties": true
+}

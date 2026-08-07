@@ -22,7 +22,8 @@ setup(
     license='Proprietary',
     entry_points={
         'console_scripts': [
-            'sensemap_predictor = sensemap.predict_map:main'
+            'sensemap_predictor = sensemap.predict_map:main',
+            'sensemap_event_logger = sensemap.capture_event_logger:main',
         ],
     },
 )

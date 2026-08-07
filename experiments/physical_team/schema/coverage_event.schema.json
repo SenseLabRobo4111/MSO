@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Independent physical-arena coverage event",
+  "type": "object",
+  "required": ["schema_version", "run_id", "timestamp_ns", "coverage"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "run_id": {"type": "string", "minLength": 3},
+    "timestamp_ns": {"type": "integer", "minimum": 1},
+    "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "observed_free_m2": {"type": ["number", "null"], "minimum": 0},
+    "occupied_precision": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "evaluator_revision": {"type": "string"}
+  },
+  "additionalProperties": true
+}

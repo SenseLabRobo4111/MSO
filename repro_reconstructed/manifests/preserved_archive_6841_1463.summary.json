@@ -1,0 +1,13 @@
+{
+  "aggregate_sample_processed_sha256": "1090dba814a7dc2ba85a739621112d187845cb993c1207a9b84f9487a4b7c618",
+  "image_size": 256,
+  "inventory_sha256": "666ebfa9b55686747f33bd627c8e75e8728345faad3d57cd08265fa2a344e93c",
+  "partition_counts": {
+    "test": 1463,
+    "train": 6841
+  },
+  "processed_pair_protocol": "RGB nearest resize; uint8 255 replaced by 1 then CHW little-endian float32; grayscale target nearest resize and ==255 to 1xHW little-endian float32; SHA256 over MSO-PROCESSED-PAIR-v1\\0 + observation bytes + target bytes",
+  "sample_count": 8304,
+  "schema": "preserved_archive_inventory_v2",
+  "status": "preserved_archive_not_manuscript_split"
+}

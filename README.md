@@ -7,68 +7,52 @@
 MSO (Make Sense at Once) is a research system for two-dimensional indoor
 multirobot exploration. It combines a compact local occupancy predictor,
 pairwise map registration, and observation-constrained planning. Predicted
-structure may support registration and target ranking, while measured occupancy
+structure can guide registration and target ranking, while measured occupancy
 remains authoritative for collision checking and persistent-map updates.
 
 This repository accompanies the manuscript **“A Predictive System for
-Multirobot Indoor Exploration under Resource Constraints.”** It currently exposes
-the predictor network definitions and ROS 2 inference interface. It is not a
-complete archival reproduction package for the reported training or experiments.
+Multirobot Indoor Exploration under Resource Constraints.”** It contains a
+usable ROS 2 predictor, a declared reconstruction of the training workflow, an
+offline audit of archived two-robot registration, and tooling for future
+physical-team data collection. It is not an exact historical reproduction of
+every result in the manuscript.
 
-## Evidence boundary
+## Read this first
 
-- The deployed student has 342,771 trainable parameters.
-- Input is a 256 by 256 local grid with obstacle, unknown, and free channels.
-- Output is an occupied-cell probability for the unknown region.
-- New measurements overwrite predictions in persistent mapping.
-- Prediction may rank candidate targets; planning and collision checking use
-  measured occupancy.
-- Pairwise registration addresses encounters without a known initial interrobot
-  transform.
+| Component | Included | Evidence status |
+|---|---:|---|
+| 342,771-parameter student and teacher definitions | Yes | Architecture is verified |
+| ROS 2 prediction node and launch file | Yes | Runtime interface is usable |
+| Historical manuscript trainer and exact 5,385/1,356 split | No | Not recovered |
+| Manuscript checkpoint and model-selection trace | No | Not recovered |
+| Two recovered generator candidates | Yes | Architecture-compatible; not identified as the manuscript checkpoint |
+| Reconstructed training and evaluation workflow | Yes | Forward reconstruction, not historical reproduction |
+| Preserved-archive inventory | Yes | 8,304 sample records with source hashes; not the manuscript split |
+| Archived two-robot registration replay | Yes | Offline negative-result audit; not deployed validation |
+| Passive N=2/3/5 collection protocol | Yes | Instrumentation only; no new N=3 or N=5 physical results |
+| Physical rosbags | No | Available to reviewers through the manuscript process |
 
 The reported evidence is limited to structured two-dimensional indoor settings.
 It does not establish building-disjoint generalisation, operation through
-communication failures, online recovery after an incorrect commit, or physical
-scaling beyond the evaluated two-robot arenas.
-
-## Release scope
-
-| Component | Status in this revision |
-|---|---|
-| Student and teacher network definitions | Included |
-| ROS 2 predictor node and launch file | Included |
-| Dataset loader | Included as a format reference |
-| Historical manuscript training programme | Not included |
-| Historical split manifest and checkpoint-selection trace | Not included |
-| Manuscript checkpoint | Not included |
-| Deployed pairwise-registration package | Not included |
-| Offline transform evaluator and event records | Distributed with the manuscript review package, not this repository |
-| Physical rosbags | Not included; too large for this repository |
-| KTH, HouseExpo, and MRPB source data | Obtain from the original providers |
-
-The files `lightning_model.py`, `main_unet_gan.py`, and `train_gan_new.py` are
-legacy research prototypes. They use different defaults, depend on modules that
-are not tracked here, and do not implement the complete four-term distillation
-programme described in the manuscript. They must not be treated as a canonical
-entry point for reproducing the manuscript training results.
+communication failures, online recovery after an incorrect map commit, or
+physical scaling beyond the evaluated two-robot arenas.
 
 ## Repository layout
 
 ```text
 MSO/
+|-- experiments/
+|   `-- physical_team/       # passive N=2/3/5 collection protocol
+|-- registration_replay/     # offline audit of archived two-robot bags
+|-- repro_reconstructed/     # declared training reconstruction and candidates
 |-- launch/
-|   `-- sensemap.launch.py
-|-- resource/
-|   `-- sensemap
+|   |-- sensemap.launch.py
+|   |-- physical_team_capture.launch.py
+|   |-- physical_team_3.launch.py
+|   `-- physical_team_5.launch.py
 |-- sensemap/
 |   |-- explore_model/
-|   |   |-- SenseMapNet.py
-|   |   |-- critic_model.py
-|   |   |-- dataset.py
-|   |   |-- ffc.py
-|   |   |-- lightning_model.py
-|   |   |-- main_unet_gan.py
-|   |   `-- train_gan_new.py
+|   |-- capture_event_logger.py
 |   `-- predict_map.py
 |-- test/
 |-- package.xml
@@ -76,17 +60,12 @@ MSO/
 `-- setup.py
 ```
 
-## Runtime requirements
+## ROS 2 runtime
 
-The ROS node requires Python 3, ROS 2, PyTorch, NumPy, OpenCV, and scikit-learn.
-Its ROS dependencies are `rclpy`, `tf2_ros`, `geometry_msgs`, and `nav_msgs`.
-This revision does not provide a locked dependency environment.
-
-The reported deployment used ROS 2 Humble on Ubuntu 22.04 and an NVIDIA Jetson
-AGX Orin. On Jetson hardware, use the PyTorch build compatible with the installed
-JetPack version.
-
-## Build and launch
+The runtime requires Python 3, ROS 2, PyTorch, NumPy, OpenCV, and scikit-learn.
+ROS dependencies are declared in `package.xml`. The reported deployment used
+ROS 2 Humble on Ubuntu 22.04 and an NVIDIA Jetson AGX Orin. On Jetson hardware,
+install the PyTorch build compatible with the installed JetPack version.
 
 ```bash
 mkdir -p ~/mso_ws/src
@@ -99,13 +78,13 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-The checkpoint is not stored in this revision. Supply an absolute path when
-launching the inference node:
+The manuscript checkpoint is not available in this revision. Supply an
+explicit compatible checkpoint or state dictionary when launching:
 
 ```bash
 ros2 launch sensemap sensemap.launch.py \
   robot_id:=0 \
-  model_path:=/absolute/path/to/mso_distilled.ckpt \
+  model_path:=/absolute/path/to/student_weights.ckpt \
   architecture:=deconv
 ```
 
@@ -114,21 +93,19 @@ Equivalent direct invocation:
 ```bash
 ros2 run sensemap sensemap_predictor --ros-args \
   -p robot_id:=0 \
-  -p model_path:=/absolute/path/to/mso_distilled.ckpt \
+  -p model_path:=/absolute/path/to/student_weights.ckpt \
   -p architecture:=deconv
 ```
 
-The default `deconv` network is the 342,771-parameter student described in the
-manuscript. A compatible legacy checkpoint may select `architecture:=bilinear`.
-Loading stops with an error if `model_path` is empty or the state dictionary does
-not match the selected architecture.
+The default `deconv` model has 342,771 trainable parameters. Loading fails if
+the path is empty or the state dictionary does not match the selected
+architecture. The recovered candidates under `repro_reconstructed/` are
+research artifacts; they must not be presented as the checkpoint underlying a
+manuscript table.
 
-The node accepts either a PyTorch Lightning checkpoint whose generator keys in
-`state_dict` begin with `gen.`, or a plain `DistillMapNet` state dictionary.
+### ROS 2 interfaces
 
-## ROS 2 interfaces
-
-For `robot_id:=N`, the node uses:
+For `robot_id:=N`, the predictor uses:
 
 | Direction | Name | Type | Purpose |
 |---|---|---|---|
@@ -138,13 +115,65 @@ For `robot_id:=N`, the node uses:
 | Publish | `/robot_N/way_point` | `geometry_msgs/msg/PoseStamped` | Optional frontier goal |
 | Transform | `global_map` to `robot_N/base_link` | TF2 | Pose used for crop placement |
 
-The inference callback runs once per second and publishes the refreshed local and
-global prediction. A planner may read the latest cached prediction more often;
-that read frequency is not the inference frequency.
+The inference callback runs once per second. A planner may read the latest
+cached prediction more frequently; that read frequency is not the inference
+frequency.
+
+## Reconstructed training package
+
+[`repro_reconstructed/`](repro_reconstructed/README.md) provides:
+
+- a canonical reconstructed training and evaluation entry point;
+- two recovered generator-only candidate states with source provenance;
+- an 8,304-row inventory for the preserved 6,841/1,463 archive labels;
+- per-sample source and processed-pair hashes;
+- a split builder that requires an explicit semantic group such as building,
+  floorplan, or scene and rejects cross-split group leakage and exact processed
+  duplicates; and
+- locked reconstruction dependencies and artifact verification.
+
+Verify the package before use:
+
+```bash
+python3 repro_reconstructed/tools/verify_artifacts.py
+python3 -m pytest repro_reconstructed/tests -q
+```
+
+The preserved archive is not the manuscript's reported 5,385/1,356 partition.
+Worker prefixes in legacy directory names are generation-process identifiers,
+not building or floorplan identities, and the tools refuse to treat them as
+semantic split groups.
+
+The legacy files `lightning_model.py`, `main_unet_gan.py`, and
+`train_gan_new.py` remain research prototypes. They depend on missing historical
+modules and do not implement the complete manuscript training programme. Use
+the reconstructed package for any new, explicitly labelled experiment.
+
+## Registration replay
+
+[`registration_replay/`](registration_replay/README.md) audits archived
+two-robot physical bags offline. It reconstructs the legacy affine behaviour,
+compares it with a constrained unit-scale estimator, and records structural and
+pose-reference checks. The audit exposes failure modes in the archived
+registration evidence; it does not validate deployed online transform accuracy,
+false-accept/false-reject rates, rollback, or recovery.
+
+The reusable pairwise manager is fail-closed by default. Any future commit path
+requires separate validation on newly collected event-level transforms and an
+independent reference. Do not cite the replay as a successful online
+registration experiment.
+
+## Physical-team collection protocol
+
+[`experiments/physical_team/`](experiments/physical_team/README.md) contains a
+passive recorder, schemas, preflight checks, N=2/3/5 launch examples, and run and
+campaign diagnostics. It contains no simultaneous three- or five-robot physical
+dataset. The diagnostics explicitly set `claim_authorized` to `false`; they are
+collection aids, not certificates for a manuscript claim.
 
 ## Dataset loader format
 
-`MapReconstructionDataset` expects one directory per sample:
+The legacy `MapReconstructionDataset` expects one directory per sample:
 
 ```text
 dataset_root/
@@ -156,33 +185,31 @@ dataset_root/
     `-- ...
 ```
 
-`obs_0.png` is the three-channel observation and `local_map_0.png` is the binary
+`obs_0.png` is a three-channel observation and `local_map_0.png` is a binary
 target occupancy map. Images are resized to 256 by 256 pixels with
-nearest-neighbour sampling.
+nearest-neighbour sampling. The directory names describe the legacy loader
+only; they do not establish a building-disjoint split or an untouched model-
+selection partition.
 
-The directory names above describe the legacy loader only. This revision does
-not contain the sample-level floorplan partition, an independent validation
-partition, or evidence that the held-out evaluation partition was untouched
-during historical model selection.
+## Verification
 
-## Reproducibility requirements
+The non-ROS evidence packages can be checked with:
 
-A complete archival training release would need the exact split manifest,
-teacher and student checkpoints, checkpoint-selection rule, all loss modules,
-training entry point, random seeds, evaluation masks, and locked environment.
-Those materials are not present in this revision. Aggregate plots likewise do
-not permit reconstruction of seed-level uncertainty.
+```bash
+python3 repro_reconstructed/tools/verify_artifacts.py
+python3 -m pytest registration_replay/tests repro_reconstructed/tests -q
+```
 
-## Citation
+ROS package tests additionally require the normal ROS 2 ament test plugins.
+
+## Citation and contact
 
 Until an article DOI and archival software record are available, cite the exact
-Git commit used. The manuscript records its review revision explicitly.
-
-## Contact
+Git commit used.
 
 Correspondence: Fei Qiao, `qiaofei@tsinghua.edu.cn`.
 
 ## Licence
 
-No software licence is granted by this repository revision. A future archival
-release must state the approved licence and any third-party restrictions.
+No software licence is granted by this repository revision. A reusable archival
+release requires an author-approved licence and review of third-party assets.

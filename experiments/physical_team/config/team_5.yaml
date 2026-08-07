@@ -1,0 +1,63 @@
+protocol_version: 1.0
+team_size: 5
+method: mso
+recorder:
+  output_root: /data/mso_physical
+  min_free_gb: 100
+  max_clock_offset_ms: 5.0
+  max_clock_rtt_ms: 20.0
+topic_templates:
+  required_global:
+    - /tf
+    - /tf_static
+    - /merged_map
+    - /mso/registration_event
+    - /mso/safety_event
+    - /mso/coverage_event
+  required_per_robot:
+    - /robot_{id}/lidar/points
+    - /robot_{id}/odom
+    - /robot_{id}/map
+    - /robot_{id}/predicted_map
+    - /robot_{id}/cmd_vel
+    - /ground_truth/robot_{id}/pose
+  optional_per_robot:
+    - /robot_{id}/predicted_map_global
+analysis:
+  min_common_duration_s: 60.0
+  min_sensor_messages: 100
+  min_pose_messages: 100
+  min_map_messages: 10
+  translation_limit_m: 0.15
+  yaw_limit_deg: 5.0
+  recovery_deadline_s: 5.0
+required_evidence:
+  - evidence/overhead_video.mp4
+  - evidence/site_photo.jpg
+  - evidence/robot_roster.csv
+robots:
+  - id: 0
+    namespace: /robot_0
+    host: SET_HOST_0
+    base_serial: SET_BASE_SERIAL_0
+    lidar_serial: SET_LIDAR_SERIAL_0
+  - id: 1
+    namespace: /robot_1
+    host: SET_HOST_1
+    base_serial: SET_BASE_SERIAL_1
+    lidar_serial: SET_LIDAR_SERIAL_1
+  - id: 2
+    namespace: /robot_2
+    host: SET_HOST_2
+    base_serial: SET_BASE_SERIAL_2
+    lidar_serial: SET_LIDAR_SERIAL_2
+  - id: 3
+    namespace: /robot_3
+    host: SET_HOST_3
+    base_serial: SET_BASE_SERIAL_3
+    lidar_serial: SET_LIDAR_SERIAL_3
+  - id: 4
+    namespace: /robot_4
+    host: SET_HOST_4
+    base_serial: SET_BASE_SERIAL_4
+    lidar_serial: SET_LIDAR_SERIAL_4

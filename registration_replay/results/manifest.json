@@ -1,0 +1,146 @@
+{
+  "analysis_type": "offline replay with exact recorded-output cross-check",
+  "not_an_online_transform_log": true,
+  "strict_gate_was_deployed": false,
+  "legacy_source": {
+    "commit": "0e93b819a9610ed2924858d16bf032729d21fb67",
+    "author_date": "2025-05-05T22:28:16+08:00",
+    "core_sha256": "53ac4133b1ce419c54284bb6c3a84315ca0d476f7d12ecc1f3f6b54adb9de894",
+    "node_sha256": "08bd58a075d070d10ca48a2fa98cafdf678eab0ea450d90be7090a3f28b3d517"
+  },
+  "software": {
+    "python": "3.12.6",
+    "numpy": "2.4.3",
+    "opencv": "4.13.0",
+    "rosbags": "0.11.1"
+  },
+  "gate_thresholds": {
+    "scale_tolerance": 0.02,
+    "anisotropy_tolerance": 0.01,
+    "orthogonality_tolerance": 0.03,
+    "min_inliers": 13,
+    "min_inlier_ratio": 0.025,
+    "max_median_residual_px": 3.5,
+    "min_occupancy_iou": 0.25,
+    "max_occupancy_chamfer_median_px": 2.0,
+    "min_minor_spread_px": 5.0
+  },
+  "rigid_estimator": {
+    "model": "proper unit-scale SE(2)",
+    "method": "deterministic two-point RANSAC followed by Kabsch refinement",
+    "residual_threshold_px": 3.0,
+    "iterations": 384,
+    "maximum_one_to_one_correspondences": 500
+  },
+  "threshold_development": {
+    "development_bag": "sense1-1",
+    "held_out_bags": [
+      "sense1-2",
+      "sense2-1",
+      "sense2-2",
+      "sense3-1",
+      "sense3-2",
+      "sense4-1",
+      "sense4-2",
+      "sense5-1",
+      "sense5-2"
+    ],
+    "status": "Exploratory replay analysis. Gate thresholds were fixed after inspecting sense1-1 and before evaluating the listed held-out bags."
+  },
+  "temporal_consensus": {
+    "confirmations": 3,
+    "min_confirmation_interval_s": 0.5,
+    "max_gap_s": 5.0,
+    "translation_tolerance_m": 0.5,
+    "yaw_tolerance_deg": 5.0,
+    "both_cached_map_revisions_must_change": true,
+    "a_local_reject_resets_support": true
+  },
+  "recommended_operating_policy": {
+    "commit_enabled": false,
+    "reason": "The frozen rigid candidate and gate failed the held-out error audit; the public manager therefore defaults to fail-closed."
+  },
+  "evaluation_thresholds": [
+    {
+      "translation_m": 0.25,
+      "yaw_deg": 5.0,
+      "label": "tight diagnostic"
+    },
+    {
+      "translation_m": 0.5,
+      "yaw_deg": 10.0,
+      "label": "reference-aware sensitivity"
+    }
+  ],
+  "input_bags": [
+    {
+      "bag": "sense1-1",
+      "relative_path": "Exp/experiment_video/rosbag/sense1-1/rosbag2_2025_05_05-16_38_19_0.db3",
+      "bytes": 240807936,
+      "sha256": "ff10f74a2a17daa3c325d3e3db01efe7435cda7f3263a5d006bb6696c770628c"
+    },
+    {
+      "bag": "sense1-2",
+      "relative_path": "Exp/experiment_video/rosbag/sense1-2/rosbag2_2025_05_05-16_42_33_0.db3",
+      "bytes": 178876416,
+      "sha256": "cc14e5e40efbf88a64cb5343aae8926071ffc767d43418d582684c332f831407"
+    },
+    {
+      "bag": "sense2-1",
+      "relative_path": "Exp/experiment_video/rosbag/sense2-1/rosbag2_2025_05_05-16_58_32_0.db3",
+      "bytes": 218005504,
+      "sha256": "f835fb2638d4b9b8759b8061d190988caee29ac2e57a5fa8cc60bd012ace4c32"
+    },
+    {
+      "bag": "sense2-2",
+      "relative_path": "Exp/experiment_video/rosbag/sense2-2/rosbag2_2025_05_05-17_08_03_0.db3",
+      "bytes": 164093952,
+      "sha256": "67fe8d99bad70ee7c72e64116aadb798270cfc40241dd25140043abfc431ffa4"
+    },
+    {
+      "bag": "sense3-1",
+      "relative_path": "Exp/experiment_video/rosbag/sense3-1/rosbag2_2025_05_05-17_23_33_0.db3",
+      "bytes": 113487872,
+      "sha256": "7045657fe50cacfc3a9428be9d34aec7d6ff4e2e124d7017923f59b9d25ec6af"
+    },
+    {
+      "bag": "sense3-2",
+      "relative_path": "Exp/experiment_video/rosbag/sense3-2/rosbag2_2025_05_05-17_25_46_0.db3",
+      "bytes": 118939648,
+      "sha256": "2c38740fef5584a3605da4c394f22db7b05b3cd75819f8ac53d57a5e9ed7a797"
+    },
+    {
+      "bag": "sense4-1",
+      "relative_path": "Exp/experiment_video/rosbag/sense4-1/rosbag2_2025_05_05-19_50_13_0.db3",
+      "bytes": 171544576,
+      "sha256": "53ce17a5a571b8aefba28afe28d38bdac136c8e08240f066eef7fe0e95af26b5"
+    },
+    {
+      "bag": "sense4-2",
+      "relative_path": "Exp/experiment_video/rosbag/sense4-2/rosbag2_2025_05_05-19_52_36_0.db3",
+      "bytes": 187944960,
+      "sha256": "238bfb5f6456360dac785f7b871bd7debcb9f1027065f077fb3893d1217cf18e"
+    },
+    {
+      "bag": "sense5-1",
+      "relative_path": "Exp/experiment_video/rosbag/sense5-1/rosbag2_2025_05_05-20_04_32_0.db3",
+      "bytes": 204779520,
+      "sha256": "ecfbc0e619257ad48301e2327e40506a37a4510397bcc7bbd2e0442945f15143"
+    },
+    {
+      "bag": "sense5-2",
+      "relative_path": "Exp/experiment_video/rosbag/sense5-2/rosbag2_2025_05_05-20_07_15_0.db3",
+      "bytes": 150855680,
+      "sha256": "5bb1354d1ceee8dcfed4b76108f5e239bb353ac58a1b3d1105a6ba9f694cb2bd"
+    }
+  ],
+  "limitations": [
+    "The bags contain merged rasters but no transform or decision topic.",
+    "Recovered transforms are offline reruns; exact raster equality verifies outputs, not a recorded H value.",
+    "OpenCV version and callback scheduling can change RANSAC output, so unreproduced publications remain unevaluable.",
+    "Every cached-map callback is called an attempt, not an externally labelled communication encounter.",
+    "The UAV fit is independent of map matching but has non-negligible calibration residual and no stored bootstrap interval.",
+    "Strict-gate results are counterfactual and exploratory; they are not evidence of deployed online behaviour.",
+    "Only two-robot physical bags are present.  The robot-ID-agnostic queue has synthetic unit tests, not three- or five-robot physical validation."
+  ]
+}

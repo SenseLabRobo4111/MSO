@@ -1,0 +1,39 @@
+{
+  "schema": "mso_recovered_candidate_provenance_v1",
+  "status": "recovered_candidates_not_manuscript_checkpoint",
+  "architecture": "sensemap.explore_model.SenseMapNet.DistillMapNetDeconv(image_size=256, dim=4)",
+  "trainable_parameter_count": 342771,
+  "generator_state_value_count": 347690,
+  "generator_tensor_count": 594,
+  "source_checkpoint_common_metadata": {
+    "epoch": 499,
+    "global_step": 72000,
+    "pytorch_lightning_version": "2.5.1",
+    "final_epoch_batches": 72,
+    "optimizer_count": 2,
+    "optimizer": "Adam",
+    "learning_rate": 0.001,
+    "betas": [0.0, 0.99],
+    "weight_decay": 0.0,
+    "lr_scheduler_count": 0,
+    "embedded_callback_path": "redacted"
+  },
+  "artifacts": [
+    {
+      "filename": "recovered_candidate_deconv_a.pt",
+      "artifact_sha256": "da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8",
+      "tensor_fingerprint": "a045c7ecea29f69ab23bade1e48407129d0c218f829344ae936acb091285751d",
+      "source_filename": "model-epoch-deconv.ckpt",
+      "source_size_bytes": 570448323,
+      "source_sha256": "0e7f949925b9f6310f93e36b10152e9729a8cacef15c9061d9e361f1b7c649ad"
+    },
+    {
+      "filename": "recovered_candidate_deconv_label_b.pt",
+      "artifact_sha256": "022689a97336b47fe0c3a39d85e120a4d07e99ba3cc34e4f2be5422c1e515e2c",
+      "tensor_fingerprint": "fdc99d989817aadc474d8a1c021d39b31b8ccd13a1e0c0e91ed7ed593679e0a8",
+      "source_filename": "model-epoch-deconv-label.ckpt",
+      "source_size_bytes": 570448323,
+      "source_sha256": "e16cdf189debda41ffa116173f4e8ac8f441afff6a01c02cc15effe361cb6ea5"
+    }
+  ]
+}

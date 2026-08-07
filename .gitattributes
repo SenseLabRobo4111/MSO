@@ -1,0 +1,14 @@
+* text=auto eol=lf
+
+*.ckpt binary
+*.pdf binary
+*.png binary
+*.pt binary
+*.tif binary
+*.tiff binary
+*.zip binary
+
+# Canonical replay outputs are byte-fixed evidence artifacts. Preserve their
+# recorded line endings so the committed bytes match results/SHA256SUMS.
+registration_replay/results/*.csv binary
+registration_replay/results/*.json binary

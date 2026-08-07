@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Independent reference transform joined to a registration event",
+  "type": "object",
+  "required": [
+    "event_id", "timestamp_ns", "source_robot_id", "target_robot_id",
+    "gt_tx_m", "gt_ty_m", "gt_yaw_deg", "source"
+  ],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "timestamp_ns": {"type": "integer", "minimum": 1},
+    "source_robot_id": {"type": "integer", "minimum": 0},
+    "target_robot_id": {"type": "integer", "minimum": 0},
+    "gt_tx_m": {"type": "number"},
+    "gt_ty_m": {"type": "number"},
+    "gt_yaw_deg": {"type": "number"},
+    "source": {"enum": ["motion_capture", "overhead_tracking", "surveyed_fiducials"]},
+    "uncertainty_translation_m": {"type": ["number", "null"], "minimum": 0},
+    "uncertainty_yaw_deg": {"type": ["number", "null"], "minimum": 0}
+  },
+  "additionalProperties": false
+}

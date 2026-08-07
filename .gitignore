@@ -4,6 +4,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+registration_replay/tmp_*/
 build/
 install/
 log/

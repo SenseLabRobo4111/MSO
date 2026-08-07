@@ -1,0 +1,6 @@
+# Tested reconstruction environment (2026-08-07)
+torch==2.12.0
+numpy==2.4.3
+Pillow==12.1.1
+scikit-image==0.26.0
+pytest==9.0.3
