@@ -30,7 +30,7 @@ every result in the manuscript.
 | Preserved-archive inventory | Yes | 8,304 sample records with source hashes; not the manuscript split |
 | Archived two-robot registration replay | Yes | Offline negative-result audit; not deployed validation |
 | Passive N=2/3/5 collection protocol | Yes | Instrumentation only; no new N=3 or N=5 physical results |
-| Physical rosbags | No | Available to reviewers through the manuscript process |
+| Physical rosbags | No | Verified local inventory; controlled reviewer link not yet configured |
 
 The reported evidence is limited to structured two-dimensional indoor settings.
 It does not establish building-disjoint generalisation, operation through
