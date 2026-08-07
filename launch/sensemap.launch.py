@@ -1,19 +1,25 @@
-import os
-
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription, LaunchContext
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction, OpaqueFunction, GroupAction
-from launch.launch_description_sources import PythonLaunchDescriptionSource, FrontendLaunchDescriptionSource
-from launch_ros.actions import Node, PushRosNamespace
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
-from launch.conditions import LaunchConfigurationEquals
+
 
 def generate_launch_description():
-
     declare_robot_id_cmd = DeclareLaunchArgument(
         'robot_id',
         default_value='0',
-        description='The id of the robot'
+        description='Numeric robot identifier'
+    )
+
+    declare_model_path_cmd = DeclareLaunchArgument(
+        'model_path',
+        description='Absolute path to the distilled MSO checkpoint'
+    )
+
+    declare_architecture_cmd = DeclareLaunchArgument(
+        'architecture',
+        default_value='deconv',
+        description='Distilled decoder variant: deconv (paper model) or bilinear'
     )
 
     start_robot_client = Node(
@@ -21,13 +27,17 @@ def generate_launch_description():
         executable='sensemap_predictor',
         name='sensemap_predictor',
         output='screen',
-        parameters=[{'robot_id': LaunchConfiguration('robot_id')}],
+        parameters=[{
+            'robot_id': LaunchConfiguration('robot_id'),
+            'model_path': LaunchConfiguration('model_path'),
+            'architecture': LaunchConfiguration('architecture'),
+        }],
         remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')],
     )
 
-    ld = LaunchDescription()
-
-    # Add the actions
-    ld.add_action(declare_robot_id_cmd)
-    ld.add_action(start_robot_client)
-    return ld
+    return LaunchDescription([
+        declare_robot_id_cmd,
+        declare_model_path_cmd,
+        declare_architecture_cmd,
+        start_robot_client,
+    ])

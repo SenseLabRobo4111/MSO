@@ -11,12 +11,25 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 
-def train_model(gen, critic, dataloaders, num_epochs=25, device='cpu', save_dir=None):
+def train_model(
+    gen,
+    critic,
+    dataloaders,
+    num_epochs=25,
+    device='cpu',
+    save_dir=None,
+    resnet_weights_path=None,
+):
     torch.backends.cudnn.benchmark = True  # 加速训练
 
     # perceptual_criterion = PerceptualLoss().eval().to(device)
     BCE_criterion = nn.BCEWithLogitsLoss()
-    ResNetPL_criterion = ResNetPL(weight=30, weights_path="/home/senselabrobo/iros/HouseExpo/explore_model/losses/models/").to(device)
+    if not resnet_weights_path:
+        raise ValueError("resnet_weights_path is required for perceptual training loss")
+    ResNetPL_criterion = ResNetPL(
+        weight=30,
+        weights_path=resnet_weights_path,
+    ).to(device)
     Adversarial_criterion = make_discrim_loss('r1', gp_coef=0.01, weight=10, mask_as_fake_target=True, allow_scale_mask=True)
 
     gen_optimizer = optim.Adam(gen.parameters(), lr=0.0002)

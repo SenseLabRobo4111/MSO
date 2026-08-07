@@ -1,31 +1,53 @@
-import os
 import cv2
 import numpy as np
 import torch
-from explore_model.SenseMapNet import DistillMapNet
+from sensemap.explore_model.SenseMapNet import DistillMapNet, DistillMapNetDeconv
 from sklearn.cluster import DBSCAN
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, ReliabilityPolicy
 
 import tf2_ros
 from geometry_msgs.msg import TransformStamped
 from geometry_msgs.msg import PoseStamped
-from nav_msgs.msg import OccupancyGrid, Odometry
+from nav_msgs.msg import OccupancyGrid
+
 
 class SenseMapNetPredictor(Node):
-    def __init__(self, model_path):
+    def __init__(self):
         super().__init__("SenseMapNetPredictor")
-        ckpt = torch.load(model_path)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = DistillMapNet(dim=4).to(self.device)
-        weights = {k.split("gen.")[-1]: v for k, v in ckpt["state_dict"].items() if k.startswith("gen.")}
-        self.model.load_state_dict(weights)
-        self.model.eval()
 
         self.declare_parameter('robot_id', 0)
+        self.declare_parameter('model_path', '')
+        self.declare_parameter('architecture', 'deconv')
         self.robot_id = self.get_parameter('robot_id').value
+        model_path = self.get_parameter('model_path').value
+        architecture = self.get_parameter('architecture').value
+        if not model_path:
+            raise ValueError(
+                "The 'model_path' parameter must point to a distilled MSO checkpoint."
+            )
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        ckpt = torch.load(model_path, map_location=self.device)
+        model_classes = {
+            'deconv': DistillMapNetDeconv,
+            'bilinear': DistillMapNet,
+        }
+        if architecture not in model_classes:
+            raise ValueError(
+                "The 'architecture' parameter must be 'deconv' or 'bilinear'."
+            )
+        self.model = model_classes[architecture](dim=4).to(self.device)
+        state_dict = ckpt.get("state_dict", ckpt)
+        generator_weights = {
+            k.split("gen.", 1)[1]: v
+            for k, v in state_dict.items()
+            if k.startswith("gen.")
+        }
+        weights = generator_weights or state_dict
+        self.model.load_state_dict(weights)
+        self.model.eval()
 
         # TF2 初始化
         self.tf_buffer = tf2_ros.Buffer()
@@ -92,8 +114,6 @@ class SenseMapNetPredictor(Node):
         kernel = np.ones((3, 3), np.uint8)
         dilated_unknown = cv2.dilate(unknown_mask.astype(np.uint8), kernel)
 
-        cv2.imwrite("/home/azusa/SenseLabRobo/SenseServer/dilated_unknown.png", dilated_unknown)
-
         # 计算前沿点（自由区域与未知区域相邻）
         frontiers = np.logical_and(free_mask, dilated_unknown)
         frontier_coords = np.argwhere(frontiers)
@@ -151,7 +171,6 @@ class SenseMapNetPredictor(Node):
        return best_center
 
     def predict(self, img):
-        self.get_robot_pose_from_tf()
         img = torch.tensor(img, dtype=torch.float32).to(self.device) / 255.0
         img = img.permute(2, 0, 1).unsqueeze(0)
         with torch.no_grad():
@@ -245,6 +264,8 @@ class SenseMapNetPredictor(Node):
         if self.global_costmap_msg is None or self.global_costmap_info is None:
             return
 
+        self.get_robot_pose_from_tf()
+
         resolution = self.global_costmap_info.resolution
         origin_x = self.global_costmap_info.origin.position.x
         origin_y = self.global_costmap_info.origin.position.y
@@ -328,8 +349,7 @@ class SenseMapNetPredictor(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    model_path = os.path.join(os.path.dirname(__file__), "config/model-epoch-label.ckpt")
-    node = SenseMapNetPredictor(model_path)
+    node = SenseMapNetPredictor()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

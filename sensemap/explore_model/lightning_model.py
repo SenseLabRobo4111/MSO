@@ -49,7 +49,13 @@ class SenseMapNetDataModule(pl.LightningDataModule):
         )
 
 class SenseMapNetModule(pl.LightningModule):
-    def __init__(self, gen, critic, save_dir="explore_model/model_logs/ffc/"):
+    def __init__(
+        self,
+        gen,
+        critic,
+        save_dir="explore_model/model_logs/ffc/",
+        resnet_weights_path=None,
+    ):
         super().__init__()
         self.save_hyperparameters(ignore=['gen', 'critic'])
         self.gen = gen
@@ -59,9 +65,11 @@ class SenseMapNetModule(pl.LightningModule):
 
         # 初始化损失函数
         self.BCE_criterion = nn.BCEWithLogitsLoss()
+        if not resnet_weights_path:
+            raise ValueError("resnet_weights_path is required for perceptual training loss")
         self.ResNetPL_criterion = ResNetPL(
             weight=30,
-            weights_path="/home/senselabrobo/iros/HouseExpo/explore_model/losses/models/"
+            weights_path=resnet_weights_path,
         ).eval()
         self.Adversarial_criterion = make_discrim_loss(
             "r1",

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from explore_model.ffc import Bottleneck, FFC_BN_ACT
+from .ffc import Bottleneck, FFC_BN_ACT
 
 class FFCBlock(nn.Module):
     def __init__(self, in_channels):

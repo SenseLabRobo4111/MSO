@@ -1,397 +1,204 @@
-**🌐 [English](README.md) · [中文](README.zh.md)**
+# MSO
 
----
+**Lightweight local map prediction and fusion for multirobot exploration**
 
-# MSO — Make Sense at Once
+[中文说明](README.zh.md)
 
-> **Make Sense at Once: Lightweight Map Prediction and Fusion for Efficient Multi-Robot Exploration**
-> CoRL 2026 submission.
+MSO (Make Sense at Once) is a research system for two-dimensional indoor
+multirobot exploration. It couples a compact local occupancy-map predictor with
+pairwise map registration so that robots can use predicted structure without a
+pre-known global relative pose.
 
-This repository hosts the `sensemap` ROS 2 package: the lightweight
-342K-parameter local map predictor (FFC + GAN + knowledge distillation),
-training pipeline, and the multi-robot exploration deployment glue used in
-the CoRL 2026 paper.
+This repository is the code home for the manuscript **“Lightweight Local Map
+Prediction and Fusion for Multirobot Exploration.”** The current revision
+contains the predictor architecture, ROS 2 inference node, launch file, and
+training-oriented model components. The complete archival release will also
+include the frozen evaluation package, configuration files, and versioned model
+weights used for the reported results.
 
-## Contents
+## Method at a glance
 
-```
-sensemap/
-├── explore_model/
-│   ├── SenseMapNet.py           # Student / teacher network definition
-│   ├── critic_model.py          # Adversarial discriminator
-│   ├── ffc.py                   # Fast Fourier Convolution block
-│   ├── dataset.py               # KTH / HouseExpo training dataset
-│   ├── lightning_model.py       # PyTorch Lightning wrapper
-│   ├── main_unet_gan.py         # Training entry point
-│   └── train_gan_new.py         # Knowledge-distillation training
-└── predict_map.py               # ROS 2 inference node
-launch/                          # ROS 2 launch files
-test/                            # ament tests
-package.xml, setup.py, setup.cfg # ROS 2 ament_python package descriptors
-```
+- A 342K-parameter distilled predictor completes a local occupancy grid onboard.
+- Observed, unknown, and occupied cells are encoded as a three-channel local map.
+- The prediction node publishes both local and accumulated global predictions.
+- Pairwise registration is applied when peer maps are exchanged. Predicted cells
+  are treated as provisional and are superseded by later sensor observations.
+- Planning uses prediction for frontier ranking while collision checking remains
+  constrained by observed free space.
 
-The LaTeX paper source, plotting scripts, real-world rosbag analysis, and
-results CSVs live in a sibling working tree (`corl_2026/`, `Exp/`); they are
-not mirrored here yet. Trained checkpoints will be released upon acceptance.
+The manuscript deliberately bounds the evidence to structured indoor settings.
+It does not claim building-disjoint generalisation, communication-failure
+robustness, or physical scaling beyond the evaluated robot teams.
 
----
+## Repository layout
 
-# Rebuttal / Revision TODO
-
-> Tracks outstanding items for the CoRL 2026 rebuttal/revision cycle.
-> Done items are recorded in the LaTeX source and not duplicated here.
-
-Legend:
-- `🚧 BLOCKED` — depends on this simulator / external work / decision
-- `🟡 OPTIONAL` — nice to have
-- `🟢 READY` — can be executed now
-
-## High priority
-
-### A2. Multi-robot scaling on MRPB (N ∈ {2, 3, 5}) · `🚧 BLOCKED`
-
-Run **full MSO only** (`ours_multi_ours_orb`) at two new team sizes (N=3
-and N=5). Use the **same 10 MRPB scenes** as Sec 4.3 of the paper, **5 random
-seeds per (scene, N) cell** = **50 runs per N**.
-
-We do not rerun the frontier baseline at N=3/5: frontier-multi does not share
-predicted maps across robots and scales by pure geometric coverage only, so
-its N=3/5 curves add little signal beyond the existing N=2 reference. The
-appendix figure plots full MSO at N=2/3/5 against the frontier-multi N=2
-baseline already in `Exp/4.3/all_metrics/`.
-
-Total runs:
-- N=2: existing main-paper data, **no rerun** (50 runs full MSO already in
-  `Exp/4.3/all_metrics/ours_multi_ours_orb.csv`)
-- N=3: 10 scenes × 5 seeds = **50 runs** (new)
-- N=5: 10 scenes × 5 seeds = **50 runs** (new — headline reviewer ask)
-
-**New work total: 100 runs.** If N=5 is not feasible (compute or
-communication-bandwidth limit), drop to N ∈ {2, 3} (50 new runs) — but N=5
-is strongly preferred because the reviewer asked specifically for
-"5+ robot scaling".
-
-**File naming convention.** Each (scene, seed, N) cell produces one CSV
-with columns `step, coverage, predicted_map_quality, topological_understanding`.
-Place at:
-
-```
-Exp/4.3_v2/scaling/ours_multi_ours_orb_N<n>_scene<i>_seed<j>.csv
+```text
+MSO/
+├── launch/
+│   └── sensemap.launch.py       # ROS 2 predictor launch file
+├── resource/
+│   └── sensemap                 # ament package marker
+├── sensemap/
+│   ├── explore_model/
+│   │   ├── SenseMapNet.py       # student and teacher architectures
+│   │   ├── critic_model.py      # adversarial discriminator
+│   │   ├── dataset.py           # occupancy-map dataset loader
+│   │   ├── ffc.py               # Fast Fourier Convolution blocks
+│   │   ├── lightning_model.py   # training wrapper
+│   │   ├── main_unet_gan.py     # research training entry point
+│   │   └── train_gan_new.py     # distillation training loop
+│   └── predict_map.py           # ROS 2 inference node
+├── package.xml
+├── setup.cfg
+└── setup.py
 ```
 
-`<n>` ∈ `{3, 5}`, `<i>` ∈ `0..9`, `<j>` ∈ `0..4`. Robots start from a
-paired-pose configuration that is **deterministic in (scene, seed)** so
-cross-N curves remain directly comparable for a fixed (scene, seed).
+## Release scope
 
-**Acceptance**
+The repository is being prepared as a versioned research artifact. The current
+contents and remaining archival items are listed explicitly below so that users
+do not mistake a partial checkout for the complete experiment package.
 
-- [ ] Simulator accepts `--robot_count={3, 5}` (extend if missing)
-- [ ] Simulator accepts `--seed=<int>` and respects it for start-pose
-      sampling, planner tie-breaking, sensor noise (deterministic across
-      `--robot_count` for the same seed)
-- [ ] Smoke test: 1 scene × 1 seed × N ∈ {3, 5} = 2 CSVs land at the
-      expected paths before kicking off the full 100-run sweep
-- [ ] All 100 expected CSVs land at `Exp/4.3_v2/scaling/...` (any missing
-      run blocks plotting — `plot_scaling_multirobot.py` will detect and
-      bail)
-- [ ] Ping me with **"A2 done"** — I will write
-      `plot_scaling_multirobot.py`, render
-      `figs/appendix/scaling_multirobot.png` (3 MSO curves at N=2/3/5 plus
-      a frontier N=2 reference), replace the placeholder in Appendix
-      `app:scaling`, and update the caption with the actual seed count and
-      observed std
+| Component | Current status |
+|---|---|
+| Predictor network definitions | Included |
+| ROS 2 predictor node and launch file | Included |
+| Dataset loader and training-oriented modules | Included |
+| Trained checkpoint used in the manuscript | Archival release in preparation |
+| Full pairwise-registration and deployment package | Available to editors and reviewers; archival release in preparation |
+| Frozen evaluation manifests, event logs, and plotting scripts | Available to editors and reviewers; archival release in preparation |
+| Third-party KTH, HouseExpo, and MRPB data | Obtain from the original dataset providers |
+| Physical-experiment rosbags and processed source data | Available for editorial and peer-review audit; public archive in preparation |
 
-**Reviewer hook.** Reviewer #3 explicitly asked for 3+ robot results and
-flagged "scaling beyond two agents" as an open question.
+## Requirements
 
----
+The deployed node was developed for ROS 2 and Python 3. A typical installation
+requires:
 
-### A3. KTH benchmark sweep · `🚧 BLOCKED`
+- ROS 2 with `rclpy`, `tf2_ros`, `geometry_msgs`, and `nav_msgs`
+- PyTorch built for the target CPU or CUDA platform
+- NumPy
+- OpenCV
+- scikit-learn
 
-Run multi-robot exploration on **5 large KTH scenes** (held out — predictor
-never saw these specific layouts, but did see KTH-like statistics during
-training) for **3 methods**: `ours_multi_ours_orb`, `nearest-multi-our-orb`,
-`ours_multi_ours_orb_nomerge`, **5 seeds each**. Two-robot teams to match
-the main MRPB benchmark.
+Training additionally uses Pillow, Matplotlib, tqdm, and PyTorch Lightning. The
+exact software and hardware environment used for the manuscript will be frozen
+with the archival release. On NVIDIA Jetson hardware, install the PyTorch build
+recommended for the installed JetPack version rather than a generic wheel.
 
-Total runs: 5 scenes × 5 seeds × 3 methods = **75 runs**.
+## Build the ROS 2 package
 
-**File naming convention.**
-```
-Exp/4.3_v2/kth/<method>_scene<i>_seed<j>.csv
-```
-`<method>` ∈ `{ours_multi_ours_orb, nearest-multi-our-orb, ours_multi_ours_orb_nomerge}`,
-`<i>` ∈ `0..4`, `<j>` ∈ `0..4`.
+```bash
+mkdir -p ~/mso_ws/src
+cd ~/mso_ws/src
+git clone git@github.com:SenseLabRobo4111/MSO.git
+cd ~/mso_ws
 
-KTH is **in-distribution** (predictor saw KTH layout statistics in training
-but never these specific test scenes); the appendix already states this so
-it cannot be mistaken for held-out generalisation.
-
-**Acceptance**
-
-- [ ] 5 specific KTH scenes selected and listed in
-      `Exp/4.3_v2/kth/SCENES.txt` (one path per line)
-- [ ] Smoke test: 1 scene × 1 seed × 3 methods → 3 CSVs land at expected
-      paths before full sweep
-- [ ] All 75 expected CSVs land at `Exp/4.3_v2/kth/...`
-- [ ] Ping me with **"A3 done"** — I will write `plot_kth_curves.py`,
-      render `figs/appendix/kth_curves.png`, replace the placeholder in
-      Appendix `app:kth`, update the caption
-
-**Reviewer hook.** Adds a second simulated benchmark; answers
-"3 scenes is too few".
-
----
-
-### A5. Single-robot real-world deployment of MapEx / IG-Hector / UPEN / MSO · `🚧 BLOCKED`
-
-Deploy four single-robot exploration methods on the same physical robot
-platform used in Sec 4.4 (Jetson AGX Orin 32 GB, Livox Mid-360 LiDAR,
-self-built omnidirectional base) in **one of the existing indoor arenas**
-(6.75 × 4.05 m). Run each method **twice** (2 trials per method) for
-**8 deployments total**. For each deployment record both a third-person
-**video** (overhead UAV or handheld) and a **rosbag2** capturing all topics
-listed below.
-
-> **Fairness constraint — matched start poses across methods.**
-> Pick exactly two start poses for the arena: **pose A** (used for every
-> method's trial 1) and **pose B** (used for every method's trial 2). All
-> four methods must start trial 1 at the **same physical pose A** and trial 2
-> at the **same physical pose B** so that any cross-method coverage / time
-> difference cannot be attributed to a luckier starting position. Mark pose A
-> and pose B with floor tape, log them in `notes.md`, and dump the actual
-> $(x, y, \theta)$ at $t=0$ into each trial's `start_pose.json` for
-> verification.
-
-The four methods to deploy:
-
-| Method | Source repo / module | Predicted-map topic |
-|---|---|---|
-| **MapEx** | upstream LaMa-based predictor (single-robot variant) | `/mapex/predicted_map_global` |
-| **IG-Hector** | classical info-gain frontier (no learned predictor) | n/a |
-| **UPEN** | uncertainty-based predictor | `/upen/predicted_map_global` |
-| **MSO** | this repo, `predict_map.py` | `/mso/predicted_map_global` |
-
-**Recording layout**
-```
-Exp/realworld_single/
-├── arena{1|2|3}/
-│   ├── mapex_trial1/       (rosbag dir + video.mp4)
-│   ├── mapex_trial2/
-│   ├── ighector_trial1/
-│   ├── ighector_trial2/
-│   ├── upen_trial1/
-│   ├── upen_trial2/
-│   ├── mso_trial1/
-│   └── mso_trial2/
-└── notes.md                (per-trial start-pose, weather, anomalies)
+rosdep install --from-paths src --ignore-src -r -y
+colcon build --symlink-install
+source install/setup.bash
 ```
 
-Each `<method>_trial<i>/` directory contains:
-- One rosbag2 store (`metadata.yaml` + `rosbag2_*.db3`)
-- One `video.mp4` synchronised to `metadata.yaml`'s `starting_time` (mark a
-  visible "start" gesture in the first frame so we can align visually)
-- One `start_pose.json` recording the robot's $(x, y, \theta)$ at $t=0$
+The checkpoint is not committed to Git. Supply its absolute path at launch:
 
-**Required rosbag topics**
+```bash
+ros2 launch sensemap sensemap.launch.py \
+  robot_id:=0 \
+  model_path:=/absolute/path/to/mso_distilled.ckpt \
+  architecture:=deconv
+```
 
-ROS 2 Humble, `sqlite3` storage, single-file rotation
-(`--max-bag-duration 0`). Drop these into a `record.launch.py` or directly
-via `ros2 bag record`:
+The same node can be started directly:
 
-| Topic | Type | Rate | Why we need it |
+```bash
+ros2 run sensemap sensemap_predictor --ros-args \
+  -p robot_id:=0 \
+  -p model_path:=/absolute/path/to/mso_distilled.ckpt \
+  -p architecture:=deconv
+```
+
+## Checkpoint format
+
+The inference node accepts either:
+
+1. a PyTorch Lightning checkpoint containing a `state_dict` whose generator keys
+   begin with `gen.`, or
+2. a plain state dictionary for `DistillMapNet`.
+
+The model path is mandatory. Loading fails early if it is omitted or if the
+checkpoint does not match the selected distilled network architecture. The
+default `deconv` variant has 342,771 parameters and corresponds to the 342K
+model reported in the manuscript. The legacy `bilinear` variant can be selected
+explicitly for compatible checkpoints.
+
+## ROS 2 interfaces
+
+For `robot_id:=N`, the node uses the following interfaces.
+
+| Direction | Name | Type | Purpose |
 |---|---|---|---|
-| `/odom` (or `/robot_0/odom`) | `nav_msgs/msg/Odometry` | 50 Hz | trajectory reconstruction |
-| `/livox/lidar` (or raw LiDAR) | `sensor_msgs/msg/PointCloud2` | ≥10 Hz | sensor regression / replay |
-| `/map` (or `/robot_0/map`) | `nav_msgs/msg/OccupancyGrid` | ≥1 Hz | observed occupancy ground truth |
-| `<method>/predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | ≥0.5 Hz | for prediction methods only (MapEx / UPEN / MSO) |
-| `/cmd_vel` | `geometry_msgs/msg/Twist` | ≥10 Hz | controller behaviour for fairness check |
-| `/way_point` or `/goal` | `geometry_msgs/msg/PoseStamped` | event-driven | frontier / planner output |
-| `/tf`, `/tf_static` | `tf2_msgs/msg/TFMessage` | high freq | required for any post-hoc registration |
-| `/explored_volume` (if available) | `std_msgs/msg/Float32` | ≥1 Hz | coverage telemetry |
-| `/explored_areas` (if available) | `sensor_msgs/msg/PointCloud2` | ≥1 Hz | coverage visualisation |
-| `/rosout` | `rcl_interfaces/msg/Log` | event | crash / warning forensics |
+| Subscribe | `/robot_N/map` | `nav_msgs/msg/OccupancyGrid` | Observed occupancy map |
+| Publish | `/robot_N/predicted_map` | `nav_msgs/msg/OccupancyGrid` | Current local prediction |
+| Publish | `/robot_N/predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | Accumulated prediction |
+| Publish | `/robot_N/way_point` | `geometry_msgs/msg/PoseStamped` | Optional frontier goal interface |
+| Transform | `global_map` to `robot_N/base_link` | TF2 | Robot pose used for crop placement |
 
-Per-method extras:
-- **MSO**: `/mso/feature_packet` (sparse ORB descriptors, event-driven), if
-  the deployment node publishes it
-- **MapEx**: `/mapex/uncertainty` if available
-- **UPEN**: `/upen/uncertainty` if available
+The default prediction period is one second. Topic names and frame identifiers
+currently follow the deployment naming convention used in the manuscript.
 
-**Stop condition.** Each trial runs until the robot reports $\geq 95\%$
-coverage of the arena (or 180 s, whichever comes first). Record the
-wall-clock duration in `notes.md`.
+## Dataset layout
 
-**Acceptance**
+`MapReconstructionDataset` expects one directory per sample:
 
-- [ ] All 8 directories under `Exp/realworld_single/arena<X>/` created
-      (4 methods × 2 trials)
-- [ ] Each contains: 1 rosbag2 store, 1 `video.mp4`, 1 `start_pose.json`
-- [ ] **Cross-method start-pose match**: every `mapex_trial1`,
-      `ighector_trial1`, `upen_trial1`, and `mso_trial1` `start_pose.json`
-      reports the same $(x, y, \theta)$ within $\pm 5$ cm / $\pm 3°$;
-      same for the four `*_trial2` files
-- [ ] Smoke test on 1 trial: `py -3 corl_2026/measure_rosbag_bandwidth.py`
-      successfully parses the rosbag and lists every required topic with
-      non-zero `count`
-- [ ] `notes.md` records pose A, pose B, per-trial duration, final coverage,
-      anomalies
-- [ ] Ping me with **"A5 done"** — I will:
-  1. Extend `measure_rosbag_bandwidth.py` to handle the new directory layout
-  2. Add a real-world single-robot comparison subsection (Sec 4.4 paragraph
-     or Appendix `app:single-baselines`) with coverage / time / final-map
-     accuracy bars across the four methods
-  3. Embed a representative frame from each method's video into the figure
-
-**Reviewer hook.** Directly answers Reviewer #2's critique that the
-real-world experiments compare only against a frontier baseline. Showing
-MapEx / IG-Hector / UPEN / MSO on the same hardware gives the strongest
-possible "physical-deployment" parity argument.
-
----
-
-## Medium priority
-
-### A4. MSO fusion-only ablation · `🚧 BLOCKED + 🟡 OPTIONAL`
-
-Run MSO with the predictor disabled (use observed-only maps as fusion input)
-on the same N=2 × 10 scenes × 5 seeds = 50 runs grid as A2. Requires
-simulator support for a `--predictor=none` flag (or equivalent constructor
-argument that bypasses the predictor and feeds the observed map straight to
-fusion). If implementing the flag is more than ~1 hour of simulator work,
-skip and mark as future work — do not block release.
-
-**Output path.**
-```
-Exp/4.3_v2/ablation/ours_multi_fusion_only_scene<i>_seed<j>.csv
+```text
+dataset_root/
+├── train/
+│   ├── sample_000001/
+│   │   ├── obs_0.png
+│   │   └── local_map_0.png
+│   └── ...
+└── test/
+    └── ...
 ```
 
-**Acceptance**
+- `obs_0.png` is the three-channel observed map.
+- `local_map_0.png` is the binary target occupancy map.
+- Images are resized to 256 by 256 pixels with nearest-neighbour sampling.
 
-- [ ] Simulator wires `--predictor=none` (or equivalent) so fusion consumes
-      observed-only occupancy as input
-- [ ] 50 CSVs land at the path above
-- [ ] OR explicit "infeasible" confirmation — I will add a one-line note in
-      the Limitations section
+Dataset preparation must preserve the split manifest used for evaluation. The
+manuscript does not interpret its retained floorplan-disjoint split as proof of
+building-disjoint generalisation.
 
----
+## Reproducibility and reporting
 
-### P4-2. Topology / wall-connectivity metric · `🟢 READY 🟡 OPTIONAL`
+For a result to be attributable to the submitted manuscript, retain the exact
+checkpoint, split manifest, run seed, planner configuration, map resolution,
+frame convention, and evaluation mask. Registration results should also retain
+the estimated and reference transforms, gate decision, rejection reason, and
+event-level identifiers. Aggregate plots alone are not sufficient for auditing
+false accepts, false rejects, or pose error.
 
-Write a post-processing script that, for every predicted map in the held-out
-KTH/HouseExpo test split (1,356 samples), computes:
+## Citation
 
-1. **Skeletonisation IoU** — Zhang–Suen thinning of the obstacle channel,
-   compared to ground-truth skeleton via IoU.
-2. **Connected-component delta** — number of obstacle CCs in prediction
-   minus number in ground truth (signed; closer to 0 is better).
-3. **Doorway preservation rate** — fraction of ground-truth narrow gaps
-   (1-pixel doorways) that remain traversable in the prediction.
+The manuscript is currently under review. Please cite the archival software
+record and article DOI once they are available. Until then, cite the repository
+and a fixed commit hash so that the referenced code can be recovered.
 
-Add three new columns to `tab:quantitative-results(a)` next to FID/KID.
-Per-sample dump to `Exp/4.1_topology/<method>_topology.csv`.
+## Data and code availability
 
-**What I need from you.** Confirm the predictor checkpoint and the test-
-split tensors are locally accessible (or tell me where they live), then ping
-me — I will write the script (~1–2 hours).
+Custom code and processed data needed for editorial and peer-review assessment
+are available from the corresponding author. A versioned archive with a
+persistent identifier will be created for publication. Dataset licences prevent
+redistribution of some third-party source material; the original KTH, HouseExpo,
+and MRPB sources should be used for those assets.
 
-**Acceptance**
+## Contact
 
-- [ ] Confirm predictor checkpoint path
-- [ ] Confirm KTH/HouseExpo test-split tensor location
-- [ ] Ping me to write the metric script
-- [ ] Three new columns appear in Tab 2(a) without breaking the table's
-      `\arraystretch` / page geometry
+Correspondence about the manuscript and research artifact should be addressed to
+Fei Qiao at `qiaofei@tsinghua.edu.cn`.
 
-**Reviewer hook.** Reviewer #6 noted FID/KID don't directly reflect
-downstream robot behaviour.
+## License
 
----
-
-## Low priority
-
-### P4-4. Rebuttal letter · `🚧 BLOCKED on phase decision`
-
-Bullet-by-bullet response to the seven concrete reviewer questions
-collected in the original review (fusion success rate, hallucination
-sensitivity, predicted-free-space safety, communication payload, robot
-scaling, MapEx/IG-Hector real-world omission, real-world stat reporting).
-Only needed if currently in the **rebuttal** phase, not in the camera-ready
-revision.
-
-**Acceptance**
-
-- [ ] Confirm phase: rebuttal vs camera-ready
-- [ ] If rebuttal, ping me with the exact reviewer text — I will draft a
-      response letter targeting CoRL's word limit (typically 5,000 chars
-      per reviewer, 2,000 char meta)
-
----
-
-## Sanity checks before submission
-
-- [ ] `pdflatex example.tex && bibtex example && pdflatex × 2` no errors,
-      no `Citation undefined` warnings
-- [ ] Main text body still ≤ 8 pages (Sec 1 → Sec 6 Conclusion)
-- [ ] Both `app:scaling` and `app:kth` placeholder figures replaced with
-      real `\includegraphics` once A2/A3 land
-- [ ] Caption of `fig:exploration-overview` says "averaged over 50 runs per
-      method"
-- [ ] `tab:ros-topics-measured` numbers match latest rosbag re-measurement
-      (run `py -3 measure_rosbag_bandwidth.py` to verify)
-- [ ] No leftover `\textcolor{red}{\textbf{[TODO ...]}}` markers in the
-      compiled PDF
-
----
-
-# Already completed
-
-<details>
-<summary>Click to expand</summary>
-
-### Phase 0 — Writing-only fixes
-- `robust → improved` for fusion claims throughout.
-- `without global alignment → without pre-known global relative poses`.
-- De-duplicate `Finally` in Sec 1 contributions.
-- Add MACs/FLOPs definition footnote in Tab 2(a).
-- Disambiguate "MSO predictor" vs "MSO system".
-- Reorder Sec 4.2 Results: per-pair Dice mean (0.510 → 0.588, +15.3%) as
-  primary metric, threshold-based SR as secondary.
-- Rewrite Sec 1 contributions to lead with "local structural prior +
-  uncertainty-aware decentralized fusion" unified principle.
-
-### Phase 1 — Fusion narrative
-- New `app:fusion-dice` (4-point analysis: high threshold / Dice
-  distribution shift / matcher headroom / end-to-end is operational).
-- New `app:fusion-failures` (3 failure modes: hallucinated rooms / low
-  overlap / symmetric layouts).
-
-### Phase 2A — Per-seed annotation
-- Per-seed CSV data was lost; honest "averaged over 50 runs per method"
-  labelling in caption + appendix; per-seed std ≈ ±0.02–0.05.
-
-### Phase 4 — Misc
-- Empirical ROS 2 bandwidth measured from 10 real-world rosbags →
-  `tab:ros-topics-measured` in appendix.
-- 8-page main-text limit verified (Sec 1 → Sec 6 fits exactly on pages 1–8).
-- Curve aesthetics: uniform alpha=0.78, round line caps, increased font
-  sizes.
-- Empty appendix scaffolding for `app:scaling` and `app:kth` ready to
-  receive A2/A3 results.
-- `plot_exploration_csv_results.py` upgraded to read per-seed CSVs and
-  render mean ± std bands (currently fallback path active).
-
-</details>
-
----
-
-# Citation
-
-```bibtex
-@inproceedings{mso2026,
-  title={Make Sense at Once: Lightweight Map Prediction and Fusion for Efficient Multi-Robot Exploration},
-  author={Anonymous},
-  booktitle={Conference on Robot Learning (CoRL)},
-  year={2026}
-}
-```
+No software licence is granted by the current repository revision. The archival
+release will state the approved licence and any restrictions applying to bundled
+third-party components.
