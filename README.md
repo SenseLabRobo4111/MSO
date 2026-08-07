@@ -30,12 +30,22 @@ every result in the manuscript.
 | Preserved-archive inventory | Yes | 8,304 sample records with source hashes; not the manuscript split |
 | Archived two-robot registration replay | Yes | Offline negative-result audit; not deployed validation |
 | Passive N=2/3/5 collection protocol | Yes | Instrumentation only; no new N=3 or N=5 physical results |
-| Physical rosbags | No | Verified local inventory; controlled reviewer link not yet configured |
+| Physical rosbags | External | [Public read-only Google Drive folder](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing); 18 bags and 18 metadata files verified |
 
 The reported evidence is limited to structured two-dimensional indoor settings.
 It does not establish building-disjoint generalisation, operation through
 communication failures, online recovery after an incorrect map commit, or
 physical scaling beyond the evaluated two-robot arenas.
+
+## Raw data access
+
+The 10 core two-robot bags and 8 auxiliary controlled single-robot bags are
+available in a [public read-only Google Drive folder](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing).
+The folder contains 18 ROS 2 bag files, their 18 `metadata.yaml` companions, a
+data README and the same [SHA-256 inventory](RAW_ROSBAG_SHA256SUMS.md) recorded
+here. The verified payload is 4.134 GiB. These raw records are outside the
+BSD-3-Clause software licence; public access does not by itself grant a
+separate data-reuse licence.
 
 ## Reviewed version
 
@@ -242,4 +252,4 @@ terms remain in force; in particular, the identified FFC implementation and ROS
 2 test templates remain under Apache-2.0. The BSD licence does not establish or
 expand reuse rights in recovered checkpoint candidates, external datasets or
 raw rosbags. [`REVIEW_ACCESS_TERMS.md`](REVIEW_ACCESS_TERMS.md) records the
-separate boundary for any controlled reviewer data.
+separate boundary for the publicly shared raw records.

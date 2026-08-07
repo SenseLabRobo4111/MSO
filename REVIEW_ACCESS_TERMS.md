@@ -1,4 +1,4 @@
-# Manuscript-review and controlled-data terms
+# Software licensing and raw-data access
 
 ## Public software
 
@@ -18,19 +18,19 @@ datasets, or raw ROS 2 bags. The candidates may be inspected as research
 artifacts but are not identified as the manuscript checkpoint or offered as a
 generally reusable model release.
 
-## Public and controlled material
+## Public raw-data access
 
-The Git repository is public, so its contents are not confidential merely by
-being hosted there. Any large raw dataset delivered through a controlled
-reviewer link is different. If the authors supply such a link, the data should
-be used only for editorial and peer-review evaluation, stored securely, not
-redistributed, and deleted after the review and appeal process unless the
-journal requires longer retention.
+The 18 raw ROS 2 bags and their 18 metadata files are available through a
+[public read-only Google Drive folder](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing). The folder also
+contains a data README and the SHA-256 inventory reproduced in
+`RAW_ROSBAG_SHA256SUMS.md`. Upload verification found 38 matching objects and
+no transfer differences.
 
-No controlled raw-data link is present in this repository. Access details must
-be entered through the journal's secure submission system only after the author
-has verified the uploaded files, checksums, sharing permissions, expiry date and
-reviewer instructions.
+The raw records are outside the BSD-3-Clause software grant. Public view and
+download access supports inspection of the reported work but does not, by
+itself, establish a separate licence for redistribution, derivative datasets or
+commercial reuse. Requests for uses beyond manuscript verification should be
+directed to the corresponding author.
 
 ## No warranty or expanded evidence claim
 
@@ -46,5 +46,5 @@ into evidence for a stronger manuscript claim.
 - Identified third-party source: upstream Apache-2.0 terms retained.
 - Recovered checkpoint candidates: research inspection artifacts; no general
   model-release licence asserted.
-- Raw data: checksum inventory complete; controlled link and sharing clearance
-  still required before submission.
+- Raw data: public read-only link active; 18 bags, 18 metadata files and two
+  root documents verified after upload.

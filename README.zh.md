@@ -21,9 +21,18 @@ MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研�
 | 保留数据归档清单 | 是 | 8,304 条样本与源文件哈希；不是论文划分 |
 | 历史双机器人配准回放 | 是 | 离线负面审计；不是部署验证 |
 | 被动 N=2/3/5 采集协议 | 是 | 仅为采集工具；没有新的 N=3 或 N=5 实物结果 |
-| 实物 rosbag | 否 | 本地清单已校验；受控审稿链接尚未配置 |
+| 实物 rosbag | 外部提供 | [Google Drive 公开只读目录](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing)；18 个 bag 与 18 个 metadata 文件均已核验 |
 
 现有证据仅覆盖结构化二维室内环境，不能证明跨建筑泛化、通信中断运行、错误地图提交后的在线恢复，或超出受控双机器人场景的实物规模扩展。
+
+## 原始数据访问
+
+10 个核心双机器人 bag 与 8 个辅助受控单机器人 bag 已放入
+[Google Drive 公开只读目录](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing)。
+目录包含 18 个 ROS 2 bag、对应的 18 个 `metadata.yaml`、数据说明和
+[SHA-256 清单](RAW_ROSBAG_SHA256SUMS.md)，核验后的总量为 4.134 GiB。
+这些原始记录不属于 BSD-3-Clause 软件许可；公开访问本身不构成单独的
+数据再利用许可。
 
 ## 目录结构
 
@@ -164,4 +173,4 @@ ROS 包测试还需要常规 ROS 2 ament 测试插件。
 
 ## 许可
 
-MSO 作者拥有权利的源码与文档采用 BSD 3-Clause 许可证，详见 `LICENSE`。已标明的 FFC 实现与 ROS 2 测试模板继续适用其 Apache-2.0 上游条款。BSD 许可证不自动扩大恢复 checkpoint、外部数据集或原始 rosbag 的再利用权利；具体边界见 `THIRD_PARTY_NOTICES.md` 与 `REVIEW_ACCESS_TERMS.md`。
+MSO 作者拥有权利的源码与文档采用 BSD 3-Clause 许可证，详见 `LICENSE`。已标明的 FFC 实现与 ROS 2 测试模板继续适用其 Apache-2.0 上游条款。BSD 许可证不自动扩大恢复 checkpoint、外部数据集或公开原始 rosbag 的再利用权利；具体边界见 `THIRD_PARTY_NOTICES.md` 与 `REVIEW_ACCESS_TERMS.md`。
