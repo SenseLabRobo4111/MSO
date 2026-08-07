@@ -4,81 +4,45 @@
 
 [English](README.md)
 
-MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研究系统。它将
-轻量局部占据地图预测器与成对地图配准结合，使机器人在没有预先已知全局相对位姿
-的情况下利用预测结构。
+MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研究系统，结合轻量局部占据地图预测、成对地图配准和观测约束规划。预测结构可用于配准和目标排序，但碰撞检查与持久地图更新仍以真实观测为准。
 
-本仓库对应论文 **“Resource Constrained Predictive Map Exchange for Multirobot
-Indoor Exploration”**。当前版本包含预测器网络、ROS 2 推理节点、launch 文件以及训练
-相关模型组件。完整归档版本还将提供论文结果所对应的冻结评估工具、配置和版本化
-模型权重。
+本仓库对应论文 **“Predictive Map Exchange under Resource Constraints for Multirobot Indoor Exploration”**。当前版本公开网络结构和 ROS 2 推理接口，但不是论文训练与全部实验的完整复现归档。
 
-## 方法概览
+## 证据边界
 
-- 342K 参数的蒸馏模型在机器人端完成局部占据地图预测。
-- 观测、未知和占据单元以三通道局部地图表示。
-- ROS 2 节点发布局部预测地图和累计全局预测地图。
-- 机器人交换地图时执行成对配准；预测单元是临时信息，后续传感器观测具有更高
-  优先级。
-- 预测仅参与前沿排序，路径生成和碰撞检查仍受真实观测自由空间约束。
+- 部署的学生模型包含 342,771 个可训练参数。
+- 输入为 256×256 的障碍、未知、自由三通道局部栅格。
+- 输出为未知区域的占据概率。
+- 新传感器观测会覆盖持久地图中的预测内容。
+- 预测可参与目标排序；路径生成与碰撞检查使用实测占据地图。
+- 成对配准面向没有预先已知机器人间相对位姿的相遇事件。
 
-论文证据范围限定在结构化室内环境，不主张已经证明跨建筑泛化、通信中断鲁棒性
-或超出已测试机器人规模的真机扩展能力。
-
-## 仓库结构
-
-```text
-MSO/
-├── launch/
-│   └── sensemap.launch.py       # ROS 2 预测器 launch 文件
-├── resource/
-│   └── sensemap                 # ament 包标记
-├── sensemap/
-│   ├── explore_model/
-│   │   ├── SenseMapNet.py       # 学生与教师网络
-│   │   ├── critic_model.py      # 对抗判别器
-│   │   ├── dataset.py           # 占据地图数据加载器
-│   │   ├── ffc.py               # Fast Fourier Convolution 模块
-│   │   ├── lightning_model.py   # 训练封装
-│   │   ├── main_unet_gan.py     # 研究训练入口
-│   │   └── train_gan_new.py     # 蒸馏训练循环
-│   └── predict_map.py           # ROS 2 推理节点
-├── package.xml
-├── setup.cfg
-└── setup.py
-```
+论文证据范围限于结构化二维室内环境，不证明跨建筑泛化、通信中断鲁棒性、错误提交后的在线恢复，或超出受控双机器人实物场景的规模扩展能力。
 
 ## 当前发布范围
 
-本仓库正在整理为版本化科研软件归档。下表明确区分当前已包含内容和待归档内容，
-避免将部分代码误认为完整实验包。
-
 | 组件 | 当前状态 |
 |---|---|
-| 预测器网络定义 | 已包含 |
-| ROS 2 预测节点和 launch 文件 | 已包含 |
-| 数据加载器及训练相关模块 | 已包含 |
-| 论文所用训练权重 | 正在准备归档版本 |
-| 完整成对配准与部署代码 | 可供编辑和审稿人核查；正在准备归档版本 |
-| 冻结评估清单、事件日志和绘图脚本 | 可供编辑和审稿人核查；正在准备归档版本 |
-| KTH、HouseExpo 和 MRPB 第三方数据 | 请从原始数据提供方获取 |
-| 真机 rosbag 与处理后源数据 | 可供投稿核查；正在准备公开归档 |
+| 学生与教师网络定义 | 已包含 |
+| ROS 2 预测节点与启动文件 | 已包含 |
+| 数据加载器 | 仅作为格式参考 |
+| 论文历史训练程序 | 未包含 |
+| 历史数据划分与 checkpoint 选择记录 | 未包含 |
+| 论文 checkpoint | 未包含 |
+| 部署版成对配准程序 | 未包含 |
+| 离线变换评估器与事件记录 | 随论文送审数据包提供，不在本仓库 |
+| 实物 rosbag | 文件过大，未放入本仓库 |
+| KTH、HouseExpo、MRPB 原始数据 | 请从原提供方获取 |
 
-## 环境要求
+`lightning_model.py`、`main_unet_gan.py` 和 `train_gan_new.py` 是历史研究原型。它们的默认参数与论文不同，依赖本仓库未跟踪的模块，也没有实现论文所述的完整四项蒸馏训练流程。因此不能把这些文件当作复现论文训练结果的标准入口。
 
-部署节点基于 ROS 2 和 Python 3，通常需要：
+## 运行环境
 
-- ROS 2，以及 `rclpy`、`tf2_ros`、`geometry_msgs`、`nav_msgs`
-- 与目标 CPU 或 CUDA 平台匹配的 PyTorch
-- NumPy
-- OpenCV
-- scikit-learn
+ROS 节点需要 Python 3、ROS 2、PyTorch、NumPy、OpenCV 和 scikit-learn；ROS 依赖包括 `rclpy`、`tf2_ros`、`geometry_msgs` 和 `nav_msgs`。当前版本没有提供锁定的依赖环境。
 
-训练还需要 Pillow、Matplotlib、tqdm 和 PyTorch Lightning。论文所用的精确软
-硬件环境将在归档版本中冻结。NVIDIA Jetson 平台应安装与当前 JetPack 对应的
-PyTorch，不建议直接使用通用 wheel。
+论文部署环境为 Ubuntu 22.04、ROS 2 Humble 和 NVIDIA Jetson AGX Orin。Jetson 上应安装与 JetPack 版本匹配的 PyTorch。
 
-## 构建 ROS 2 包
+## 构建与启动
 
 ```bash
 mkdir -p ~/mso_ws/src
@@ -91,7 +55,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-模型权重不提交到 Git。启动时必须传入绝对路径：
+当前版本不包含模型权重。启动时需传入绝对路径：
 
 ```bash
 ros2 launch sensemap sensemap.launch.py \
@@ -100,7 +64,7 @@ ros2 launch sensemap sensemap.launch.py \
   architecture:=deconv
 ```
 
-也可以直接启动节点：
+也可直接启动节点：
 
 ```bash
 ros2 run sensemap sensemap_predictor --ros-args \
@@ -109,77 +73,50 @@ ros2 run sensemap sensemap_predictor --ros-args \
   -p architecture:=deconv
 ```
 
-## 模型权重格式
-
-推理节点支持两种格式：
-
-1. 含 `state_dict` 的 PyTorch Lightning checkpoint，其中生成器键以 `gen.`
-   开头；
-2. `DistillMapNet` 的普通 state dictionary。
-
-`model_path` 是必填参数。若省略路径或权重与所选蒸馏网络结构不一致，节点会立即
-报错。默认 `deconv` 版本包含 342,771 个参数，对应论文报告的 342K 模型；兼容
-旧 checkpoint 时可显式选择 `bilinear` 版本。
+默认 `deconv` 网络对应论文中的 342,771 参数学生模型。兼容的历史权重可显式选择 `architecture:=bilinear`。若路径为空或权重与结构不匹配，程序会直接报错。
 
 ## ROS 2 接口
 
-当 `robot_id:=N` 时，节点使用以下接口。
+当 `robot_id:=N` 时：
 
 | 方向 | 名称 | 类型 | 用途 |
 |---|---|---|---|
-| 订阅 | `/robot_N/map` | `nav_msgs/msg/OccupancyGrid` | 已观测占据地图 |
+| 订阅 | `/robot_N/map` | `nav_msgs/msg/OccupancyGrid` | 实测占据地图 |
 | 发布 | `/robot_N/predicted_map` | `nav_msgs/msg/OccupancyGrid` | 当前局部预测 |
-| 发布 | `/robot_N/predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | 累计预测地图 |
-| 发布 | `/robot_N/way_point` | `geometry_msgs/msg/PoseStamped` | 可选前沿目标接口 |
-| 坐标变换 | `global_map` 到 `robot_N/base_link` | TF2 | 放置局部裁剪所需机器人位姿 |
+| 发布 | `/robot_N/predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | 累积预测地图 |
+| 发布 | `/robot_N/way_point` | `geometry_msgs/msg/PoseStamped` | 可选前沿目标 |
+| 坐标变换 | `global_map` 到 `robot_N/base_link` | TF2 | 局部裁剪所需位姿 |
 
-默认预测周期为 1 秒。话题名和坐标系名称与论文中的部署命名保持一致。
+推理回调每秒执行一次并刷新局部与全局预测。规划器可以更频繁地读取最近缓存，但读取频率不等于推理频率。
 
-## 数据目录格式
+## 数据加载格式
 
 `MapReconstructionDataset` 要求每个样本使用独立目录：
 
 ```text
 dataset_root/
-├── train/
-│   ├── sample_000001/
-│   │   ├── obs_0.png
-│   │   └── local_map_0.png
-│   └── ...
-└── test/
-    └── ...
+|-- train/
+|   `-- sample_000001/
+|       |-- obs_0.png
+|       `-- local_map_0.png
+`-- test/
+    `-- ...
 ```
 
-- `obs_0.png` 为三通道观测地图；
-- `local_map_0.png` 为二值占据目标；
-- 图像以最近邻方式缩放到 256 × 256 像素。
+`obs_0.png` 为三通道观测，`local_map_0.png` 为二值占据目标。图像以最近邻方式缩放到 256×256。
 
-数据准备必须保留评估所用的固定划分清单。论文不会将现有 floorplan-disjoint
-划分解释为 building-disjoint 泛化证据。
+上述目录名称仅描述历史加载器。当前版本没有样本级 floorplan 划分、独立 validation 划分，也没有证据证明 held-out evaluation 划分在历史模型选择过程中完全未被使用。
 
-## 复现与结果记录
+## 复现要求
 
-复现论文结果时，应保留准确的 checkpoint、数据划分、随机种子、规划配置、地图
-分辨率、坐标系约定和评估掩码。配准实验还应保存估计与参考变换、门控决定、拒绝
-原因和事件级编号。仅保留聚合曲线不足以审计 false accept、false reject 或位姿
-误差。
+完整训练归档仍需要准确的数据划分、教师与学生权重、checkpoint 选择规则、全部损失模块、标准训练入口、随机种子、评估掩码和锁定环境；这些材料不在当前版本中。仅有聚合曲线也不能重建逐 seed 不确定性。
 
-## 引用
+## 引用与联系
 
-论文目前处于审稿阶段。软件归档记录和论文 DOI 发布后，请引用对应正式版本。在
-此之前，请引用本仓库并注明固定 commit hash，以保证代码版本可追溯。
+在论文 DOI 和正式软件归档发布前，请引用实际使用的 Git commit。论文会明确记录送审版本。
 
-## 数据与代码可用性
-
-编辑和审稿所需的自定义代码及处理后数据可向通讯作者获取。发表前将建立带持久
-标识符的版本化归档。受数据许可限制，部分第三方原始数据不能在本仓库重复分发，
-应从 KTH、HouseExpo 和 MRPB 的原始来源获取。
-
-## 联系方式
-
-论文和科研软件相关问题请联系通讯作者 Fei Qiao：`qiaofei@tsinghua.edu.cn`。
+通讯作者：Fei Qiao，`qiaofei@tsinghua.edu.cn`。
 
 ## 许可
 
-当前仓库版本尚未授予软件使用许可。归档版本将注明最终批准的许可，以及第三方
-组件适用的限制。
+当前仓库版本尚未授予软件使用许可。未来归档版本需明确最终许可及第三方组件限制。

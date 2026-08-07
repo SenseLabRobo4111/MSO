@@ -1,39 +1,58 @@
 # MSO
 
-**Resource constrained predictive map exchange for multirobot indoor exploration**
+**Predictive map exchange under resource constraints for multirobot indoor exploration**
 
 [中文说明](README.zh.md)
 
 MSO (Make Sense at Once) is a research system for two-dimensional indoor
-multirobot exploration. It couples a compact local occupancy predictor with
-pairwise map registration and observation-constrained planning. Predictions can
-propose structure for target ranking and registration, while measured occupancy
-remains authoritative for collision checking and persistent map updates.
+multirobot exploration. It combines a compact local occupancy predictor,
+pairwise map registration, and observation-constrained planning. Predicted
+structure may support registration and target ranking, while measured occupancy
+remains authoritative for collision checking and persistent-map updates.
 
-This repository accompanies the manuscript **“Resource Constrained Predictive
-Map Exchange for Multirobot Indoor Exploration.”** The current revision exposes
-the predictor architecture, training components, ROS 2 inference node, and
-launch configuration. It is not yet the complete archival experiment package;
-the scope table below distinguishes included code from material supplied
-separately for editorial and peer-review assessment.
+This repository accompanies the manuscript **“Predictive Map Exchange under
+Resource Constraints for Multirobot Indoor Exploration.”** It currently exposes
+the predictor network definitions and ROS 2 inference interface. It is not a
+complete archival reproduction package for the reported training or experiments.
 
-## System boundary
+## Evidence boundary
 
 - The deployed student has 342,771 trainable parameters.
 - Input is a 256 by 256 local grid with obstacle, unknown, and free channels.
 - Output is an occupied-cell probability for the unknown region.
-- Observed cells overwrite predicted cells when new measurements arrive.
-- Prediction ranks candidate targets; path planning and collision checking use
+- New measurements overwrite predictions in persistent mapping.
+- Prediction may rank candidate targets; planning and collision checking use
   measured occupancy.
-- Pairwise registration is intended for encounters without a known initial
-  interrobot transform.
+- Pairwise registration addresses encounters without a known initial interrobot
+  transform.
 
-The reported evidence is bounded to structured two-dimensional indoor settings.
-It does not establish building-disjoint generalisation, communication-failure
-robustness, online recovery after a wrong commit, or physical scaling beyond the
-evaluated teams.
+The reported evidence is limited to structured two-dimensional indoor settings.
+It does not establish building-disjoint generalisation, operation through
+communication failures, online recovery after an incorrect commit, or physical
+scaling beyond the evaluated two-robot arenas.
 
-## Repository contents
+## Release scope
+
+| Component | Status in this revision |
+|---|---|
+| Student and teacher network definitions | Included |
+| ROS 2 predictor node and launch file | Included |
+| Dataset loader | Included as a format reference |
+| Historical manuscript training programme | Not included |
+| Historical split manifest and checkpoint-selection trace | Not included |
+| Manuscript checkpoint | Not included |
+| Deployed pairwise-registration package | Not included |
+| Offline transform evaluator and event records | Distributed with the manuscript review package, not this repository |
+| Physical rosbags | Not included; too large for this repository |
+| KTH, HouseExpo, and MRPB source data | Obtain from the original providers |
+
+The files `lightning_model.py`, `main_unet_gan.py`, and `train_gan_new.py` are
+legacy research prototypes. They use different defaults, depend on modules that
+are not tracked here, and do not implement the complete four-term distillation
+programme described in the manuscript. They must not be treated as a canonical
+entry point for reproducing the manuscript training results.
+
+## Repository layout
 
 ```text
 MSO/
@@ -57,28 +76,17 @@ MSO/
 `-- setup.py
 ```
 
-| Component | Status in this revision |
-|---|---|
-| Student and teacher network definitions | Included |
-| ROS 2 predictor node and launch file | Included |
-| Dataset loader and training-oriented modules | Included |
-| Manuscript checkpoint | Supplied to reviewers; public archive in preparation |
-| Deployed pairwise-registration package | Supplied to reviewers; public archive in preparation |
-| Frozen transform evaluator, event manifests, and event logs | Supplied in the peer-review data archive |
-| Physical rosbags and processed source data | Available through a controlled review link |
-| KTH, HouseExpo, and MRPB source data | Obtain from the original providers |
-
-## Requirements
+## Runtime requirements
 
 The ROS node requires Python 3, ROS 2, PyTorch, NumPy, OpenCV, and scikit-learn.
 Its ROS dependencies are `rclpy`, `tf2_ros`, `geometry_msgs`, and `nav_msgs`.
-Training additionally uses Pillow, Matplotlib, tqdm, and PyTorch Lightning.
+This revision does not provide a locked dependency environment.
 
 The reported deployment used ROS 2 Humble on Ubuntu 22.04 and an NVIDIA Jetson
-AGX Orin. On Jetson hardware, install the PyTorch build matched to the installed
+AGX Orin. On Jetson hardware, use the PyTorch build compatible with the installed
 JetPack version.
 
-## Build
+## Build and launch
 
 ```bash
 mkdir -p ~/mso_ws/src
@@ -91,8 +99,8 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-The model checkpoint is not stored in the current Git revision. Pass its
-absolute path when launching the node:
+The checkpoint is not stored in this revision. Supply an absolute path when
+launching the inference node:
 
 ```bash
 ros2 launch sensemap sensemap.launch.py \
@@ -110,18 +118,13 @@ ros2 run sensemap sensemap_predictor --ros-args \
   -p architecture:=deconv
 ```
 
-The default `deconv` model is the 342,771-parameter student reported in the
-manuscript. A compatible legacy checkpoint can select `architecture:=bilinear`.
+The default `deconv` network is the 342,771-parameter student described in the
+manuscript. A compatible legacy checkpoint may select `architecture:=bilinear`.
 Loading stops with an error if `model_path` is empty or the state dictionary does
 not match the selected architecture.
 
-## Checkpoint formats
-
-The inference node accepts either:
-
-1. a PyTorch Lightning checkpoint with a `state_dict` whose generator keys
-   begin with `gen.`; or
-2. a plain `DistillMapNet` state dictionary.
+The node accepts either a PyTorch Lightning checkpoint whose generator keys in
+`state_dict` begin with `gen.`, or a plain `DistillMapNet` state dictionary.
 
 ## ROS 2 interfaces
 
@@ -135,53 +138,45 @@ For `robot_id:=N`, the node uses:
 | Publish | `/robot_N/way_point` | `geometry_msgs/msg/PoseStamped` | Optional frontier goal |
 | Transform | `global_map` to `robot_N/base_link` | TF2 | Pose used for crop placement |
 
-The default prediction period is one second. Topic and frame names follow the
-deployment convention used in the manuscript.
+The inference callback runs once per second and publishes the refreshed local and
+global prediction. A planner may read the latest cached prediction more often;
+that read frequency is not the inference frequency.
 
-## Dataset layout
+## Dataset loader format
 
 `MapReconstructionDataset` expects one directory per sample:
 
 ```text
 dataset_root/
 |-- train/
-|   |-- sample_000001/
-|   |   |-- obs_0.png
-|   |   `-- local_map_0.png
-|   `-- ...
+|   `-- sample_000001/
+|       |-- obs_0.png
+|       `-- local_map_0.png
 `-- test/
     `-- ...
 ```
 
-- `obs_0.png` is the three-channel observed map.
-- `local_map_0.png` is the binary target occupancy map.
-- Images are resized to 256 by 256 pixels with nearest-neighbour sampling.
+`obs_0.png` is the three-channel observation and `local_map_0.png` is the binary
+target occupancy map. Images are resized to 256 by 256 pixels with
+nearest-neighbour sampling.
 
-Keep the exact split manifest used for evaluation. The retained split is
-floorplan-disjoint; it should not be interpreted as proof of building-disjoint
-generalisation.
+The directory names above describe the legacy loader only. This revision does
+not contain the sample-level floorplan partition, an independent validation
+partition, or evidence that the held-out evaluation partition was untouched
+during historical model selection.
 
-## Reproducible reporting
+## Reproducibility requirements
 
-Retain the exact checkpoint, split manifest, random seed, planner configuration,
-map resolution, coordinate convention, and evaluation mask for every reported
-result. Registration records should additionally store estimated and reference
-transforms, candidate validity, gate decision, rejection reason, and event ID.
-Aggregate plots alone cannot audit pose error, false acceptance, or false
-rejection.
+A complete archival training release would need the exact split manifest,
+teacher and student checkpoints, checkpoint-selection rule, all loss modules,
+training entry point, random seeds, evaluation masks, and locked environment.
+Those materials are not present in this revision. Aggregate plots likewise do
+not permit reconstruction of seed-level uncertainty.
 
 ## Citation
 
-Until an article DOI and archival software record are available, cite this
-repository with a fixed commit hash. Citation metadata will be added to the
-versioned public release.
-
-## Data and code availability
-
-Custom code and processed data needed for editorial and peer-review assessment
-are available from the corresponding author. A versioned public archive with a
-persistent identifier is planned for publication. Licences for third-party KTH,
-HouseExpo, and MRPB data prevent redistributing some original assets here.
+Until an article DOI and archival software record are available, cite the exact
+Git commit used. The manuscript records its review revision explicitly.
 
 ## Contact
 
@@ -189,5 +184,5 @@ Correspondence: Fei Qiao, `qiaofei@tsinghua.edu.cn`.
 
 ## Licence
 
-No software licence is granted by this repository revision. The archival release
-will state the approved licence and any restrictions for third-party components.
+No software licence is granted by this repository revision. A future archival
+release must state the approved licence and any third-party restrictions.
