@@ -113,7 +113,8 @@ explicit compatible checkpoint or state dictionary when launching:
 ros2 launch sensemap sensemap.launch.py \
   robot_id:=0 \
   model_path:=/absolute/path/to/student_weights.ckpt \
-  architecture:=deconv
+  architecture:=deconv \
+  crop_size:=256
 ```
 
 Equivalent direct invocation:
@@ -122,7 +123,8 @@ Equivalent direct invocation:
 ros2 run sensemap sensemap_predictor --ros-args \
   -p robot_id:=0 \
   -p model_path:=/absolute/path/to/student_weights.ckpt \
-  -p architecture:=deconv
+  -p architecture:=deconv \
+  -p crop_size:=256
 ```
 
 The default `deconv` model has 342,771 trainable parameters. Loading fails if
@@ -138,14 +140,31 @@ For `robot_id:=N`, the predictor uses:
 | Direction | Name | Type | Purpose |
 |---|---|---|---|
 | Subscribe | `/robot_N/map` | `nav_msgs/msg/OccupancyGrid` | Measured occupancy map |
-| Publish | `/robot_N/predicted_map` | `nav_msgs/msg/OccupancyGrid` | Current local prediction |
-| Publish | `/robot_N/predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | Accumulated prediction |
+| Publish | `/robot_N/provisional_predicted_map` | `nav_msgs/msg/OccupancyGrid` | Current provisional local prediction |
+| Publish | `/robot_N/provisional_predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | Accumulated provisional prediction |
 | Publish | `/robot_N/way_point` | `geometry_msgs/msg/PoseStamped` | Optional frontier goal |
 | Transform | `global_map` to `robot_N/base_link` | TF2 | Pose used for crop placement |
 
 The inference callback runs once per second. A planner may read the latest
 cached prediction more frequently; that read frequency is not the inference
 frequency.
+
+`crop_size` is a validated positive integer and defaults to 256 cells, matching
+the model input side length. Occupancy channels are resized with
+nearest-neighbour sampling. Every known measured cell is copied unchanged into
+the local provisional output, unknown sentinels are excluded from accumulation
+arithmetic, and current measurements are re-applied after accumulation. The
+callback publishes nothing when the required transform or a valid positive map
+resolution is unavailable. The
+`provisional_` topic prefix is deliberate: these code-level contracts and unit
+tests do not establish checkpoint suitability, integrated deployment behavior,
+planner safety, or online registration accuracy. These outputs must not enable
+map-transform state mutation; the public pairwise manager remains fail-closed.
+If an incoming map origin no longer lies on the accumulated cell lattice, the
+node resets provisional history instead of rounding the offset. Set
+`crop_size:=534` only to reproduce the legacy physical support window; doing so
+still resizes categorical input to the 256-cell model interface and is not the
+submission default.
 
 ## Reconstructed training package
 
@@ -190,6 +209,10 @@ The reusable pairwise manager is fail-closed by default. Any future commit path
 requires separate validation on newly collected event-level transforms and an
 independent reference. Do not cite the replay as a successful online
 registration experiment.
+
+The archived bags retain the historical `/robot_N/predicted_map` topic names;
+that provenance is not evidence that the current provisional runtime contract
+was deployed during those recordings.
 
 ## Physical-team collection protocol
 
@@ -253,3 +276,7 @@ terms remain in force; in particular, the identified FFC implementation and ROS
 expand reuse rights in recovered checkpoint candidates, external datasets or
 raw rosbags. [`REVIEW_ACCESS_TERMS.md`](REVIEW_ACCESS_TERMS.md) records the
 separate boundary for the publicly shared raw records.
+
+The occupancy-contract tests verify deterministic array transformations only.
+No integrated robot run, end-to-end checkpoint evaluation, or deployment
+evidence was generated as part of this software correction.

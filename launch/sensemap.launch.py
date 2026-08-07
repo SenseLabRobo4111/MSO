@@ -22,6 +22,12 @@ def generate_launch_description():
         description='Distilled decoder variant: deconv (paper model) or bilinear'
     )
 
+    declare_crop_size_cmd = DeclareLaunchArgument(
+        'crop_size',
+        default_value='256',
+        description='Positive occupancy crop side length in cells'
+    )
+
     start_robot_client = Node(
         package='sensemap',
         executable='sensemap_predictor',
@@ -31,6 +37,7 @@ def generate_launch_description():
             'robot_id': LaunchConfiguration('robot_id'),
             'model_path': LaunchConfiguration('model_path'),
             'architecture': LaunchConfiguration('architecture'),
+            'crop_size': LaunchConfiguration('crop_size'),
         }],
         remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')],
     )
@@ -39,5 +46,6 @@ def generate_launch_description():
         declare_robot_id_cmd,
         declare_model_path_cmd,
         declare_architecture_cmd,
+        declare_crop_size_cmd,
         start_robot_client,
     ])

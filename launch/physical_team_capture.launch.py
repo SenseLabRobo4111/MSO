@@ -41,8 +41,8 @@ def _capture_setup(context):
             f'{prefix}/lidar/points',
             f'{prefix}/odom',
             f'{prefix}/map',
-            f'{prefix}/predicted_map',
-            f'{prefix}/predicted_map_global',
+            f'{prefix}/provisional_predicted_map',
+            f'{prefix}/provisional_predicted_map_global',
             f'{prefix}/cmd_vel',
             f'/ground_truth/robot_{robot_id}/pose',
         ])

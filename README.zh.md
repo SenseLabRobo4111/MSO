@@ -78,7 +78,8 @@ source install/setup.bash
 ros2 launch sensemap sensemap.launch.py \
   robot_id:=0 \
   model_path:=/absolute/path/to/student_weights.ckpt \
-  architecture:=deconv
+  architecture:=deconv \
+  crop_size:=256
 ```
 
 也可直接启动：
@@ -87,10 +88,13 @@ ros2 launch sensemap sensemap.launch.py \
 ros2 run sensemap sensemap_predictor --ros-args \
   -p robot_id:=0 \
   -p model_path:=/absolute/path/to/student_weights.ckpt \
-  -p architecture:=deconv
+  -p architecture:=deconv \
+  -p crop_size:=256
 ```
 
 默认 `deconv` 模型包含 342,771 个可训练参数。路径为空或权重与架构不匹配时会直接失败。`repro_reconstructed/` 中的恢复候选仅为研究工件，不能当作论文表格对应 checkpoint 使用。
+
+若所需坐标变换不可用，或输入地图分辨率不是有限正数，预测回调将不发布结果。若输入地图原点不再位于累积地图的整数栅格上，节点会清空临时预测历史，而不会将偏移静默取整。公开接口中的预测地图均使用 `provisional_` 前缀；该接口及其单元测试只验证确定性的栅格变换契约，不构成端到端部署、规划安全或在线配准有效性的证据。只有在复现旧版物理支持窗口时才应显式设置 `crop_size:=534`；当前投稿默认值为 256。
 
 ### ROS 2 接口
 
@@ -99,8 +103,8 @@ ros2 run sensemap sensemap_predictor --ros-args \
 | 方向 | 名称 | 类型 | 用途 |
 |---|---|---|---|
 | 订阅 | `/robot_N/map` | `nav_msgs/msg/OccupancyGrid` | 实测占据地图 |
-| 发布 | `/robot_N/predicted_map` | `nav_msgs/msg/OccupancyGrid` | 当前局部预测 |
-| 发布 | `/robot_N/predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | 累积预测 |
+| 发布 | `/robot_N/provisional_predicted_map` | `nav_msgs/msg/OccupancyGrid` | 当前临时局部预测 |
+| 发布 | `/robot_N/provisional_predicted_map_global` | `nav_msgs/msg/OccupancyGrid` | 累积临时预测 |
 | 发布 | `/robot_N/way_point` | `geometry_msgs/msg/PoseStamped` | 可选前沿目标 |
 | 坐标变换 | `global_map` 到 `robot_N/base_link` | TF2 | 局部裁剪使用的位姿 |
 

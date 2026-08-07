@@ -18,11 +18,11 @@ topic_templates:
     - /robot_{id}/lidar/points
     - /robot_{id}/odom
     - /robot_{id}/map
-    - /robot_{id}/predicted_map
+    - /robot_{id}/provisional_predicted_map
     - /robot_{id}/cmd_vel
     - /ground_truth/robot_{id}/pose
   optional_per_robot:
-    - /robot_{id}/predicted_map_global
+    - /robot_{id}/provisional_predicted_map_global
 analysis:
   min_common_duration_s: 60.0
   min_sensor_messages: 100

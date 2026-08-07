@@ -2,6 +2,18 @@ import cv2
 import numpy as np
 import torch
 from sensemap.explore_model.SenseMapNet import DistillMapNet, DistillMapNetDeconv
+from sensemap.occupancy_contracts import (
+    DEFAULT_CROP_SIZE,
+    MODEL_INPUT_SIZE,
+    accumulate_provisional_occupancy,
+    aligned_grid_offset,
+    extract_centered_occupancy_crop,
+    occupancy_to_channels,
+    overlay_measured_occupancy,
+    overlay_measurements_at_offset,
+    resize_occupancy_channels,
+    validate_crop_size,
+)
 from sklearn.cluster import DBSCAN
 
 import rclpy
@@ -20,9 +32,12 @@ class SenseMapNetPredictor(Node):
         self.declare_parameter('robot_id', 0)
         self.declare_parameter('model_path', '')
         self.declare_parameter('architecture', 'deconv')
+        self.declare_parameter('crop_size', DEFAULT_CROP_SIZE)
         self.robot_id = self.get_parameter('robot_id').value
         model_path = self.get_parameter('model_path').value
         architecture = self.get_parameter('architecture').value
+        self.crop_size = validate_crop_size(
+            self.get_parameter('crop_size').value)
         if not model_path:
             raise ValueError(
                 "The 'model_path' parameter must point to a distilled MSO checkpoint."
@@ -54,8 +69,14 @@ class SenseMapNetPredictor(Node):
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
 
         self.map_sub_ = self.create_subscription(OccupancyGrid, f"/robot_{self.robot_id}/map", self.global_costmap_callback, 5)
-        self.predict_map_pub_ = self.create_publisher(OccupancyGrid, f"/robot_{self.robot_id}/predicted_map", 5)
-        self.predict_map_global_pub_ = self.create_publisher(OccupancyGrid, f"/robot_{self.robot_id}/predicted_map_global", 5)
+        self.predict_map_pub_ = self.create_publisher(
+            OccupancyGrid,
+            f"/robot_{self.robot_id}/provisional_predicted_map",
+            5)
+        self.predict_map_global_pub_ = self.create_publisher(
+            OccupancyGrid,
+            f"/robot_{self.robot_id}/provisional_predicted_map_global",
+            5)
         self.predict_timer = self.create_timer(1.0, self.predict_callback)
         self.frontier_goal_pub_ = self.create_publisher(PoseStamped, f"/robot_{self.robot_id}/way_point", 10)
 
@@ -66,7 +87,6 @@ class SenseMapNetPredictor(Node):
         self.robot_y = 0.0
         self.total_pred_map = None  # 2D numpy array
         self.total_pred_info = None  # OccupancyGrid info
-        self.crop_size = 534
 
     def get_robot_pose_from_tf(self):
         try:
@@ -76,8 +96,10 @@ class SenseMapNetPredictor(Node):
                 rclpy.time.Time())
             self.robot_x = transform.transform.translation.x
             self.robot_y = transform.transform.translation.y
+            return True
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
             self.get_logger().error(f"TF error: {str(e)}")
+            return False
 
     def detect_frontiers(self):
         """检测预测地图中的前沿点"""
@@ -189,6 +211,7 @@ class SenseMapNetPredictor(Node):
             self.total_pred_info.height = crop_size
             self.total_pred_info.origin.position.x = pred_origin_x
             self.total_pred_info.origin.position.y = pred_origin_y
+            self.total_pred_info.origin.orientation.w = 1.0
             self.total_pred_map = np.full((crop_size, crop_size), -1, dtype=np.int8)
             return
 
@@ -232,7 +255,9 @@ class SenseMapNetPredictor(Node):
         self.total_pred_info.height = new_height
         self.total_pred_map = new_map
 
-    def update_global_map(self, pred_data, pred_origin_x, pred_origin_y, crop_size, resolution):
+    def update_global_map(
+            self, pred_data, measured_data, pred_origin_x, pred_origin_y,
+            crop_size, resolution):
         total_origin_x = self.total_pred_info.origin.position.x
         total_origin_y = self.total_pred_info.origin.position.y
         total_width = self.total_pred_info.width
@@ -257,62 +282,101 @@ class SenseMapNetPredictor(Node):
         local_end_y = local_start_y + (valid_end_y - valid_start_y)
 
         if local_start_x < local_end_x and local_start_y < local_end_y:
-            self.total_pred_map[valid_start_y:valid_end_y, valid_start_x:valid_end_x] = (0.75 * self.total_pred_map[valid_start_y:valid_end_y, valid_start_x:valid_end_x]).astype(np.int8)
-            self.total_pred_map[valid_start_y:valid_end_y, valid_start_x:valid_end_x] += (0.25 * pred_data[local_start_y:local_end_y, local_start_x:local_end_x]).astype(np.int8)
+            total_slice = self.total_pred_map[
+                valid_start_y:valid_end_y, valid_start_x:valid_end_x]
+            pred_slice = pred_data[
+                local_start_y:local_end_y, local_start_x:local_end_x]
+            measured_slice = measured_data[
+                local_start_y:local_end_y, local_start_x:local_end_x]
+            self.total_pred_map[
+                valid_start_y:valid_end_y,
+                valid_start_x:valid_end_x,
+            ] = accumulate_provisional_occupancy(
+                total_slice, pred_slice, measured_slice)
 
     def predict_callback(self):
         if self.global_costmap_msg is None or self.global_costmap_info is None:
             return
 
-        self.get_robot_pose_from_tf()
+        if not self.get_robot_pose_from_tf():
+            return
 
         resolution = self.global_costmap_info.resolution
+        if not np.isfinite(resolution) or resolution <= 0.0:
+            self.get_logger().error(
+                "Measured occupancy-grid resolution must be positive and finite.")
+            return
         origin_x = self.global_costmap_info.origin.position.x
         origin_y = self.global_costmap_info.origin.position.y
+        if not np.isfinite(origin_x) or not np.isfinite(origin_y):
+            self.get_logger().error(
+                "Measured occupancy-grid origin must be finite.")
+            return
 
-        # 获取机器人在地图中的位置
-        map_x = int((self.robot_x - origin_x) / resolution)
-        map_y = int((self.robot_y - origin_y) / resolution)
+        if self.total_pred_map is not None:
+            same_resolution = np.isclose(
+                resolution, self.total_pred_info.resolution,
+                rtol=1e-9, atol=1e-12)
+            lattice_is_aligned = same_resolution
+            if lattice_is_aligned:
+                try:
+                    aligned_grid_offset(
+                        origin_x,
+                        origin_y,
+                        self.total_pred_info.origin.position.x,
+                        self.total_pred_info.origin.position.y,
+                        resolution,
+                    )
+                except ValueError:
+                    lattice_is_aligned = False
+            if not lattice_is_aligned:
+                self.get_logger().warning(
+                    "Measured map geometry changed off the accumulated grid "
+                    "lattice; resetting provisional history.")
+                self.total_pred_map = None
+                self.total_pred_info = None
 
-        # 创建输入裁剪区域
-        input_crop = np.zeros((self.crop_size, self.crop_size, 3), dtype=np.uint8)
-        input_crop[:, :, 1] = 255  # 初始化为未知
-
-        # 计算有效区域
-        valid_start_x = max(map_x - self.crop_size//2, 0)
-        valid_end_x = min(map_x + self.crop_size//2, self.global_costmap_info.width)
-        valid_start_y = max(map_y - self.crop_size//2, 0)
-        valid_end_y = min(map_y + self.crop_size//2, self.global_costmap_info.height)
-
-        # 填充输入数据
-        if valid_end_x > valid_start_x and valid_end_y > valid_start_y:
-            self.map_data = np.array(self.global_costmap_msg.data).reshape((self.global_costmap_info.height, self.global_costmap_info.width))
-            input_crop[
-                valid_start_y - (map_y - self.crop_size//2):valid_end_y - (map_y - self.crop_size//2),
-                valid_start_x - (map_x - self.crop_size//2):valid_end_x - (map_x - self.crop_size//2), 
-                0] = (self.map_data[valid_start_y:valid_end_y, valid_start_x:valid_end_x] == 100) * 255  # 障碍
-            input_crop[
-                valid_start_y - (map_y - self.crop_size//2):valid_end_y - (map_y - self.crop_size//2),
-                valid_start_x - (map_x - self.crop_size//2):valid_end_x - (map_x - self.crop_size//2), 
-                1] = (self.map_data[valid_start_y:valid_end_y, valid_start_x:valid_end_x] == -1) * 255  # 未知区域
-            input_crop[
-                valid_start_y - (map_y - self.crop_size//2):valid_end_y - (map_y - self.crop_size//2),
-                valid_start_x - (map_x - self.crop_size//2):valid_end_x - (map_x - self.crop_size//2), 
-                2] = (self.map_data[valid_start_y:valid_end_y, valid_start_x:valid_end_x] == 0) * 255   # 自由区域
+        # Align the provisional crop exactly to cells in the measured grid.
+        map_x = int(np.floor((self.robot_x - origin_x) / resolution))
+        map_y = int(np.floor((self.robot_y - origin_y) / resolution))
+        self.map_data = np.asarray(self.global_costmap_msg.data).reshape(
+            (self.global_costmap_info.height,
+             self.global_costmap_info.width))
+        measured_crop = extract_centered_occupancy_crop(
+            self.map_data, map_x, map_y, self.crop_size)
+        input_crop = occupancy_to_channels(measured_crop)
 
         # 预处理并预测
-        img = cv2.resize(input_crop, (256, 256))
+        img = resize_occupancy_channels(input_crop, MODEL_INPUT_SIZE)
         pred = self.predict(img)
         pred = cv2.resize(pred, (self.crop_size, self.crop_size), interpolation=cv2.INTER_NEAREST)
         pub_img = cv2.threshold(pred, 0.5, 100, cv2.THRESH_BINARY)[1].astype(np.int8)
+        provisional_img = overlay_measured_occupancy(pub_img, measured_crop)
 
         # 计算预测区域的全局原点
-        pred_origin_x = self.robot_x - (self.crop_size // 2) * resolution
-        pred_origin_y = self.robot_y - (self.crop_size // 2) * resolution
+        pred_origin_x = (
+            origin_x + (map_x - self.crop_size // 2) * resolution)
+        pred_origin_y = (
+            origin_y + (map_y - self.crop_size // 2) * resolution)
 
         # 扩展并更新全局地图
         self.expand_global_map(pred_origin_x, pred_origin_y, self.crop_size, resolution)
-        self.update_global_map(pub_img, pred_origin_x, pred_origin_y, self.crop_size, resolution)
+        self.update_global_map(
+            provisional_img, measured_crop, pred_origin_x, pred_origin_y,
+            self.crop_size, resolution)
+        measurement_start_x, measurement_start_y = aligned_grid_offset(
+            origin_x,
+            origin_y,
+            self.total_pred_info.origin.position.x,
+            self.total_pred_info.origin.position.y,
+            resolution,
+        )
+        self.total_pred_map = overlay_measurements_at_offset(
+            self.total_pred_map,
+            self.map_data,
+            measurement_start_x,
+            measurement_start_y,
+        )
 
         # 发布全局预测地图
         pred_msg = OccupancyGrid()
@@ -329,9 +393,10 @@ class SenseMapNetPredictor(Node):
         local_pred_msg.info.height = self.crop_size
         local_pred_msg.info.width = self.crop_size
         local_pred_msg.info.resolution = resolution
-        local_pred_msg.info.origin.position.x = self.robot_x - (self.crop_size // 2) * resolution
-        local_pred_msg.info.origin.position.y = self.robot_y - (self.crop_size // 2) * resolution
-        local_pred_msg.data = pub_img.flatten().astype(np.int8).tolist()
+        local_pred_msg.info.origin.position.x = pred_origin_x
+        local_pred_msg.info.origin.position.y = pred_origin_y
+        local_pred_msg.info.origin.orientation.w = 1.0
+        local_pred_msg.data = provisional_img.flatten().astype(np.int8).tolist()
         self.predict_map_pub_.publish(local_pred_msg)
 
         # raw_points = self.detect_frontiers()
