@@ -6,7 +6,7 @@
 
 MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研究系统，结合轻量局部占据地图预测、成对地图配准和观测约束规划。预测结构可以辅助配准和目标排序，但碰撞检查与持久地图更新仍以真实观测为准。
 
-本仓库对应论文 **“A Predictive System for Multirobot Indoor Exploration under Resource Constraints”**。当前版本包含可运行的 ROS 2 预测节点、明确标注为“重建”的训练流程、对历史双机器人配准数据的离线审计，以及用于未来实物团队采集的工具。它不是论文所有结果的完整历史复现包。
+本仓库对应论文 **“Design and Audit of Resource-Constrained Predictive Multirobot Exploration”**。当前版本包含可运行的 ROS 2 预测节点、明确标注为“重建”的训练流程、对历史双机器人配准数据的离线审计，以及用于未来实物团队采集的工具。它不是论文所有结果的完整历史复现包。
 
 ## 首先阅读
 

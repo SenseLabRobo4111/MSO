@@ -9,8 +9,8 @@ service.
 
 ## Intended permission after approval
 
-For editors and invited peer reviewers evaluating the manuscript *A Predictive
-System for Multirobot Indoor Exploration under Resource Constraints*, the
+For editors and invited peer reviewers evaluating the manuscript *Design and
+Audit of Resource-Constrained Predictive Multirobot Exploration*, the
 authors intend to permit retrieval, transient local copying, execution and
 modification of the authors' repository material solely as reasonably necessary
 to assess the manuscript. This limited permission would end when the review and

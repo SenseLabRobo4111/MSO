@@ -1,6 +1,6 @@
 # MSO
 
-**A predictive system for multirobot indoor exploration under resource constraints**
+**Design and audit of resource-constrained predictive multirobot exploration**
 
 [中文说明](README.zh.md)
 
@@ -10,8 +10,8 @@ pairwise map registration, and observation-constrained planning. Predicted
 structure can guide registration and target ranking, while measured occupancy
 remains authoritative for collision checking and persistent-map updates.
 
-This repository accompanies the manuscript **“A Predictive System for
-Multirobot Indoor Exploration under Resource Constraints.”** It contains a
+This repository accompanies the manuscript **“Design and Audit of
+Resource-Constrained Predictive Multirobot Exploration.”** It contains a
 usable ROS 2 predictor, a declared reconstruction of the training workflow, an
 offline audit of archived two-robot registration, and tooling for future
 physical-team data collection. It is not an exact historical reproduction of
