@@ -19,7 +19,8 @@ setup(
     maintainer='Fei Qiao',
     maintainer_email='qiaofei@tsinghua.edu.cn',
     description='Lightweight local occupancy-map prediction for multirobot exploration',
-    license='Proprietary (no general licence; see repository review terms)',
+    license='BSD-3-Clause with separately identified Apache-2.0 components',
+    license_files=['LICENSE', 'third_party/licenses/Apache-2.0.txt'],
     entry_points={
         'console_scripts': [
             'sensemap_predictor = sensemap.predict_map:main',

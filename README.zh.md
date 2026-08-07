@@ -164,4 +164,4 @@ ROS 包测试还需要常规 ROS 2 ament 测试插件。
 
 ## 许可
 
-当前仓库版本尚未授予软件使用许可。可复用的正式归档版本仍需作者批准许可证并核查第三方资产。
+MSO 作者拥有权利的源码与文档采用 BSD 3-Clause 许可证，详见 `LICENSE`。已标明的 FFC 实现与 ROS 2 测试模板继续适用其 Apache-2.0 上游条款。BSD 许可证不自动扩大恢复 checkpoint、外部数据集或原始 rosbag 的再利用权利；具体边界见 `THIRD_PARTY_NOTICES.md` 与 `REVIEW_ACCESS_TERMS.md`。

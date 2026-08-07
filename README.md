@@ -230,15 +230,16 @@ Correspondence: Fei Qiao, `qiaofei@tsinghua.edu.cn`.
 
 ## Licence and provenance
 
-No general software licence is granted for the repository as a whole. The
-public repository can be inspected, but reuse and redistribution of the authors'
-contributions require a later rights-cleared release. Proposed terms for
-editorial and peer-review use are recorded in
-[`REVIEW_ACCESS_TERMS.md`](REVIEW_ACCESS_TERMS.md) and still require explicit
-author approval before they can be relied on.
+Source and documentation owned by the MSO authors are released under the
+[BSD 3-Clause License](LICENSE). This permits editors, reviewers and other users
+to inspect, run, modify and redistribute that author-owned material under the
+conditions in `LICENSE`.
 
 Some files include or adapt material distributed under separate upstream
 licences. Their origins, affected paths, modification status and retained terms
 are listed in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). Those upstream
-permissions apply only to the relevant material and do not license the rest of
-this repository.
+terms remain in force; in particular, the identified FFC implementation and ROS
+2 test templates remain under Apache-2.0. The BSD licence does not establish or
+expand reuse rights in recovered checkpoint candidates, external datasets or
+raw rosbags. [`REVIEW_ACCESS_TERMS.md`](REVIEW_ACCESS_TERMS.md) records the
+separate boundary for any controlled reviewer data.
