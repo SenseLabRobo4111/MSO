@@ -1,0 +1,162 @@
+schema_version: '1.0'
+campaign_id: mso_physical_minimum_v1
+evidence_class: physical
+method: mso
+minimum_trials_per_cell: 5
+network_profile_id: udp_pair_loss_disconnect_v1
+network_profile_sha256: 2f1fe1640675ba2967cdd1d538bc8e95ae7bd4c0ca4e4d79a9194b9f37bacfd6
+required_lock_fields:
+  - site_id
+  - arena_id
+  - git_commit
+  - checkpoint_sha256
+  - stopping_rule_id
+  - motion_limits_id
+  - sensing_policy_id
+  - reference_timestamp_tolerance_ms
+  - calibration_sha256
+  - extrinsics_sha256
+  - uncertainty_translation_m
+  - uncertainty_yaw_deg
+cells:
+  - cell_id: n2_reference
+    team_size: 2
+    condition_id: reference
+    network_profile: none
+    trial_ids: [1, 2, 3, 4, 5]
+  - cell_id: n2_impaired
+    team_size: 2
+    condition_id: impaired
+    network_profile: udp_pair_loss_disconnect_v1
+    trial_ids: [1, 2, 3, 4, 5]
+    matched_against: n2_reference
+  - cell_id: n3_reference
+    team_size: 3
+    condition_id: reference
+    network_profile: none
+    trial_ids: [1, 2, 3, 4, 5]
+ordered_runs:
+  - order: 1
+    run_id: mso_n2_reference_t03
+    team_size: 2
+    trial_id: 3
+    condition_id: reference
+    pair_id: pair_03
+    start_pose_set_id: poses_03
+    network_profile: none
+  - order: 2
+    run_id: mso_n3_reference_t01
+    team_size: 3
+    trial_id: 1
+    condition_id: reference
+    pair_id: n3_trial_01
+    start_pose_set_id: n3_poses_01
+    network_profile: none
+  - order: 3
+    run_id: mso_n2_impaired_t05
+    team_size: 2
+    trial_id: 5
+    condition_id: impaired
+    pair_id: pair_05
+    start_pose_set_id: poses_05
+    network_profile: udp_pair_loss_disconnect_v1
+  - order: 4
+    run_id: mso_n2_reference_t01
+    team_size: 2
+    trial_id: 1
+    condition_id: reference
+    pair_id: pair_01
+    start_pose_set_id: poses_01
+    network_profile: none
+  - order: 5
+    run_id: mso_n3_reference_t04
+    team_size: 3
+    trial_id: 4
+    condition_id: reference
+    pair_id: n3_trial_04
+    start_pose_set_id: n3_poses_04
+    network_profile: none
+  - order: 6
+    run_id: mso_n2_impaired_t03
+    team_size: 2
+    trial_id: 3
+    condition_id: impaired
+    pair_id: pair_03
+    start_pose_set_id: poses_03
+    network_profile: udp_pair_loss_disconnect_v1
+  - order: 7
+    run_id: mso_n2_reference_t05
+    team_size: 2
+    trial_id: 5
+    condition_id: reference
+    pair_id: pair_05
+    start_pose_set_id: poses_05
+    network_profile: none
+  - order: 8
+    run_id: mso_n3_reference_t02
+    team_size: 3
+    trial_id: 2
+    condition_id: reference
+    pair_id: n3_trial_02
+    start_pose_set_id: n3_poses_02
+    network_profile: none
+  - order: 9
+    run_id: mso_n2_impaired_t01
+    team_size: 2
+    trial_id: 1
+    condition_id: impaired
+    pair_id: pair_01
+    start_pose_set_id: poses_01
+    network_profile: udp_pair_loss_disconnect_v1
+  - order: 10
+    run_id: mso_n3_reference_t05
+    team_size: 3
+    trial_id: 5
+    condition_id: reference
+    pair_id: n3_trial_05
+    start_pose_set_id: n3_poses_05
+    network_profile: none
+  - order: 11
+    run_id: mso_n2_reference_t02
+    team_size: 2
+    trial_id: 2
+    condition_id: reference
+    pair_id: pair_02
+    start_pose_set_id: poses_02
+    network_profile: none
+  - order: 12
+    run_id: mso_n2_impaired_t04
+    team_size: 2
+    trial_id: 4
+    condition_id: impaired
+    pair_id: pair_04
+    start_pose_set_id: poses_04
+    network_profile: udp_pair_loss_disconnect_v1
+  - order: 13
+    run_id: mso_n3_reference_t03
+    team_size: 3
+    trial_id: 3
+    condition_id: reference
+    pair_id: n3_trial_03
+    start_pose_set_id: n3_poses_03
+    network_profile: none
+  - order: 14
+    run_id: mso_n2_impaired_t02
+    team_size: 2
+    trial_id: 2
+    condition_id: impaired
+    pair_id: pair_02
+    start_pose_set_id: poses_02
+    network_profile: udp_pair_loss_disconnect_v1
+  - order: 15
+    run_id: mso_n2_reference_t04
+    team_size: 2
+    trial_id: 4
+    condition_id: reference
+    pair_id: pair_04
+    start_pose_set_id: poses_04
+    network_profile: none
+notes:
+  - This ordered list is frozen before capture and is not an experimental result.
+  - N=2 reference/impaired entries share pair and start-pose identifiers by trial.
+  - Every pre-capture manifest stores exact campaign and profile SHA-256 digests.

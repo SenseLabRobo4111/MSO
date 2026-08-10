@@ -8,6 +8,18 @@
 *.tiff binary
 *.zip binary
 
+# Byte-fixed snapshots and result tables must retain the bytes recorded by
+# their SHA256SUMS inventories on every platform.
+paper/nature_communications/** binary
+integrated_offline/results/** binary
+integrated_offline/planning_results/** binary
+integrated_offline/frontier_ranking_results/** binary
+experiments/unified_12_method_benchmark/results_uniform/** binary
+
+# Keep the submission-grade 600 dpi benchmark TIFF out of ordinary Git
+# objects while retaining it as a versioned, hash-checked release artifact.
+experiments/unified_12_method_benchmark/results_uniform/final_visualizations/*.tiff filter=lfs diff=lfs merge=lfs -text
+
 # Canonical replay outputs are byte-fixed evidence artifacts. Preserve their
 # recorded line endings so the committed bytes match results/SHA256SUMS.
 registration_replay/results/*.csv binary

@@ -1,6 +1,11 @@
 protocol_version: 1.0
 team_size: 2
 method: mso
+protocol_lock:
+  stopping_rule_id: SET_STOPPING_RULE_ID
+  motion_limits_id: SET_MOTION_LIMITS_ID
+  sensing_policy_id: SET_SENSING_POLICY_ID
+  reference_timestamp_tolerance_ms: 100.0
 recorder:
   output_root: /data/mso_physical
   min_free_gb: 100
@@ -35,6 +40,8 @@ required_evidence:
   - evidence/overhead_video.mp4
   - evidence/site_photo.jpg
   - evidence/robot_roster.csv
+  - evidence/reference_calibration.json
+  - evidence/reference_extrinsics.json
 robots:
   - id: 0
     namespace: /robot_0

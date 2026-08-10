@@ -1,0 +1,33 @@
+{
+  "base_frame_clusters": 39,
+  "claim_scope": "reconstructed exploratory audit of saved probability maps on one archived A3 scene",
+  "created_by": "integrated_offline/run_paired_ablation.py",
+  "exploratory_rules": {
+    "absolute_yaw_correct_deg": 5.0,
+    "minimum_inlier_ratio": 0.2,
+    "observed_support_gate": 0.2,
+    "obstacle_inflation_cells": 2,
+    "relative_asset_paths_supported": true,
+    "resolution_m_per_px": 0.05,
+    "selection_lock_self_declaration_used_for_inference": false,
+    "translation_correct_m": 0.25,
+    "unit_scale_tolerance": 0.02
+  },
+  "input_manifest_name": "manifest.json",
+  "input_manifest_sha256": "47037e16c500977dd12e716d497423d6d2ddfb1dc3437765a323ac52b590b183",
+  "limitations": [
+    "exploratory reconstruction from saved probability maps; no historical trainer execution",
+    "single archived A3 scene with repeated snapshots",
+    "isolated per-event commit; no temporal consensus claim",
+    "deterministic planner proxy; not the historical planner",
+    "no physical or online claim"
+  ],
+  "numpy": "2.4.3",
+  "opencv": "4.13.0",
+  "output_rows": 200,
+  "paired_events": 100,
+  "pipeline_script_sha256": "af12b1009823b5dcdbbfedb54f89d7682544f82751f0e1c051ab2808fd9a3fb1",
+  "python": "3.12.6",
+  "reference_registrar_sha256": "9abcbdee16dd96aff4e392fc3c2cc8dac24a694279cf035d3a0f8163061a15bf",
+  "selected_input_type": "predicted_raw"
+}

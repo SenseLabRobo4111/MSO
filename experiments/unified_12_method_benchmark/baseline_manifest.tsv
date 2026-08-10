@@ -1,0 +1,13 @@
+method	family	repository	commit	role
+MSO	occupancy-specific	local_reconstructed	pending	primary
+U-Net	convolutional	local_adapter	pending	baseline
+LaMa-Fourier	Fourier convolution	local_adapter	pending	baseline
+MI-GAN	mobile GAN	local_adapter	pending	baseline
+PartialConv	masked convolution	https://github.com/NVIDIA/partialconv.git	610d373f35257887d45adae84c86d0ce7ad808ec	baseline
+GatedConv	gated convolution	https://github.com/JiahuiYu/generative_inpainting.git	3a5324373ba52c68c79587ca183bc10b9e57b783	baseline
+EdgeConnect	structure-guided GAN	https://github.com/knazeri/edge-connect.git	3142579785c5c8cc92ad655616d40f4f52fc7ec1	baseline
+AOT-GAN	contextual GAN	https://github.com/researchmm/AOT-GAN-for-Inpainting.git	2cd1afd8fdfabb101c678f6062d14bc7d302509e	baseline
+MAT	mask-aware transformer	https://github.com/fenglinglwb/MAT.git	d273d891ecdad2e1df106516423a75bc45b2d800	baseline
+ZITS++	structure-aware transformer	https://github.com/ewrfcas/ZITS-PlusPlus.git	de8dd48b17aedd15824842adb7bcca7535daba84	baseline
+RePaint	diffusion	https://github.com/andreas128/RePaint.git	8e2a0552a0cc306e623da807d353915f1af17726	baseline
+HINT	mask-aware transformer	https://github.com/ChrisChen1023/HINT.git	15e867d8c8689b9d5050383fc3884537ae876145	baseline

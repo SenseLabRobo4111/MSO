@@ -1,0 +1,30 @@
+{
+  "base_frame_clusters": 30,
+  "claim_scope": "exploratory saved-probability-map measured-path frontier-ranking audit",
+  "created_by": "integrated_offline/run_frontier_ranking_ablation.py",
+  "exploratory_rules": {
+    "candidate_source": "measured reachable frontier mask",
+    "path_grid": "measured persistent occupancy only",
+    "prediction_persisted": false,
+    "ranking_radius_m": 1.0,
+    "ranking_radius_provenance": "existing DBSCAN frontier eps=1.0 m",
+    "registrar_input": "observed only",
+    "relative_asset_paths_supported": true,
+    "selection_lock_self_declaration_used_for_inference": false
+  },
+  "input_manifest_name": "manifest.json",
+  "input_manifest_sha256": "47037e16c500977dd12e716d497423d6d2ddfb1dc3437765a323ac52b590b183",
+  "limitations": [
+    "exploratory reconstruction from saved probability maps",
+    "partial two-map oracle, not explored area or full ground truth",
+    "deterministic planner proxy, not historical MRPB planner",
+    "no online, physical, scaling, or communication claim"
+  ],
+  "numpy": "2.4.3",
+  "opencv": "4.13.0",
+  "output_rows": 100,
+  "pipeline_script_sha256": "1ca53700958b65706c381ab96f8bdd9cc098074654e04e6540381b5a4edcb1d2",
+  "python": "3.12.6",
+  "reference_registrar_sha256": "9abcbdee16dd96aff4e392fc3c2cc8dac24a694279cf035d3a0f8163061a15bf",
+  "selected_events": 50
+}

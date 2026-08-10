@@ -1,0 +1,28 @@
+{
+  "input_sha256": {
+    "method_status.tsv": "4fdb9f42777ab10d00d792357ca5b00b608019f354328ca8cc5ed32e71cb2f47",
+    "method_summary.tsv": "191407e624f572c1c53e5c091baff91e84dbb66707f5d8ca551e591f0aa7175a"
+  },
+  "methods_complete": 11,
+  "methods_registered": 12,
+  "outputs": {
+    "uniform_benchmark_summary.pdf": {
+      "bytes": 63780,
+      "sha256": "62fd67784e63fd54211a94d6241750c876e927370719fc0d1138d3ab3d21168f"
+    },
+    "uniform_benchmark_summary.png": {
+      "bytes": 267915,
+      "sha256": "3ac8dd368cefcd7466f65c10556a5eebf44d82c1a3f5f68d788a36e6614d2d12"
+    },
+    "uniform_benchmark_summary.svg": {
+      "bytes": 98221,
+      "sha256": "6e3576e8366f8a1e32c9098df0895447f96608999e5fb8497f4f461ac071fc65"
+    },
+    "uniform_benchmark_summary.tiff": {
+      "bytes": 69215382,
+      "sha256": "3a95b23076f1f33af4f6c9c533692180259d8c255a9d48bc51e44aa20085955a"
+    }
+  },
+  "status": "rendered_from_final_aggregate",
+  "uncertainty": "two-sided 95% t interval over five seed estimates"
+}

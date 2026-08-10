@@ -1,0 +1,159 @@
+{
+  "arms": {
+    "measured_farthest": {
+      "clusters": 30,
+      "events": 50,
+      "oracle_collision_route_cluster_rate": {
+        "mean": 0.23888888888888887,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_fully_known_free_cluster_rate": {
+        "mean": 0.28055555555555556,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_hidden_free_yield_cluster_mean": {
+        "mean": 43.141666666666666,
+        "median": 1.0,
+        "n": 30,
+        "p90": 28.1
+      },
+      "oracle_hidden_occupied_cluster_mean": {
+        "mean": 4.230555555555555,
+        "median": 2.0,
+        "n": 30,
+        "p90": 14.200000000000003
+      },
+      "oracle_unknown_traversal_cluster_rate": {
+        "mean": 0.5805555555555555,
+        "median": 0.5833333333333333,
+        "n": 30,
+        "p90": 1.0
+      },
+      "prediction_free_score_cluster_mean": {
+        "mean": 53.89444444444444,
+        "median": 24.375,
+        "n": 30,
+        "p90": 110.5
+      },
+      "route_length_m_cluster_mean": {
+        "mean": 23.10166666666667,
+        "median": 22.6125,
+        "n": 30,
+        "p90": 27.230000000000004
+      },
+      "state_mutation_violation_clusters": 0
+    },
+    "predicted_free_ranking": {
+      "clusters": 30,
+      "events": 50,
+      "oracle_collision_route_cluster_rate": {
+        "mean": 0.3222222222222222,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_fully_known_free_cluster_rate": {
+        "mean": 0.38333333333333336,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_hidden_free_yield_cluster_mean": {
+        "mean": 28.28055555555555,
+        "median": 7.75,
+        "n": 30,
+        "p90": 29.950000000000014
+      },
+      "oracle_hidden_occupied_cluster_mean": {
+        "mean": 11.972222222222221,
+        "median": 2.0,
+        "n": 30,
+        "p90": 18.30000000000002
+      },
+      "oracle_unknown_traversal_cluster_rate": {
+        "mean": 0.475,
+        "median": 0.5,
+        "n": 30,
+        "p90": 1.0
+      },
+      "prediction_free_score_cluster_mean": {
+        "mean": 179.46666666666667,
+        "median": 141.5,
+        "n": 30,
+        "p90": 308.1
+      },
+      "route_length_m_cluster_mean": {
+        "mean": 17.04513888888889,
+        "median": 16.1125,
+        "n": 30,
+        "p90": 23.795000000000012
+      },
+      "state_mutation_violation_clusters": 0
+    }
+  },
+  "cluster_aware_paired": {
+    "clusters": 30,
+    "collision_route_sign": {
+      "clusters": 30,
+      "exact_sign_p": 0.4239501953125,
+      "negative": 5,
+      "positive": 9,
+      "zero": 16
+    },
+    "events": 50,
+    "oracle_hidden_free_yield_cluster_mean_difference": {
+      "mean": -14.861111111111112,
+      "median": 1.0,
+      "n": 30,
+      "p90": 24.775
+    },
+    "oracle_hidden_free_yield_sign": {
+      "clusters": 30,
+      "exact_sign_p": 0.16863754391670227,
+      "negative": 9,
+      "positive": 17,
+      "zero": 4
+    },
+    "oracle_hidden_occupied_cluster_mean_difference": {
+      "mean": 7.741666666666666,
+      "median": 0.75,
+      "n": 30,
+      "p90": 16.30000000000002
+    },
+    "route_length_cluster_mean_difference_m": {
+      "mean": -6.056527777777778,
+      "median": -6.1750000000000025,
+      "n": 30,
+      "p90": -0.8924999999999984
+    },
+    "same_goal_cluster_rate": {
+      "mean": 0.05,
+      "median": 0.0,
+      "n": 30,
+      "p90": 0.0
+    },
+    "unknown_traversal_sign": {
+      "clusters": 30,
+      "exact_sign_p": 0.60723876953125,
+      "negative": 9,
+      "positive": 6,
+      "zero": 15
+    }
+  },
+  "exploratory_ranking_radius_m": 1.0,
+  "scope": "exploratory saved-probability-map measured-path frontier-ranking audit",
+  "shared_observed_gate": {
+    "accepted_cluster_rate": {
+      "mean": 0.9333333333333333,
+      "median": 1.0,
+      "n": 30,
+      "p90": 1.0
+    },
+    "clusters": 30,
+    "events": 50
+  }
+}

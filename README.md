@@ -29,8 +29,10 @@ every result in the manuscript.
 | Reconstructed training and evaluation workflow | Yes | Forward reconstruction, not historical reproduction |
 | Preserved-archive inventory | Yes | 8,304 sample records with source hashes; not the manuscript split |
 | Archived two-robot registration replay | Yes | Offline negative-result audit; not deployed validation |
+| Reconstructed integrated offline audit | Yes | Portable, one-scene exploratory audit; not a deployed closed loop |
 | Passive N=2/3/5 collection protocol | Yes | Instrumentation only; no new N=3 or N=5 physical results |
 | Physical rosbags | External | [Public read-only Google Drive folder](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing); 18 bags and 18 metadata files verified |
+| Portable peer-review data | Yes | [`paper/nature_communications/peer_review_data/`](paper/nature_communications/peer_review_data/) with repository-level hashes |
 
 The reported evidence is limited to structured two-dimensional indoor settings.
 It does not establish building-disjoint generalisation, operation through
@@ -46,6 +48,12 @@ data README and the same [SHA-256 inventory](RAW_ROSBAG_SHA256SUMS.md) recorded
 here. The verified payload is 4.134 GiB. These raw records are outside the
 BSD-3-Clause software licence; public access does not by itself grant a
 separate data-reuse licence.
+
+The portable processed data used by the reconstructed offline audit are
+versioned directly under
+[`paper/nature_communications/peer_review_data/`](paper/nature_communications/peer_review_data/).
+They are processed audit inputs, not additional physical robot trials. The
+paper snapshot's `SHA256SUMS` records every included byte.
 
 ## Reviewed version
 
@@ -71,6 +79,7 @@ historical alias and is not the canonical entry point.
 MSO/
 |-- experiments/
 |   `-- physical_team/       # passive N=2/3/5 collection protocol
+|-- integrated_offline/      # reconstructed one-scene exploratory audit
 |-- registration_replay/     # offline audit of archived two-robot bags
 |-- repro_reconstructed/     # declared training reconstruction and candidates
 |-- launch/
@@ -214,6 +223,20 @@ The archived bags retain the historical `/robot_N/predicted_map` topic names;
 that provenance is not evidence that the current provisional runtime contract
 was deployed during those recordings.
 
+## Reconstructed integrated offline audit
+
+[`integrated_offline/`](integrated_offline/README.md) replays saved probability
+maps through a reconstructed registrar, pre-commit gate, atomic measured-map
+update and deterministic planning proxies. It also compares prediction and
+observed-only inputs on matched perturbations. The portable input ZIP, exact
+digest and extraction layout are listed above and in the component README.
+
+The audit is intentionally exploratory and limited to correlated snapshots
+from one archived A3 scene. Its cluster-aware results do not establish a safety
+advantage, causal exploration benefit, online execution, physical scaling or
+communication robustness. It should be cited as a bounded audit rather than a
+validated deployment.
+
 ## Physical-team collection protocol
 
 [`experiments/physical_team/`](experiments/physical_team/README.md) contains a
@@ -248,7 +271,7 @@ The non-ROS evidence packages can be checked with:
 
 ```bash
 python3 repro_reconstructed/tools/verify_artifacts.py
-python3 -m pytest registration_replay/tests repro_reconstructed/tests -q
+python3 -m pytest registration_replay/tests repro_reconstructed/tests integrated_offline/tests -q
 ```
 
 ROS package tests additionally require the normal ROS 2 ament test plugins.

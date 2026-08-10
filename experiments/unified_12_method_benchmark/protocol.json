@@ -1,0 +1,83 @@
+{
+  "protocol_id": "mso_uniform_12_method_v1",
+  "status": "prospective_locked_before_model_outcomes",
+  "historical_experiment": false,
+  "dataset": {
+    "source_archive_counts": {
+      "train_labelled": 6841,
+      "test_labelled": 1463
+    },
+    "validation_assignment": "sha256_sample_id_mod_10_equals_0",
+    "selection_unit": "sample",
+    "building_disjoint_claim": false,
+    "source_geometry": [640, 640],
+    "model_geometry": [256, 256],
+    "categorical_resize": "nearest"
+  },
+  "methods": [
+    "MSO",
+    "U-Net",
+    "LaMa-Fourier",
+    "MI-GAN",
+    "PartialConv",
+    "GatedConv",
+    "EdgeConnect",
+    "AOT-GAN",
+    "MAT",
+    "ZITS++",
+    "RePaint",
+    "HINT"
+  ],
+  "seeds": [11, 23, 37, 53, 71],
+  "prediction_contract": {
+    "format": "float32_npy",
+    "shape": [256, 256],
+    "semantics": "occupied_probability",
+    "finite": true,
+    "range": [0.0, 1.0],
+    "decision_threshold": 0.5,
+    "measured_cell_rule": "measured_occupied_and_free_copy_back_after_inference"
+  },
+  "selection": {
+    "split": "validation",
+    "primary_quantity": "unknown_region_binary_cross_entropy",
+    "direction": "minimise",
+    "tie_rule": "earliest_epoch",
+    "best_seed_selection": false
+  },
+  "primary_metrics": [
+    "unknown_occupied_f1",
+    "unknown_occupied_iou",
+    "unknown_occupied_brier",
+    "unknown_occupied_ece"
+  ],
+  "secondary_metrics": [
+    "unknown_occupied_precision",
+    "unknown_occupied_recall",
+    "boundary_f1_tolerance_2px",
+    "boundary_chamfer_px",
+    "free_component_count_error",
+    "largest_free_component_fraction_error",
+    "shortest_path_false_block_rate",
+    "shortest_path_collision_rate",
+    "full_crop_psnr",
+    "full_crop_ssim",
+    "lpips",
+    "fid",
+    "kid",
+    "parameter_count",
+    "profiler_operation_entries",
+    "latency_ms",
+    "peak_vram_mib",
+    "training_time_s"
+  ],
+  "statistics": {
+    "primary_unit": "sample",
+    "seed_summary": "all_five_seeds_no_exclusion",
+    "confidence_interval": "sample_bootstrap_95pct",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20260808,
+    "multiple_testing": "holm_within_metric_family",
+    "failed_runs": "retain_as_failures"
+  }
+}

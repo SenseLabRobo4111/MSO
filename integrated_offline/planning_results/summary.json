@@ -1,0 +1,176 @@
+{
+  "arms": {
+    "measured_only": {
+      "clusters": 30,
+      "events": 50,
+      "known_support_gain_cells_cluster_mean": {
+        "mean": 0.0,
+        "median": 0.0,
+        "n": 30,
+        "p90": 0.0
+      },
+      "oracle_collision_route_cluster_rate": {
+        "mean": 0.23888888888888887,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_fully_known_free_cluster_rate": {
+        "mean": 0.28055555555555556,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_unknown_traversal_cluster_rate": {
+        "mean": 0.5805555555555555,
+        "median": 0.5833333333333333,
+        "n": 30,
+        "p90": 1.0
+      },
+      "persistent_mutation_violation_clusters": 0,
+      "reachable_free_cells_cluster_mean": {
+        "mean": 142699.46666666667,
+        "median": 141937.625,
+        "n": 30,
+        "p90": 183912.5
+      },
+      "reachable_frontiers_cluster_mean": {
+        "mean": 1053.4944444444443,
+        "median": 1071.75,
+        "n": 30,
+        "p90": 1386.9
+      },
+      "route_available_cluster_rate": {
+        "mean": 1.0,
+        "median": 1.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "route_length_m_cluster_mean": {
+        "mean": 23.10166666666667,
+        "median": 22.6125,
+        "n": 30,
+        "p90": 27.230000000000004
+      }
+    },
+    "measured_plus_provisional": {
+      "clusters": 30,
+      "events": 50,
+      "known_support_gain_cells_cluster_mean": {
+        "mean": 20887.958333333332,
+        "median": 21001.5,
+        "n": 30,
+        "p90": 27254.8
+      },
+      "oracle_collision_route_cluster_rate": {
+        "mean": 0.2611111111111111,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_fully_known_free_cluster_rate": {
+        "mean": 0.26944444444444443,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_unknown_traversal_cluster_rate": {
+        "mean": 0.625,
+        "median": 1.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "persistent_mutation_violation_clusters": 0,
+      "reachable_free_cells_cluster_mean": {
+        "mean": 143045.9527777778,
+        "median": 141807.375,
+        "n": 30,
+        "p90": 183835.4
+      },
+      "reachable_frontiers_cluster_mean": {
+        "mean": 1043.45,
+        "median": 986.75,
+        "n": 30,
+        "p90": 1398.1500000000003
+      },
+      "route_available_cluster_rate": {
+        "mean": 1.0,
+        "median": 1.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "route_length_m_cluster_mean": {
+        "mean": 23.66833333333334,
+        "median": 22.6125,
+        "n": 30,
+        "p90": 31.255
+      }
+    }
+  },
+  "cluster_aware_paired": {
+    "clusters": 30,
+    "collision_route_sign": {
+      "clusters": 30,
+      "exact_sign_p": 1.0,
+      "negative": 0,
+      "positive": 1,
+      "zero": 29
+    },
+    "events": 50,
+    "reachable_free_cluster_mean_difference_cells": {
+      "mean": 346.48611111111114,
+      "median": -78.125,
+      "n": 30,
+      "p90": 399.40000000000015
+    },
+    "reachable_frontier_cluster_mean_difference": {
+      "mean": -10.044444444444443,
+      "median": -63.0,
+      "n": 30,
+      "p90": 83.25000000000009
+    },
+    "route_availability_sign": {
+      "clusters": 30,
+      "exact_sign_p": 1.0,
+      "negative": 0,
+      "positive": 0,
+      "zero": 30
+    },
+    "route_length_cluster_mean_difference_m": {
+      "mean": 0.5666666666666667,
+      "median": 0.0,
+      "n": 30,
+      "p90": 0.20500000000000262
+    },
+    "support_gain_cluster_mean_cells": {
+      "mean": 20887.958333333332,
+      "median": 21001.5,
+      "n": 30,
+      "p90": 27254.8
+    },
+    "unknown_traversal_sign": {
+      "clusters": 30,
+      "exact_sign_p": 0.5,
+      "negative": 0,
+      "positive": 2,
+      "zero": 28
+    }
+  },
+  "scope": "exploratory saved-probability-map provisional-planning audit on one archived scene",
+  "shared_observed_gate": {
+    "accepted_cluster_rate": {
+      "mean": 0.9333333333333333,
+      "median": 1.0,
+      "n": 30,
+      "p90": 1.0
+    },
+    "accepted_outside_pose_threshold_cluster_rate": {
+      "mean": 0.0,
+      "median": 0.0,
+      "n": 30,
+      "p90": 0.0
+    },
+    "clusters": 30,
+    "events": 50
+  }
+}

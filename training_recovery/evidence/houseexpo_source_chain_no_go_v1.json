@@ -1,0 +1,124 @@
+{
+  "status": "houseexpo_source_chain_diagnostic_no_go_not_historical_recovery",
+  "test_outcomes_accessed": false,
+  "historical_geometry_frozen": false,
+  "source_inventory": {
+    "houses": 35126,
+    "train_houses": 28101,
+    "validation_houses": 7025,
+    "missing_json": 0,
+    "json_id_mismatches": 0,
+    "invalid_vertex_arrays": 0,
+    "duplicate_json_hash_groups": 0,
+    "building_overlap": 0,
+    "manifest_sha256": "e30d174731b5b2d6bf91ed7274d91977e1304f3c3ebbddf6123e072989c22223",
+    "summary_file_sha256": "ac016d0b12f42897ea93f2268fddd79f2786fc8fe2f91e9ec3af757eed5700bf"
+  },
+  "visible_source_filter": {
+    "rule": "world height plus width at least 1500 pixels after 16 pixels/m rendering and 10-pixel padding per side",
+    "eligible_houses": 45,
+    "eligible_train_houses": 36,
+    "eligible_validation_houses": 9,
+    "eligible_fraction": 0.0012811023173717475,
+    "rejected_train_houses": 28065,
+    "rejected_validation_houses": 7016,
+    "audit_file_sha256": "ecb73f1646c05bb646d95a5ad177b38ad6a25763d0fc6b517504bad863faa662"
+  },
+  "renderer_validation": {
+    "sampled_houses": 5,
+    "pixel_exact_houses": 5,
+    "different_pixels": 0,
+    "official_world_padding_recorded": true,
+    "official_three_iteration_obstacle_dilation_recorded": true,
+    "renderer_validation_file_sha256": "f7cc151a8e88b060eec0768ca082ce28f0af129c6256f9434787f514e0b808e7"
+  },
+  "new_5m_geometry_pilot": {
+    "status": "failed_geometry_smoke",
+    "generated_train_samples": 288,
+    "generated_validation_samples": 72,
+    "train_observation_channel_fractions": [
+      0.0009929868910047743,
+      0.8879465527004666,
+      0.11106046040852864
+    ],
+    "train_target_fraction": 0.4268842273288303,
+    "validation_target_fraction": 0.38070763481987846,
+    "summary_file_sha256": "217d5179801af7341a470aa218a9a2e2d42c6b4846dea6703a2c7225589a2e8f"
+  },
+  "accessible_official_simulator_diagnostic": {
+    "configuration": {
+      "window_m": 30,
+      "raw_size": 480,
+      "model_size": 256,
+      "pixels_per_meter": 16,
+      "laser_range_m": 15,
+      "actions_before_capture": 14,
+      "samples_requested_per_house": 8,
+      "maximum_attempts_per_house": 80,
+      "minimum_observed_obstacle_fraction": 0.0125,
+      "minimum_observed_free_fraction": 0.1,
+      "maximum_free_to_obstacle_ratio": 25.0
+    },
+    "requested_samples": 360,
+    "accepted_samples": 174,
+    "accepted_train_samples": 136,
+    "accepted_validation_samples": 38,
+    "total_attempts": 2812,
+    "rejected_attempts": 2638,
+    "acceptance_fraction": 0.06187766714082504,
+    "rejections": {
+      "observed_obstacle_below_minimum": 2451,
+      "free_to_obstacle_ratio_above_maximum": 187,
+      "observed_free_below_minimum": 0,
+      "early_exploration_completion": 0
+    },
+    "houses_with_all_8_samples": 19,
+    "train_houses_with_all_8_samples": 15,
+    "validation_houses_with_all_8_samples": 4,
+    "houses_with_zero_samples": 18,
+    "train_observation_channel_fractions": [
+      0.015012957005718955,
+      0.701331316380719,
+      0.2836557266135621
+    ],
+    "validation_observation_channel_fractions": [
+      0.015673428362573096,
+      0.6753266630116957,
+      0.30899990862573096
+    ],
+    "train_target_fraction": 0.41625871246936275,
+    "validation_target_fraction": 0.39640168128654973,
+    "manifest_sha256": "fdc38e25c38f9a846b87b6e4ddfd8b2d66dbe8dbf8948b0f4c189a58248eb888",
+    "summary_file_sha256": "2cbea7e3e44407c9b468f1faebd26d03c2bc8aefca6826ddb10232769c15a483"
+  },
+  "preserved_train_only_reference": {
+    "raw_size": 640,
+    "observation_channel_fractions": [
+      0.01555701904296875,
+      0.7289040576171875,
+      0.25553892333984374
+    ],
+    "target_fraction": 0.09820650634765625
+  },
+  "no_go_reasons": [
+    "The accessible source filter retains only 45 of 35126 houses and is inadequate for broad building generalization.",
+    "Only 19 of 45 eligible houses produced all eight requested samples within the frozen attempt budget.",
+    "Observation marginals align after the old save gate, but target occupancy remains about four times the preserved train-only value.",
+    "The accessible simulator produces raw 480-cell fields while the preserved archive contains raw 640-cell files; the missing intermediate transform is not recovered.",
+    "Marginal similarity cannot authenticate a historical generator, split, trainer, checkpoint, or selection log."
+  ],
+  "prospective_replacement": {
+    "protocol": "PROSPECTIVE_V2_PROTOCOL.md",
+    "candidate": "KTH-source-aligned train/validation-only smoke",
+    "launched": false,
+    "remote_syntax_check_passed": true,
+    "test_samples_generated": 0
+  },
+  "remote_process_cleanup": {
+    "campaign_pid_terminated": 1484265,
+    "postprocess_watcher_pid_terminated": 1959848,
+    "stale_teacher_child_reaped": 1751778,
+    "matching_recovery_processes_after_cleanup": 0,
+    "evidence_files_deleted": 0
+  }
+}

@@ -40,6 +40,19 @@ packages named in the dependency files are referenced as external dependencies;
 their source distributions are not vendored here. Each remains governed by its
 own upstream terms.
 
+## LaMa loss implementation and ADE20K perceptual weights
+
+The prospective full-objective benchmark records, but does not vendor, loss
+components from the castacks LaMa repository at revision
+`b61dcb33e063fe9586b50e2dc7b70f97d5046c1d`. The dependency hashes are listed
+in `experiments/unified_12_method_benchmark/lama_dependency_sha256.tsv`.
+LaMa retains its upstream licence and attribution.
+
+The corresponding ADE20K ResNet50Dilated perceptual weight file is an external
+runtime artifact. Its expected SHA-256 is recorded by the frozen experiment
+protocol, but the weight file is not distributed in this repository and is
+outside the BSD-3-Clause grant.
+
 ## Author-owned material, model artifacts and data
 
 Source and documentation owned by the MSO authors are released under the BSD

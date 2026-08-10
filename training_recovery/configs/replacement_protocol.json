@@ -1,0 +1,25 @@
+{
+  "status": "new_reconstructed_experiment_not_historical",
+  "protocol_version": 1,
+  "image_size": 256,
+  "batch_size": 16,
+  "num_workers": 8,
+  "maximum_epochs": 500,
+  "early_stopping_patience": 30,
+  "minimum_epochs_before_stopping": 50,
+  "learning_rate": 0.001,
+  "adam_betas": [0.5, 0.999],
+  "weight_decay": 0.0,
+  "mixed_precision": "float32",
+  "teacher_seed": 101,
+  "student_seeds": [11, 23, 37, 53, 71],
+  "loss_weights": {
+    "unknown_bce": 1.0,
+    "unknown_soft_dice": 0.5,
+    "full_bce": 0.25,
+    "feature_distillation": 0.25
+  },
+  "selection_metric": "validation_unknown_bce",
+  "selection_direction": "minimize",
+  "test_policy": "test split is evaluated only from the selected validation checkpoint"
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bidirectional ROS topic traffic-probe event",
+  "type": "object",
+  "required": [
+    "schema_version", "run_id", "session_id", "event", "timestamp_ns",
+    "source_robot_id", "target_robot_id", "topic", "clock_basis"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "run_id": {"type": "string", "minLength": 3},
+    "session_id": {"type": "string", "minLength": 1},
+    "event": {
+      "enum": [
+        "session_started", "sent", "received", "invalid_received",
+        "session_completed"
+      ]
+    },
+    "timestamp_ns": {"type": "integer", "minimum": 1},
+    "source_robot_id": {"type": "integer", "minimum": 0},
+    "target_robot_id": {"type": "integer", "minimum": 0},
+    "topic": {"type": "string", "pattern": "^/"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "sender_timestamp_ns": {"type": "integer", "minimum": 1},
+    "payload_bytes": {"type": "integer", "minimum": 1},
+    "rate_hz": {"type": "number", "exclusiveMinimum": 0},
+    "duration_s": {"type": "number", "exclusiveMinimum": 0},
+    "clock_basis": {"const": "system_utc"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"event": {"enum": ["sent", "received"]}}
+      },
+      "then": {
+        "required": ["sequence", "sender_timestamp_ns", "payload_bytes"]
+      }
+    },
+    {
+      "if": {"properties": {"event": {"const": "session_started"}}},
+      "then": {"required": ["rate_hz", "duration_s"]}
+    }
+  ],
+  "additionalProperties": true
+}
