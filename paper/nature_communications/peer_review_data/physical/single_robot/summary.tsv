@@ -1,0 +1,5 @@
+method	included_runs	excluded_runs	mean_unmasked_free_cell_support_m2	mean_duration_s
+MSO	2	0	32.80125	61.523
+MapEx	2	0	22.14750	87.549
+UPEN	2	0	25.73250	77.7595
+IG-Hector	1	1	22.08000	33.488

@@ -1,0 +1,4 @@
+input_type,method,positive_n,candidate_returned_n,rigid_valid_returned_n,numeric_error_n,translation_m_median,translation_m_q1,translation_m_q3,translation_m_p90,yaw_deg_median,yaw_deg_q1,yaw_deg_q3,yaw_deg_p90,translation_m_median_ci95_low,translation_m_median_ci95_high,translation_m_median_bootstrap_valid_n,yaw_deg_median_ci95_low,yaw_deg_median_ci95_high,yaw_deg_median_bootstrap_valid_n
+observed,OFFLINE_RIGID_OCCUPIED_SUPPORT_GATE_0.20,50,50,50,50,0.9999999999999999,0.9999999999999999,0.9999999999999999,1.0,15.0,15.0,15.0,15.0,0.9999999999999999,0.9999999999999999,10000,15.0,15.0,10000
+predicted,OFFLINE_RIGID_OCCUPIED_SUPPORT_GATE_0.20,50,50,50,50,0.9999999999999999,0.9999999999999999,1.0,1.0,15.0,15.0,15.0,15.0,0.9999999999999999,0.9999999999999999,10000,15.0,15.0,10000
+predicted_raw,OFFLINE_RIGID_OCCUPIED_SUPPORT_GATE_0.20,50,50,50,50,0.9999999999999999,0.9999999999999999,1.0,1.0,15.0,15.0,15.0,15.0,0.9999999999999999,1.0,10000,15.0,15.0,10000

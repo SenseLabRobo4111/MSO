@@ -1,0 +1,10 @@
+scene	method	coverage	occupied_cell_precision	duration_s
+1	MSO	0.9809	0.5076	111.8
+1	Frontier comparator	0.5063	0.5599	NA
+2	MSO	0.9802	0.2942	102.8
+2	Frontier comparator	0.4777	0.3267	NA
+3	MSO	0.9857	0.3661	97.9
+3	Frontier comparator	0.3715	0.4476	NA
+
+These are descriptive endpoint records with one run per method and scene. The
+submission figure labels this metric as occupied-cell precision, not IoU.

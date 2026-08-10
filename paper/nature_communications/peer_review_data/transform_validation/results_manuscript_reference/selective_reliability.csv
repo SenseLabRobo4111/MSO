@@ -1,0 +1,4 @@
+input_type,method,events_n,positive_n,negative_n,accepted_n,rejected_n,ta_n,fa_n,fa_per_accepted,fr_n,fr_per_positive,tr_n,gate_contract_violation_n,fa_per_accepted_ci95_low,fa_per_accepted_ci95_high,fa_per_accepted_bootstrap_valid_n,fr_per_positive_ci95_low,fr_per_positive_ci95_high,fr_per_positive_bootstrap_valid_n
+observed,MANUSCRIPT_RECONSTRUCTED_REFERENCE,100,50,50,50,50,50,0,0.0,0,0.0,50,0,0.0,0.0,10000,0.0,0.0,10000
+predicted,MANUSCRIPT_RECONSTRUCTED_REFERENCE,100,50,50,52,48,43,9,0.17307692307692307,7,0.14,41,0,0.0,0.36923913043478246,10000,0.0,0.3137254901960784,10000
+predicted_raw,MANUSCRIPT_RECONSTRUCTED_REFERENCE,100,50,50,47,53,46,1,0.02127659574468085,3,0.06,50,0,0.0,0.06976744186046512,10000,0.0,0.1956521739130435,10000

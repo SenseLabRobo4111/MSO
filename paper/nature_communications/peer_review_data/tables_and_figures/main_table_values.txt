@@ -1,0 +1,46 @@
+SUPPLEMENTARY TABLE 5 AND MAIN FIGURE 3: LOCAL MAP PREDICTION
+method	parameters	operations_million	PSNR	SSIM	LPIPS	FID	KID
+U-Net	31040000	54740.000	12.048	0.796	0.238	61.832	0.057
+LaMa-Fourier	27000000	66000.503	9.485	0.700	0.303	132.754	0.124
+MI-GAN	5950000	11024.197	10.067	0.637	0.403	274.933	0.307
+MSO	342771	336.151	12.988	0.808	0.216	61.513	0.054
+Full	342771	336.151	12.988	0.808	0.216	61.513	0.054
+w/o adversarial	342771	336.151	12.955	0.808	0.216	68.915	0.061
+w/o distillation	342771	336.151	12.951	0.810	0.216	74.313	0.068
+w/o adversarial + distillation	342771	336.151	12.954	0.811	0.219	84.886	0.083
+w/o FFC	304000	286.742	12.821	0.803	0.237	99.563	0.098
+
+MAIN TABLE 1: MAP FUSION OVERLAP
+map	algorithm	success_rate	distance_sd	distance_mean	RMSE	SSIM	Dice
+Predicted	ORB-improved	0.125	79.890	215.806	0.797	0.944	0.588
+Predicted	ORB	0.117	77.139	209.672	0.849	0.947	0.510
+Predicted	ICP	0.000	-1	-1	1.063	0.920	0.448
+Observed	ORB-improved	0.059	62.327	196.589	0.765	0.978	0.579
+Observed	ORB	0.042	73.002	200.073	0.857	0.974	0.533
+Observed	ICP	0.000	-1	-1	1.171	0.960	0.326
+Simulated	ORB-improved	0.844	105.238	305.470	0.347	0.970	0.911
+Simulated	ORB	0.799	101.835	297.274	0.412	0.961	0.883
+Simulated	ICP	0.001	0.000	100.180	0.967	0.891	0.575
+
+SUPPLEMENTARY TABLE 6A AND MAIN FIGURE 4: RETURNED POSITIVE CANDIDATES
+input	positive_n	candidate_returned_n	rigid_valid_n	translation_median_m	translation_q1_m	translation_q3_m	translation_p90_m	yaw_median_deg	yaw_q1_deg	yaw_q3_deg	yaw_p90_deg
+Observed	50	50	50	0.040	0.024	0.061	0.072	0.023	0.011	0.040	0.080
+Thresholded prediction	50	50	45	0.052	0.031	0.079	0.143	0.052	0.028	0.118	0.193
+Probability-preserving	50	50	49	0.047	0.029	0.078	0.108	0.066	0.023	0.110	0.146
+
+SUPPLEMENTARY TABLE 6B AND MAIN FIGURE 4: OFFLINE PRE-COMMIT DECISIONS
+input	positive_n	negative_n	accepted_n	rejected_n	true_accept_n	false_accept_n	false_reject_n	true_reject_n
+Observed	50	50	50	50	50	0	0	50
+Thresholded prediction	50	50	52	48	43	9	7	41
+Probability-preserving	50	50	47	53	46	1	3	50
+
+SUPPLEMENTARY TABLE 6C AND MAIN FIGURE 4: FIXED WRONG-TRANSFORM INJECTION
+challenge	proposal_n	accepted_n	rejected_n	safe_reject_n	wrong_commit_n	mutation_after_reject_n
+1.0 m and 15 deg	150	0	150	150	0	0
+
+MAIN TABLE 2: FUSION COMPONENT ABLATION
+variant	success_rate	Dice	RMSE	SSIM
+Full ORB-improved	0.125	0.588	0.797	0.944
+w/o ambiguity weighting	0.118	0.534	0.831	0.942
+w/o multi-scale	0.121	0.572	0.842	0.934
+w/o staged RANSAC	0.106	0.575	0.819	0.941

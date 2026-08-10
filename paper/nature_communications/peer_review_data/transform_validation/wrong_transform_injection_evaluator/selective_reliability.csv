@@ -1,0 +1,4 @@
+input_type,method,events_n,positive_n,negative_n,accepted_n,rejected_n,ta_n,fa_n,fa_per_accepted,fr_n,fr_per_positive,tr_n,gate_contract_violation_n,fa_per_accepted_ci95_low,fa_per_accepted_ci95_high,fa_per_accepted_bootstrap_valid_n,fr_per_positive_ci95_low,fr_per_positive_ci95_high,fr_per_positive_bootstrap_valid_n
+observed,OFFLINE_RIGID_OCCUPIED_SUPPORT_GATE_0.20,50,50,0,0,50,0,0,,50,1.0,0,0,,,0,1.0,1.0,10000
+predicted,OFFLINE_RIGID_OCCUPIED_SUPPORT_GATE_0.20,50,50,0,0,50,0,0,,50,1.0,0,0,,,0,1.0,1.0,10000
+predicted_raw,OFFLINE_RIGID_OCCUPIED_SUPPORT_GATE_0.20,50,50,0,0,50,0,0,,50,1.0,0,0,,,0,1.0,1.0,10000
