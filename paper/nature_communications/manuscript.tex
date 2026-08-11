@@ -164,7 +164,36 @@ The evaluation addresses five bounded questions: historical prediction quality a
 The historical experiment record reports fitting on 5{,}385 and evaluating on 1{,}356 held-out local crops ($256\times256$) with Adam (lr~$=10^{-3}$, 500 epochs). Baselines are U-Net~\citep{ronneberger2015u}, LaMa-Fourier~\citep{suvorov2021resolution} and distilled MI-GAN~\citep{sargsyan2023mi}. PSNR, SSIM and LPIPS~\citep{zhang2018perceptual} are computed per complete output after observed free and occupied cells have been copied unchanged from the input; FID~\citep{heusel2017gans,obukhov2020torchfidelity} and KID~\citep{obukhov2020torchfidelity,binkowski2018demystifying} are computed over the same set of complete outputs. Observed cells account for 51.1\% of pixels on average and are identical by construction. Uncertain-region-only metrics were not retained, so these whole-crop image scores may partly reflect copied observations and do not directly measure topology, obstacle recall or navigation safety. The selected models are component baselines, not a comprehensive predictive-exploration comparison. Methods gives the reported configuration and the unresolved provenance boundary.
 
 
-\paragraph{Results.} Figure~\ref{fig:resource-profile} and Supplementary Table~5 summarise the whole-crop results; Fig.~\ref{fig:map-results}(a) and Supplementary Fig.~3 show qualitative examples. MSO has 342{,}771 parameters; U-Net and LaMa-Fourier have 31.040M and 27.000M parameters, approximately 90.6 and 78.8 times as many, respectively. The archived model profiles contain 336.151 million operation entries for MSO, 54{,}740.000 million for U-Net and 66{,}000.503 million for LaMa-Fourier. Relative to MSO, the retained MI-GAN profile contains 17.4 times as many parameters and 32.8 times as many operation entries (Fig.~\ref{fig:resource-profile}c). Here, ``operation entry'' labels only the scalar stored by the static profile at the reported input size. The profiler name, version and multiply--accumulate convention were not retained, so the entries are not interpreted as MACs or FLOPs. In the single retained training run for each method, MSO has reported whole-crop point values of 12.99 PSNR, 0.808 SSIM, 0.216 LPIPS, 61.51 FID and 0.054 KID (Fig.~\ref{fig:resource-profile}d and Supplementary Table~5). Neither recovered student-weight candidate is identified as the checkpoint that produced these values. Training-seed uncertainty and the stability of the ordering were not assessed, and no inferential claim is made for small numerical differences. Removing FFC produces the largest descriptive change among the retained ablation point estimates. The archived timing record lists approximately 2\,ms for LiDAR rasterisation and 3\,ms for prediction refresh on the recurring path. A peer-encounter fusion event has a separately reported total of 40--60\,ms (Fig.~\ref{fig:resource-profile}f). These are operational values without repeated timing distributions.
+\paragraph{Results.} Figure~\ref{fig:resource-profile} and Table~\ref{tab:prediction-results} summarise the whole-crop results; Fig.~\ref{fig:map-results}(a) and Supplementary Fig.~3 show qualitative examples. MSO has 342{,}771 parameters; U-Net and LaMa-Fourier have 31.040M and 27.000M parameters, approximately 90.6 and 78.8 times as many, respectively. The archived model profiles contain 336.151 million operation entries for MSO, 54{,}740.000 million for U-Net and 66{,}000.503 million for LaMa-Fourier. Relative to MSO, the retained MI-GAN profile contains 17.4 times as many parameters and 32.8 times as many operation entries (Fig.~\ref{fig:resource-profile}c). Here, ``operation entry'' labels only the scalar stored by the static profile at the reported input size. The profiler name, version and multiply--accumulate convention were not retained, so the entries are not interpreted as MACs or FLOPs. In the single retained training run for each method, MSO has reported whole-crop point values of 12.99 PSNR, 0.808 SSIM, 0.216 LPIPS, 61.51 FID and 0.054 KID (Fig.~\ref{fig:resource-profile}d and Table~\ref{tab:prediction-results}). Neither recovered student-weight candidate is identified as the checkpoint that produced these values. Training-seed uncertainty and the stability of the ordering were not assessed, and no inferential claim is made for small numerical differences. Removing FFC produces the largest descriptive change among the retained ablation point estimates. The archived timing record lists approximately 2\,ms for LiDAR rasterisation and 3\,ms for prediction refresh on the recurring path. A peer-encounter fusion event has a separately reported total of 40--60\,ms (Fig.~\ref{fig:resource-profile}f). These are operational values without repeated timing distributions.
+
+\begin{table}[!htbp]
+	\centering
+	\caption{\textbf{Historical local map prediction comparison and ablation.} Parameters and archived static-profile operation entries accompany whole-crop image-quality point estimates. Observed free and occupied cells, comprising 51.1\% of pixels on average, are copied unchanged before evaluation. Values come from one retained training run per method or variant; the exact split manifest and manuscript checkpoint were not recovered, training-seed uncertainty was not assessed, and no inferential ranking is intended. The profiler convention was not retained, so operation entries support within-table comparison only and are not labelled as MACs or FLOPs.}
+	\label{tab:prediction-results}
+	\begingroup
+	\setlength{\tabcolsep}{2.3pt}
+	\renewcommand{\arraystretch}{1.06}
+	\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xrrrrrrr@{}}
+		\toprule
+		\multicolumn{8}{@{}l}{\textbf{a, Evaluated prediction models}} \\
+		\rowcolor{TableHeader}
+		\textbf{Method} & \shortstack{\textbf{Params}\\$\downarrow$} & \shortstack{\textbf{Operation entries}\\\textbf{(millions)} $\downarrow$} & \shortstack{\textbf{PSNR}\\$\uparrow$} & \shortstack{\textbf{SSIM}\\$\uparrow$} & \shortstack{\textbf{LPIPS}\\$\downarrow$} & \shortstack{\textbf{FID}\\$\downarrow$} & \shortstack{\textbf{KID}\\$\downarrow$} \\
+		\midrule
+		U-Net & 31.040M & 54740.000 & 12.048 & 0.796 & 0.238 & 61.832 & 0.057 \\
+		LaMa-Fourier & 27.000M & 66000.503 & 9.485 & 0.700 & 0.303 & 132.754 & 0.124 \\
+		MI-GAN & 5.950M & 11024.197 & 10.067 & 0.637 & 0.403 & 274.933 & 0.307 \\
+		MSO & 342.8K & 336.151 & 12.988 & 0.808 & 0.216 & 61.513 & 0.054 \\
+		\midrule
+		\multicolumn{8}{@{}l}{\textbf{b, MSO component ablations}} \\
+		Full & 342.8K & 336.151 & 12.988 & 0.808 & 0.216 & 61.513 & 0.054 \\
+		w/o adversarial & 342.8K & 336.151 & 12.955 & 0.808 & 0.216 & 68.915 & 0.061 \\
+		w/o distillation & 342.8K & 336.151 & 12.951 & 0.810 & 0.216 & 74.313 & 0.068 \\
+		w/o adversarial + distillation & 342.8K & 336.151 & 12.954 & 0.811 & 0.219 & 84.886 & 0.083 \\
+		w/o FFC & 304K & 286.742 & 12.821 & 0.803 & 0.237 & 99.563 & 0.098 \\
+		\bottomrule
+	\end{tabularx}
+	\endgroup
+\end{table}
 
 \begin{figure}[htbp]
 	\centering
@@ -175,11 +204,12 @@ The historical experiment record reports fitting on 5{,}385 and evaluating on 1{
 
 \begin{table}[!htbp]
 	\centering
-	\caption{\textbf{Map fusion comparison on predicted, observed and simulated maps.} Success rate (SR) denotes the fraction of pairs whose post-registration Dice exceeds 0.83. Legacy RMSE, SSIM and Dice are descriptive post-warp summaries over all pairs; they do not directly measure relative-pose error. The archived source does not preserve the raster scaling used for RMSE, so its unitless values support within-table description only.}
+	\caption{\textbf{Map fusion comparison and component ablation.} \emph{a}, Predicted, observed and simulated map comparisons. Success rate (SR) denotes the fraction of pairs whose post-registration Dice exceeds 0.83. \emph{b}, Component ablation on matched inputs from the predicted-map split. Legacy RMSE, SSIM and Dice are descriptive post-warp summaries; they do not directly measure relative-pose error. The archived source does not preserve the raster scaling used for RMSE, so its unitless values support within-table description only. All ablation values are point estimates without uncertainty intervals or inferential ranking.}
 	\label{tab:fusion-results}
 	\MSOTableSetup
 	\begin{tabularx}{\textwidth}{@{}l>{\raggedright\arraybackslash}Xrrrr@{}}
 		\toprule
+		\multicolumn{6}{@{}l}{\textbf{a, Map and registration-algorithm comparison}} \\
 		\rowcolor{TableHeader}
 		\textbf{Map} & \textbf{Algorithm} & \shortstack{\textbf{SR}\\$\uparrow$} & \shortstack{\textbf{Legacy RMSE}\\$\downarrow$} & \shortstack{\textbf{SSIM}\\$\uparrow$} & \shortstack{\textbf{Dice}\\$\uparrow$} \\
 		\midrule
@@ -196,12 +226,25 @@ The historical experiment record reports fitting on 5{,}385 and evaluating on 1{
 		          & ICP                 & 0.001          & 0.967          & 0.891          & 0.575 \\
 		\bottomrule
 	\end{tabularx}
+	\vspace{0.5em}
+	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
+		\toprule
+		\multicolumn{5}{@{}l}{\textbf{b, Predicted-map component ablation}} \\
+		\rowcolor{TableHeader}
+		\textbf{Variant} & \textbf{SR} $\uparrow$ & \textbf{Dice} $\uparrow$ & \textbf{Legacy RMSE} $\downarrow$ & \textbf{SSIM} $\uparrow$ \\
+		\midrule
+		Full (ORB-improved) & 0.125 & 0.588 & 0.797 & 0.944 \\
+		w/o ambiguity-heuristic weighting & 0.118 & 0.534 & 0.831 & 0.942 \\
+		w/o multi-scale & 0.121 & 0.572 & 0.842 & 0.934 \\
+		w/o staged RANSAC & 0.106 & 0.575 & 0.819 & 0.941 \\
+		\bottomrule
+	\end{tabular*}
 \end{table}
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{figure_transform_audit.pdf}
-	\caption{\textbf{Controlled offline relative-pose and pre-commit acceptance audit.} \emph{a,b}, Empirical cumulative distributions of translation and absolute yaw error for rigid-valid candidates from positive encounters; dashed markers denote the analysis limits. \emph{c}, Pre-commit outcomes for 50 positive and 50 predeclared low-support events per representation; low-support events have no unique pose-error label. \emph{d}, Scores for 150 fixed-error proposals, all rejected below the 0.20 gate before simulated mutation. \emph{e}, Event-level scores for positive (left) and low-support (right) strata; points show events and boxes show median, interquartile range and 1.5-interquartile-range whiskers. \emph{f}, Events reaching each staged-RANSAC configuration. This single-scene audit uses a reconstructed reference implementation, not the deployed executable. Detailed values are in Supplementary Table~6 and the source-data archive.}
+	\caption{\textbf{Controlled offline relative-pose and pre-commit acceptance audit.} \emph{a,b}, Empirical cumulative distributions of translation and absolute yaw error for rigid-valid candidates from positive encounters; dashed markers denote the analysis limits. \emph{c}, Pre-commit outcomes for 50 positive and 50 predeclared low-support events per representation; low-support events have no unique pose-error label. \emph{d}, Scores for 150 fixed-error proposals, all rejected below the 0.20 gate before simulated mutation. \emph{e}, Event-level scores for positive (left) and low-support (right) strata; points show events and boxes show median, interquartile range and 1.5-interquartile-range whiskers. \emph{f}, Events reaching each staged-RANSAC configuration. This single-scene audit uses a reconstructed reference implementation, not the deployed executable. Detailed values are in Supplementary Table~5 and the source-data archive.}
 	\label{fig:transform-audit}
 \end{figure}
 
@@ -225,11 +268,11 @@ We evaluate fusion on all 1{,}356 held-out samples (resized to $640{\times}640$)
 
 \paragraph{Direct transform correctness and selective reliability.}
 For this audit, a \emph{candidate} is a returned transform, an \emph{acceptance} is the gate decision before any persistent state change, a \emph{commit} would mutate persistent map or planner state, and \emph{recovery} would require detecting and reversing or otherwise clearing an incorrect committed mutation. The controlled experiments below evaluate candidates and offline pre-commit decisions; they do not execute commits or test recovery.
-In the controlled offline stress test, the probability-preserving predicted-grid input gives median translation and yaw errors of 0.047\,m (95\% base-frame-cluster bootstrap interval 0.037--0.062\,m) and 0.066$^{\circ}$ (0.043--0.089$^{\circ}$), with P90 values of 0.108\,m and 0.146$^{\circ}$ (Fig.~\ref{fig:transform-audit}a,b; Supplementary Table~6). Under the 0.25\,m and 5$^{\circ}$ analysis tolerances, the offline pre-commit acceptance gate accepts 47 and rejects 53 of its 100 positive and \mbox{low-support} events: 46 positives are accepted within both limits, one accepted positive lies outside the translation limit, three positives are rejected, and all 50 predeclared \mbox{low-support} cases are rejected. The separately evaluated thresholded-prediction set accepts 43 positives within both limits, rejects seven positives, and accepts 9 of 50 \mbox{low-support} cases. Observed occupancy gives the lowest median errors, accepts all 50 positives within both limits, and rejects all 50 \mbox{low-support} cases in its selected set; the audit therefore does not show that predicted grids improve registration over observed maps. These are scene-limited, correlated offline events rather than independent buildings or online robot encounters, and a zero count is not interpreted as zero population risk. Acceptance is an offline decision before any commit and is not evidence that persistent robot state was updated.
+In the controlled offline stress test, the probability-preserving predicted-grid input gives median translation and yaw errors of 0.047\,m (95\% base-frame-cluster bootstrap interval 0.037--0.062\,m) and 0.066$^{\circ}$ (0.043--0.089$^{\circ}$), with P90 values of 0.108\,m and 0.146$^{\circ}$ (Fig.~\ref{fig:transform-audit}a,b; Supplementary Table~5). Under the 0.25\,m and 5$^{\circ}$ analysis tolerances, the offline pre-commit acceptance gate accepts 47 and rejects 53 of its 100 positive and \mbox{low-support} events: 46 positives are accepted within both limits, one accepted positive lies outside the translation limit, three positives are rejected, and all 50 predeclared \mbox{low-support} cases are rejected. The separately evaluated thresholded-prediction set accepts 43 positives within both limits, rejects seven positives, and accepts 9 of 50 \mbox{low-support} cases. Observed occupancy gives the lowest median errors, accepts all 50 positives within both limits, and rejects all 50 \mbox{low-support} cases in its selected set; the audit therefore does not show that predicted grids improve registration over observed maps. These are scene-limited, correlated offline events rather than independent buildings or online robot encounters, and a zero count is not interpreted as zero population risk. Acceptance is an offline decision before any commit and is not evidence that persistent robot state was updated.
 The event-level score distributions and stage counts are exposed in Fig.~\ref{fig:transform-audit}e,f: among 100 events per representation, the loosest 10-pixel/3\% RANSAC stage is reached by 50 observed, 53 thresholded-prediction and 47 probability-preserving events. These counts describe the reconstructed audit path and are not a comparison of deployed computational cost.
 
 \paragraph{Offline pre-commit rejection under erroneous proposals.}
-We separately inject a fixed 1.0\,m and 15$^{\circ}$ error into 150 positive proposals. The ground-truth-free observed-support gate rejects all 150 before the harness's simulated atomic OR-merge; the harness target-mask hash remains unchanged and the changed-cell count is zero for every rejection (Fig.~\ref{fig:transform-audit}d; Supplementary Table~6). Feature matching is bypassed in this test. The result characterises the offline harness at the injected error level only and does not establish deployed commit behaviour, rollback or recovery.
+We separately inject a fixed 1.0\,m and 15$^{\circ}$ error into 150 positive proposals. The ground-truth-free observed-support gate rejects all 150 before the harness's simulated atomic OR-merge; the harness target-mask hash remains unchanged and the changed-cell count is zero for every rejection (Fig.~\ref{fig:transform-audit}d; Supplementary Table~5). Feature matching is bypassed in this test. The result characterises the offline harness at the injected error level only and does not establish deployed commit behaviour, rollback or recovery.
 
 \paragraph{Offline replay of the legacy deployment path.}
 We also replay the recovered 2025 deployment source on ten archived two-robot bags. The replay exactly reproduces 1{,}325 of 1{,}485 recorded merged-map publications (89.2\%), but the bags contain neither transform nor acceptance-decision topics. Raster equality therefore cross-checks the replayed output without establishing transform correctness. The legacy partial-affine path does not enforce a proper unit-scale SE(2) model. Among exactly reproduced publications, 1{,}263 of 1{,}325 associated candidates fail the near-unit SE(2) structural test, and none passes structure together with the 0.25\,m and 5$^{\circ}$ diagnostic. A frozen counterfactual rigid estimator and gate return eight offline pre-commit acceptances among 1{,}644 cached-map callbacks; none satisfy the 0.25\,m and 5$^{\circ}$ limits, and two satisfy 0.50\,m and 10$^{\circ}$. Persistent-state commit remains disabled, giving zero recommended commits. This gate was not deployed, and the bag set cannot establish online relative-pose reliability, encounter-level false-accept or false-reject rates, rollback, or recovery.
@@ -275,25 +318,7 @@ Two self-built mobile robots (Livox Mid-360 LiDAR projected to a two-dimensional
 
 \subsection{Fusion component ablation} \label{sec:fusion-component-results}
 
-\begin{table}[!htbp]
-	\centering
-	\caption{\textbf{Fusion component ablation on the predicted-map split.} We report success rate (Dice$>0.83$), mean Dice, legacy unitless RMSE and SSIM. Values are descriptive point estimates on matched inputs; no typographic emphasis or inferential ranking is intended.}
-	\label{tab:fusion-ablation}
-	\MSOTableSetup
-	\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
-			\toprule
-			\rowcolor{TableHeader}
-			\textbf{Variant}                          & \textbf{Success rate} $\uparrow$ & \textbf{Dice} $\uparrow$ & \textbf{Legacy RMSE} $\downarrow$ & \textbf{SSIM} $\uparrow$ \\
-			\midrule
-			Full (ORB-improved)                       & 0.125                            & 0.588                    & 0.797                       & 0.944                    \\
-			w/o ambiguity-heuristic weighting         & 0.118                            & 0.534                    & 0.831                      & 0.942                    \\
-			w/o multi-scale                           & 0.121                            & 0.572                    & 0.842                      & 0.934                    \\
-			w/o staged RANSAC                         & 0.106                            & 0.575                    & 0.819                      & 0.941                    \\
-			\bottomrule
-	\end{tabular*}
-\end{table}
-
-Disabling ambiguity-heuristic weighting changes Dice from $0.588$ to $0.534$. Removing the $0.5{\times}$ and $0.25{\times}$ feature pools changes legacy RMSE from $0.797$ to $0.842$ and SSIM from $0.944$ to $0.934$. Replacing staged RANSAC with one relaxed pass changes the strict success rate from $0.125$ to $0.106$. No uncertainty interval or hypothesis test is available, so these point differences are not interpreted as statistically established rankings.
+Panel~b of Table~\ref{tab:fusion-results} reports the fusion component ablation. Disabling ambiguity-heuristic weighting changes Dice from $0.588$ to $0.534$. Removing the $0.5{\times}$ and $0.25{\times}$ feature pools changes legacy RMSE from $0.797$ to $0.842$ and SSIM from $0.944$ to $0.934$. Replacing staged RANSAC with one relaxed pass changes the strict success rate from $0.125$ to $0.106$. No uncertainty interval or hypothesis test is available, so these point differences are not interpreted as statistically established rankings.
 The conference draft also reported a 200-clip streaming temporal-prior row. Its source record was not recovered, so that row is disclosed here but omitted from the quantitative table rather than reconstructed from the earlier typeset values alone.
 
 \subsection{Generalisation and scaling boundaries} \label{app:scaling}
@@ -438,7 +463,7 @@ The archived reference implementation is reconstructed from the specification, n
 
 Define $\mathbf{T}_{i\leftarrow j}\in\mathrm{SE}(2)$ from source $j$ to target $i$. For estimate $\widehat{\mathbf T}$ and saved perturbation inverse $\mathbf T^{\star}$, $\mathbf E=(\mathbf T^{\star})^{-1}\widehat{\mathbf T}$. Translation and yaw errors are $e_t=\|\operatorname{trans}(\mathbf E)\|_2$ and $e_{\psi}=|\operatorname{wrap}(\operatorname{atan2}(E_{21},E_{11}))|$; analysis limits are 0.25\,m and 5$^{\circ}$. Without reading ground truth, the offline pre-commit acceptance gate requires positive determinant, both singular values within 0.02 of one, RANSAC inlier ratio at least 0.20 and observed occupied-support overlap at least 0.20 after warping. Predicted inputs are checked against companion observed grids, so generated structure alone cannot authorise acceptance. Accepted affines are projected to the nearest rotation while retaining translation; invalid candidates are rejected.
 
-Let $A$ denote an offline pre-commit acceptance, $P$ a positive encounter and $C$ a positive whose transform is within both analysis limits. For positives, Fig.~\ref{fig:transform-audit}c and Supplementary Table~6 report $A\cap C$ as a correct accept, $A\cap\neg C$ as an out-of-limit accept, and $\neg A\cap P$ as a positive reject. The low-support temporal-mismatch cases do not have a unique ground-truth transform and are predeclared abstention challenges; their accepted and rejected counts are reported separately rather than interpreted as transform errors. Candidate return, rigid validity, offline pre-commit acceptance and persistent-map commit are separate log fields. Acceptance in this test does not claim that the deployed robot updated persistent state.
+Let $A$ denote an offline pre-commit acceptance, $P$ a positive encounter and $C$ a positive whose transform is within both analysis limits. For positives, Fig.~\ref{fig:transform-audit}c and Supplementary Table~5 report $A\cap C$ as a correct accept, $A\cap\neg C$ as an out-of-limit accept, and $\neg A\cap P$ as a positive reject. The low-support temporal-mismatch cases do not have a unique ground-truth transform and are predeclared abstention challenges; their accepted and rejected counts are reported separately rather than interpreted as transform errors. Candidate return, rigid validity, offline pre-commit acceptance and persistent-map commit are separate log fields. Acceptance in this test does not claim that the deployed robot updated persistent state.
 
 \paragraph{Wrong-transform offline pre-commit rejection protocol.}\label{app:transform-safety}
 We test the failure path independently of feature matching by adding exactly 1.0\,m of target-frame translation and 15$^{\circ}$ of yaw error to each of the 150 positive proposals; error signs are fixed by the SHA-256 hash of the event identifier. Ground truth constructs and scores the perturbation but is not supplied to the gate. Because matching is bypassed, only the proper-rigid and observed-support checks apply. The harness starts from the target occupied mask and simulates an atomic OR-merge only after offline pre-commit acceptance. Every rejection requires an identical pre/post hash and zero changed cells. Rejections before mutation and incorrect simulated commits are reported separately. No rollback is implemented, so no post-commit recovery rate or time is reported.

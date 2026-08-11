@@ -145,32 +145,6 @@ Lei Mu, Bokui Chen, Xueqian Wang, Qi Wei and Fei Qiao}}
   \end{tabular*}
 \end{table}
 
-\begin{table}[htbp]
-  \centering
-  \caption{\textbf{Local map prediction comparison and ablation.} ``Operations'' reproduces the common profiler output in millions. The archived profiler output does not specify whether a multiply--accumulate is counted as one or two operations, so the values are used only for within-table comparison and are not labelled as FLOPs or MACs. All values are point estimates from one retained training run per method or variant.}
-  \begingroup
-  \setlength{\tabcolsep}{2.3pt}
-  \renewcommand{\arraystretch}{1.06}
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xrrrrrrr@{}}
-    \toprule
-    \rowcolor{TableHeader}
-    \textbf{Method} & \shortstack{\textbf{Params}\\$\downarrow$} & \shortstack{\textbf{Operations}\\$\downarrow$} & \shortstack{\textbf{PSNR}\\$\uparrow$} & \shortstack{\textbf{SSIM}\\$\uparrow$} & \shortstack{\textbf{LPIPS}\\$\downarrow$} & \shortstack{\textbf{FID}\\$\downarrow$} & \shortstack{\textbf{KID}\\$\downarrow$} \\
-    \midrule
-    U-Net & 31.040M & 54740.000 & 12.048 & 0.796 & 0.238 & 61.832 & 0.057 \\
-    LaMa-Fourier & 27.000M & 66000.503 & 9.485 & 0.700 & 0.303 & 132.754 & 0.124 \\
-    MI-GAN & 5.950M & 11024.197 & 10.067 & 0.637 & 0.403 & 274.933 & 0.307 \\
-    MSO & 342.8K & 336.151 & 12.988 & 0.808 & 0.216 & 61.513 & 0.054 \\
-    \midrule
-    Full & 342.8K & 336.151 & 12.988 & 0.808 & 0.216 & 61.513 & 0.054 \\
-    w/o adversarial & 342.8K & 336.151 & 12.955 & 0.808 & 0.216 & 68.915 & 0.061 \\
-    w/o distillation & 342.8K & 336.151 & 12.951 & 0.810 & 0.216 & 74.313 & 0.068 \\
-    w/o adversarial + distillation & 342.8K & 336.151 & 12.954 & 0.811 & 0.219 & 84.886 & 0.083 \\
-    w/o FFC & 304K & 286.742 & 12.821 & 0.803 & 0.237 & 99.563 & 0.098 \\
-    \bottomrule
-  \end{tabularx}
-  \endgroup
-\end{table}
-
 \begin{table}[H]
   \centering
   \caption{\textbf{Controlled offline relative-pose accuracy and selective reliability.} The archived reference implementation was reconstructed from the algorithm specification and was not replayed from the deployed executable. The selected one-scene test contains 50 known-transform positive encounters and 50 predeclared within-scene low-support abstention cases per input representation. Panel A includes every returned positive candidate before the gate; ``candidate/rigid'' gives all returned affines and the subset satisfying the near-unit SE(2) check. Errors are median [interquartile range] and P90. Panel B separates positive decisions from decisions on low-support cases, which have no unique pose-error label. Panel C bypasses feature matching and applies a fixed 1.0\,m and 15$^{\circ}$ error before a simulated atomic commit.}
@@ -252,11 +226,11 @@ Lei Mu, Bokui Chen, Xueqian Wang, Qi Wei and Fei Qiao}}
 \vspace{-0.25em}
 The historical experiment record reports 5{,}385 fitting crops, 1{,}356 held-out crops and 500 training epochs. It gives Adam $\beta_1=0.5$ and $\beta_2=0.999$. The exact sample-level split manifest, historical training entry, checkpoint-selection trace, several historical loss modules and manuscript checkpoint were not recovered. The closest preserved data archive contains 6{,}841 train-labelled and 1{,}463 test-labelled samples. These labels document the preserved directory structure and are not treated as a reconstruction of the manuscript split. A hash-verified inventory found no exact processed duplicate across the preserved labels, but the available identifiers do not support a reliable floorplan or building audit.
 
-Two recovered generator-weight candidates strictly load into the reported 342{,}771-parameter student architecture. Both originate from epoch-499 checkpoints with global step 72{,}000, but neither is identified as the checkpoint used for Supplementary Table~5 or another manuscript result. Their embedded optimizer states use Adam betas $(0.0,0.99)$, which conflict with the historical setting reported above. The public reconstruction therefore preserves both records without resolving the difference by assumption. Its training and evaluation entry is a forward reconstruction; any values produced with it must be labelled reconstructed and kept separate from the historical point estimates.
+Two recovered generator-weight candidates strictly load into the reported 342{,}771-parameter student architecture. Both originate from epoch-499 checkpoints with global step 72{,}000, but neither is identified as the checkpoint used for the main-text local map prediction table or another manuscript result. Their embedded optimizer states use Adam betas $(0.0,0.99)$, which conflict with the historical setting reported above. The public reconstruction therefore preserves both records without resolving the difference by assumption. Its training and evaluation entry is a forward reconstruction; any values produced with it must be labelled reconstructed and kept separate from the historical point estimates.
 
 \subsection*{Supplementary Note 2: offline replay of the deployment registrar}
 \vspace{-0.25em}
-The deployment-source audit is distinct from the controlled one-scene test in Supplementary Table~6. We replayed the recovered 2025 source on ten archived two-robot bags and exactly reproduced 1{,}325 of 1{,}485 recorded merged-map publications (89.2\%). The bags contain merged rasters but no transform or acceptance-decision topic. Exact raster equality therefore verifies many replayed outputs without recovering the transform or decision that produced each publication.
+The deployment-source audit is distinct from the controlled one-scene test in Supplementary Table~5. We replayed the recovered 2025 source on ten archived two-robot bags and exactly reproduced 1{,}325 of 1{,}485 recorded merged-map publications (89.2\%). The bags contain merged rasters but no transform or acceptance-decision topic. Exact raster equality therefore verifies many replayed outputs without recovering the transform or decision that produced each publication.
 
 The legacy path estimates a partial affine and does not enforce a proper unit-scale two-dimensional rigid-body-group SE(2) constraint before publication. Among the 1{,}325 exactly reproduced publications, 1{,}263 associated candidates fail the near-unit SE(2) structural test and none passes structure together with the 0.25\,m and 5$^{\circ}$ diagnostic. We consequently tested a counterfactual proper-rigid estimator, a local gate and temporal consensus. Thresholds were fixed after inspecting \texttt{sense1-1}; the other nine bags were then held out from threshold development. Across 1{,}644 cached-map callbacks, the frozen audit produced eight counterfactual pre-commit acceptances after temporal consensus. None was within 0.25\,m and 5$^{\circ}$ of the UAV-derived reference, and two were within 0.50\,m and 10$^{\circ}$. Persistent-state commit remained disabled, yielding zero commits and 1{,}644 recommended rejections for this archive.
 
