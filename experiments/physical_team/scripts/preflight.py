@@ -108,7 +108,7 @@ def main() -> int:
     robots = config.get('robots', [])
     checks.append(check(
         'team roster',
-        team_size in (2, 3, 5) and len(robots) == team_size,
+        team_size in (2, 3, 4, 5) and len(robots) == team_size,
         {'team_size': team_size, 'roster_count': len(robots)}))
     checks.append(check(
         'placeholders replaced', not contains_placeholder(config),

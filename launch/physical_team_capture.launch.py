@@ -14,8 +14,8 @@ RUN_ID_PATTERN = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]{2,79}$')
 
 def _capture_setup(context):
     team_size = int(LaunchConfiguration('team_size').perform(context))
-    if team_size not in (2, 3, 5):
-        raise ValueError('team_size must be 2, 3, or 5')
+    if team_size not in (2, 3, 4, 5):
+        raise ValueError('team_size must be 2, 3, 4, or 5')
 
     run_id = LaunchConfiguration('run_id').perform(context).strip()
     if not RUN_ID_PATTERN.fullmatch(run_id):
@@ -76,7 +76,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             'team_size',
-            description='Physical robot count: 2, 3, or 5'),
+            description='Physical robot count: 2, 3, 4, or 5'),
         DeclareLaunchArgument(
             'run_id',
             description='Unique run identifier prepared before launch'),
