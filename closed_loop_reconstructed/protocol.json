@@ -1,0 +1,196 @@
+{
+  "arms": [
+    "prediction_on",
+    "observed_only"
+  ],
+  "checkpoint_policy": {
+    "geometry_frozen": false,
+    "geometry_status": "configurable validation-smoke defaults pending replacement-training audit",
+    "historical_claim": false,
+    "mock_allowed_splits": [
+      "train",
+      "val"
+    ],
+    "required_schema": "mso.prospective_v2.checkpoint/1",
+    "required_stage": "student",
+    "required_status": "prospective_v2_not_historical_recovery",
+    "runtime_model_class": "sensemap.explore_model.SenseMapNet.DistillMapNetDeconv",
+    "runtime_model_dim": 4,
+    "runtime_parameter_count": 342771,
+    "selection_direction": "minimize",
+    "selection_metric": "validation_unknown_bce",
+    "test_requires_validation_selected_checkpoint": true
+  },
+  "dataset": {
+    "expected_floorplans": {
+      "test": 23,
+      "train": 110,
+      "val": 23
+    },
+    "expected_test_buildings": 22,
+    "split_seed": 20260807,
+    "test_floorplans": [
+      "0510030938_A_40_1_102",
+      "0510030965_A-40",
+      "0510032196_A_40_1_104",
+      "0510032216_A-40",
+      "0510032260_A_40_1_102",
+      "0510032262_A_40_1_104",
+      "0510032271_A_40_1_105",
+      "0510034689_Layout1",
+      "0510034869_A-40",
+      "0510035343_A_40_1_102",
+      "0510035345_A_40_1_104",
+      "0510035517_A_40_1_105",
+      "0510035738_A_40_1_101",
+      "0510040985_A-40.1-807",
+      "50010535_PLAN1",
+      "50010535_PLAN2",
+      "50025633",
+      "50041194",
+      "50045230",
+      "50045365",
+      "50045368",
+      "50053292",
+      "50057024"
+    ]
+  },
+  "experiment": {
+    "description": "new reconstructed headless matched closed-loop study",
+    "historical_ros_reproduction": false,
+    "physical_experiment": false,
+    "protocol_version": 1,
+    "team_size": 3
+  },
+  "freeze": {
+    "current_protocol_state": "draft_validation_only",
+    "stopping_rule_locked_before_freeze": true,
+    "protocol_and_software_hashes_required_before_test": true,
+    "test_output_forbidden_before_unlock": true,
+    "test_execution_enabled": false,
+    "validation_only_tuning": true
+  },
+  "gate": {
+    "cycle_absolute_yaw_limit_deg": 5.0,
+    "cycle_translation_limit_m": 0.25,
+    "temporal_consensus_count": 3,
+    "temporal_yaw_limit_deg": 5.0,
+    "temporal_translation_limit_m": 0.25
+  },
+  "logging": {
+    "event_format": "canonical JSONL with a SHA-256 hash chain",
+    "log_every_scan": true,
+    "retain_registration_rasters": false,
+    "schema_version": 1
+  },
+  "planning": {
+    "authoritative_cells": "measured only",
+    "distance_budget_m": 180.0,
+    "frontier_rank_radius_m": 1.0,
+    "obstacle_inflation_m": 0.12,
+    "prediction_rank_weight_m": 1.0,
+    "prediction_use": "temporary frontier ranking only",
+    "traversability": "measured free cells only"
+  },
+  "primary_endpoints": {
+    "coverage_auc": "persistent-team-map correctly registered known-cell coverage AUC against cumulative team distance, interpolated at and carried forward only to the fixed distance budget, then normalized by that budget",
+    "distance_to_80_percent": "cumulative team distance to 0.80 persistent-team-map correctly registered known-cell coverage, linearly interpolated between bracketing in-budget observations and right-censored at the fixed distance budget"
+  },
+  "randomization": {
+    "arms_share_all_streams": true,
+    "seeds": [
+      11,
+      23,
+      37,
+      53,
+      71
+    ],
+    "streams": [
+      "team_starts",
+      "private_frames"
+    ],
+    "deterministic_shared_components": [
+      "sensor ray casting",
+      "motion and collision transitions",
+      "encounter range scheduling"
+    ]
+  },
+  "safety_endpoints": {
+    "analysis_role": "joint descriptive safety endpoints; no standalone inferential safety claim",
+    "gate_wrong_accept_rate_reported_separately": true,
+    "registration_correctness": {
+      "absolute_yaw_deg": 5.0,
+      "translation_m": 0.25
+    },
+    "reject_state_hash_violations_allowed": 0,
+    "episode_level_joint_reporting": [
+      "collision_count",
+      "collision_rate_per_motion_attempt",
+      "motion_attempt_count",
+      "motion_attempt_rate_per_robot_tick",
+      "no_route_count",
+      "replan_count",
+      "stuck_episode_count",
+      "cumulative_team_distance_m",
+      "persistent_map_coverage_auc_normalized",
+      "persistent_map_coverage_at_budget",
+      "gate_wrong_accept_rate",
+      "final_decision_false_accept_rate",
+      "final_decision_false_reject_count",
+      "unsafe_commit_unrecovered_count"
+    ],
+    "interpretation": "collision outcomes are never interpreted without the paired mobility and persistent-map coverage outcomes",
+    "zero_denominator_policy": "undefined_null_never_zero"
+  },
+  "simulation": {
+    "encounter_range_m": 8.0,
+    "laser_range_cells": 125,
+    "laser_rays": 360,
+    "maximum_ticks": 1500,
+    "motion_cells_per_tick": 1,
+    "planner_period_ticks": 10,
+    "planning_canvas_px": 768,
+    "prediction_model_input_px": 256,
+    "prediction_input_semantics": "three channels: occupied, unknown, free",
+    "prediction_output_semantics": "occupied probability in [0, 1]",
+    "prediction_training_raw_px": 640,
+    "prediction_world_crop_side_m": 40.0,
+    "prediction_geometry_claim": "validation-smoke default only; not historical and not frozen for test",
+    "prediction_period_ticks": 5,
+    "registration_canvas_px": 512,
+    "registration_period_ticks": 10,
+    "verification_period_ticks": 100,
+    "working_resolution_m_per_cell": 0.04,
+    "stop_coverage": 0.95,
+    "stuck_window_ticks": 50
+  },
+  "statistics": {
+    "alpha": 0.05,
+    "alternative": "two_sided",
+    "bootstrap_clusters": "building",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 202608071,
+    "censoring_policy": "replace unreached distance-to-80 values by the fixed 180 m restriction point; estimate no effect beyond the restriction point",
+    "effect_directions": {
+      "coverage_auc_normalized": "prediction_on_minus_observed_only",
+      "restricted_distance_to_80_m": "observed_only_minus_prediction_on"
+    },
+    "independent_unit": "building",
+    "multiple_primary_endpoints": "Holm family-wise correction across the two primary two-sided tests",
+    "paired_arms": true,
+    "primary_endpoint_names": [
+      "coverage_auc_normalized",
+      "restricted_distance_to_80_m"
+    ],
+    "primary_test": "paired randomization test on building-level seed-averaged differences",
+    "randomization_replicates": 100000,
+    "randomization_seed": 202608072,
+    "required_complete_pair_keys": [
+      "building_id",
+      "floorplan_id",
+      "seed"
+    ],
+    "zero_denominator_policy": "retain null and report defined paired observations and independent buildings; never impute zero",
+    "seeds_are_repeated_measures": true
+  }
+}

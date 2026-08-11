@@ -1,0 +1,42 @@
+{
+  "status": "preserved_train_floorplan_assignment_forensic_audit",
+  "conclusion": "The preserved archive cannot be assigned to the current 156-floorplan collection with the frozen high-confidence gates, so it cannot support a building-disjoint preserved-domain split.",
+  "preserved_partition_accessed": "train_only",
+  "test_partition_accessed": false,
+  "sample_seed": 20260807,
+  "sample_ids_sha256": "33a4f323edd692d1beff9fa71426857c35393615d4c0b03ab41e1e55e2192839",
+  "samples_audited": 100,
+  "source_floorplans": 156,
+  "source_variants_per_floorplan": 2,
+  "assigned": 0,
+  "ambiguous_or_unassigned": 100,
+  "accepted_fraction": 0.0,
+  "zero_success_rule_of_three_upper_fraction": 0.03,
+  "acceptance_gates": {
+    "minimum_sift_inliers": 40,
+    "minimum_sift_inlier_ratio": 0.35,
+    "maximum_median_reprojection_error": 3.0,
+    "minimum_top1_top2_inlier_margin": 25,
+    "minimum_top1_top2_inlier_ratio": 1.5,
+    "minimum_edge_f1_at_3px": 0.55,
+    "minimum_binary_iou": 0.45
+  },
+  "observed_top1_metric_ranges": {
+    "sift_inliers": {"minimum": 4, "median": 8, "p90": 18, "maximum": 30},
+    "sift_inlier_ratio": {"minimum": 0.162162162162162, "median": 0.418010752688172, "p90": 0.647058823529412, "maximum": 0.875},
+    "median_reprojection_error": {"minimum": 0.0, "median": 0.522596061229706, "p90": 1.31968331336975, "maximum": 2.38661766052246},
+    "scale": {"minimum": 0.113277164977676, "median": 0.200361275698604, "p90": 0.751531056092243, "maximum": 7.79524029981491},
+    "binary_iou": {"minimum": 0.00513403498478125, "median": 0.283879482398612, "p90": 0.64458154857809, "maximum": 0.819512195121951},
+    "edge_f1_at_3px": {"minimum": 0.0403605767226211, "median": 0.433775510056171, "p90": 0.838636693553456, "maximum": 0.987695112149478},
+    "top1_top2_sift_inlier_margin": {"minimum": 0, "median": 1, "p90": 8, "maximum": 24},
+    "top1_top2_sift_inlier_ratio": {"minimum": 1.0, "median": 1.2, "p90": 2.11111111111111, "maximum": 5.0}
+  },
+  "implementation_validity_note": "A superseded one-sample smoke allowed near-zero-scale RANSAC collapse. The cohort version rejects scales outside [0.1,10] and spatially degenerate inlier support before ranking.",
+  "remote_artifact_sha256": {
+    "assignment_rows.csv": "8d74c97a4b7d23044d9d42f22b462739c9584437d2167b5ece95f3fbce4fdc7f",
+    "assignment_summary.json": "ea98c7d05e582de5ea813340d430b91e192119a9c431466cbbd5a75b530e0c11",
+    "top5_details.json": "df6b856fea28d065360b3798281db922ee7c556687a0e395e2a057634d64cb78",
+    "protocol": "d09433117d3eb63cb8adaca54b10a5bd25927bee618edad368014480f5a95800",
+    "implementation": "83f9a324ad5a08e31a67aa1499d4f024dc41a91d22ae4093a635bebe3027b36f"
+  }
+}

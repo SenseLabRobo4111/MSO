@@ -1,0 +1,54 @@
+schema_version: '1.0'
+frame_id: tf27_gt
+collection_ready: false
+claim_authorized: false
+minimum_start_separation_m: 0.80
+pose_sets:
+  - pose_set_id: P01
+    poses:
+      - {slot: 0, x_m: SET_P01_S0_X_M, y_m: SET_P01_S0_Y_M, yaw_deg: SET_P01_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P01_S1_X_M, y_m: SET_P01_S1_Y_M, yaw_deg: SET_P01_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P01_S2_X_M, y_m: SET_P01_S2_Y_M, yaw_deg: SET_P01_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P01_S3_X_M, y_m: SET_P01_S3_Y_M, yaw_deg: SET_P01_S3_YAW_DEG}
+  - pose_set_id: P02
+    poses:
+      - {slot: 0, x_m: SET_P02_S0_X_M, y_m: SET_P02_S0_Y_M, yaw_deg: SET_P02_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P02_S1_X_M, y_m: SET_P02_S1_Y_M, yaw_deg: SET_P02_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P02_S2_X_M, y_m: SET_P02_S2_Y_M, yaw_deg: SET_P02_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P02_S3_X_M, y_m: SET_P02_S3_Y_M, yaw_deg: SET_P02_S3_YAW_DEG}
+  - pose_set_id: P03
+    poses:
+      - {slot: 0, x_m: SET_P03_S0_X_M, y_m: SET_P03_S0_Y_M, yaw_deg: SET_P03_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P03_S1_X_M, y_m: SET_P03_S1_Y_M, yaw_deg: SET_P03_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P03_S2_X_M, y_m: SET_P03_S2_Y_M, yaw_deg: SET_P03_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P03_S3_X_M, y_m: SET_P03_S3_Y_M, yaw_deg: SET_P03_S3_YAW_DEG}
+  - pose_set_id: P04
+    poses:
+      - {slot: 0, x_m: SET_P04_S0_X_M, y_m: SET_P04_S0_Y_M, yaw_deg: SET_P04_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P04_S1_X_M, y_m: SET_P04_S1_Y_M, yaw_deg: SET_P04_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P04_S2_X_M, y_m: SET_P04_S2_Y_M, yaw_deg: SET_P04_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P04_S3_X_M, y_m: SET_P04_S3_Y_M, yaw_deg: SET_P04_S3_YAW_DEG}
+  - pose_set_id: P05
+    poses:
+      - {slot: 0, x_m: SET_P05_S0_X_M, y_m: SET_P05_S0_Y_M, yaw_deg: SET_P05_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P05_S1_X_M, y_m: SET_P05_S1_Y_M, yaw_deg: SET_P05_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P05_S2_X_M, y_m: SET_P05_S2_Y_M, yaw_deg: SET_P05_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P05_S3_X_M, y_m: SET_P05_S3_Y_M, yaw_deg: SET_P05_S3_YAW_DEG}
+  - pose_set_id: P06
+    poses:
+      - {slot: 0, x_m: SET_P06_S0_X_M, y_m: SET_P06_S0_Y_M, yaw_deg: SET_P06_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P06_S1_X_M, y_m: SET_P06_S1_Y_M, yaw_deg: SET_P06_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P06_S2_X_M, y_m: SET_P06_S2_Y_M, yaw_deg: SET_P06_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P06_S3_X_M, y_m: SET_P06_S3_Y_M, yaw_deg: SET_P06_S3_YAW_DEG}
+  - pose_set_id: P07
+    poses:
+      - {slot: 0, x_m: SET_P07_S0_X_M, y_m: SET_P07_S0_Y_M, yaw_deg: SET_P07_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P07_S1_X_M, y_m: SET_P07_S1_Y_M, yaw_deg: SET_P07_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P07_S2_X_M, y_m: SET_P07_S2_Y_M, yaw_deg: SET_P07_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P07_S3_X_M, y_m: SET_P07_S3_Y_M, yaw_deg: SET_P07_S3_YAW_DEG}
+  - pose_set_id: P08
+    poses:
+      - {slot: 0, x_m: SET_P08_S0_X_M, y_m: SET_P08_S0_Y_M, yaw_deg: SET_P08_S0_YAW_DEG}
+      - {slot: 1, x_m: SET_P08_S1_X_M, y_m: SET_P08_S1_Y_M, yaw_deg: SET_P08_S1_YAW_DEG}
+      - {slot: 2, x_m: SET_P08_S2_X_M, y_m: SET_P08_S2_Y_M, yaw_deg: SET_P08_S2_YAW_DEG}
+      - {slot: 3, x_m: SET_P08_S3_X_M, y_m: SET_P08_S3_Y_M, yaw_deg: SET_P08_S3_YAW_DEG}

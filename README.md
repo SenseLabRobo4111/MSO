@@ -17,6 +17,35 @@ offline audit of archived two-robot registration, and tooling for future
 physical-team data collection. It is not an exact historical reproduction of
 every result in the manuscript.
 
+## Four-robot physical experiment branch
+
+The canonical branch for the prospective four-SenseBeetle experiment at
+Tongfang 27F is
+[`sensebeetle-n4-tongfang27`](https://github.com/SenseLabRobo4111/MSO/tree/sensebeetle-n4-tongfang27).
+Use that branch for field-readiness review and every future N=4 run commit.
+Start with the [English experiment guide](experiments/physical_team/tongfang27_n4/README.md)
+or the [中文实验说明](experiments/physical_team/tongfang27_n4/README.zh.md).
+
+The immediate field task is three independent 600-second repetitions in the
+frozen Tongfang 27F ROI. All four robots must autonomously explore with the
+locked MSO model under nominal networking. Each repetition requires five
+all-topic rosbags (four robot-local plus one coordinator), four synchronized
+third-person videos (one per robot), and a common ROS/video/GT time axis. The
+existing 32-run factorial is an optional later extension, not the immediate
+field task.
+
+This is currently a protocol package, not a physical-result release:
+`collection_ready: false`, `results_status: not_collected`, and
+`claim_authorized: false`. The 342,771-parameter model identity is verified;
+the complete online stack, independent GT/reference system, network
+ verification, the integration rehearsal/pilot gates, and per-run auditor still block
+collection. `main` remains the manuscript and general-software review branch.
+
+```bash
+git fetch origin
+git switch --track origin/sensebeetle-n4-tongfang27
+```
+
 ## Read this first
 
 | Component | Included | Evidence status |
@@ -25,12 +54,14 @@ every result in the manuscript.
 | ROS 2 prediction node and launch file | Yes | Runtime interface is usable |
 | Historical manuscript trainer and exact 5,385/1,356 split | No | Not recovered |
 | Manuscript checkpoint and model-selection trace | No | Not recovered |
-| Two recovered generator candidates | Yes | Architecture-compatible; not identified as the manuscript checkpoint |
+| Two recovered generator candidates | Yes | Architecture-compatible; candidate A is locked for the prospective N=4 deployment experiment, not identified as the manuscript checkpoint |
 | Reconstructed training and evaluation workflow | Yes | Forward reconstruction, not historical reproduction |
 | Preserved-archive inventory | Yes | 8,304 sample records with source hashes; not the manuscript split |
 | Archived two-robot registration replay | Yes | Offline negative-result audit; not deployed validation |
-| Passive N=2/3/5 collection protocol | Yes | Instrumentation only; no new N=3 or N=5 physical results |
+| Reconstructed integrated offline audit | Yes | Portable, one-scene exploratory audit; not a deployed closed loop |
+| Passive N=2/3/4/5 collection protocol | Yes | Instrumentation only; no new N=3, N=4 or N=5 physical results |
 | Physical rosbags | External | [Public read-only Google Drive folder](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing); 18 bags and 18 metadata files verified |
+| Portable peer-review data | Yes | [`paper/nature_communications/peer_review_data/`](paper/nature_communications/peer_review_data/) with repository-level hashes |
 
 The reported evidence is limited to structured two-dimensional indoor settings.
 It does not establish building-disjoint generalisation, operation through
@@ -47,10 +78,17 @@ here. The verified payload is 4.134 GiB. These raw records are outside the
 BSD-3-Clause software licence; public access does not by itself grant a
 separate data-reuse licence.
 
+The portable processed data used by the reconstructed offline audit are
+versioned directly under
+[`paper/nature_communications/peer_review_data/`](paper/nature_communications/peer_review_data/).
+They are processed audit inputs, not additional physical robot trials. The
+paper snapshot's `SHA256SUMS` records every included byte.
+
 ## Reviewed version
 
-The canonical development and review branch is `main`. The immutable snapshot
-prepared for the current manuscript is tagged `nc-submission-2026-08-07`.
+The canonical manuscript and general-software review branch is `main`. The
+immutable snapshot prepared for the current manuscript is tagged
+`nc-submission-2026-08-07`.
 Retrieve and verify that snapshot with:
 
 ```bash
@@ -70,13 +108,15 @@ historical alias and is not the canonical entry point.
 ```text
 MSO/
 |-- experiments/
-|   `-- physical_team/       # passive N=2/3/5 collection protocol
+|   `-- physical_team/       # passive N=2/3/4/5 collection protocol
+|-- integrated_offline/      # reconstructed one-scene exploratory audit
 |-- registration_replay/     # offline audit of archived two-robot bags
 |-- repro_reconstructed/     # declared training reconstruction and candidates
 |-- launch/
 |   |-- sensemap.launch.py
 |   |-- physical_team_capture.launch.py
 |   |-- physical_team_3.launch.py
+|   |-- physical_team_4.launch.py
 |   `-- physical_team_5.launch.py
 |-- sensemap/
 |   |-- explore_model/
@@ -129,9 +169,10 @@ ros2 run sensemap sensemap_predictor --ros-args \
 
 The default `deconv` model has 342,771 trainable parameters. Loading fails if
 the path is empty or the state dictionary does not match the selected
-architecture. The recovered candidates under `repro_reconstructed/` are
-research artifacts; they must not be presented as the checkpoint underlying a
-manuscript table.
+architecture. The prospective Tongfang 27F protocol locks recovered candidate
+A to this architecture as `mso_deconv_342771_candidate_a`. This is a deployment
+choice for a new experiment, not evidence that the artifact is the checkpoint
+underlying a manuscript table.
 
 ### ROS 2 interfaces
 
@@ -214,13 +255,35 @@ The archived bags retain the historical `/robot_N/predicted_map` topic names;
 that provenance is not evidence that the current provisional runtime contract
 was deployed during those recordings.
 
+## Reconstructed integrated offline audit
+
+[`integrated_offline/`](integrated_offline/README.md) replays saved probability
+maps through a reconstructed registrar, pre-commit gate, atomic measured-map
+update and deterministic planning proxies. It also compares prediction and
+observed-only inputs on matched perturbations. The portable input ZIP, exact
+digest and extraction layout are listed above and in the component README.
+
+The audit is intentionally exploratory and limited to correlated snapshots
+from one archived A3 scene. Its cluster-aware results do not establish a safety
+advantage, causal exploration benefit, online execution, physical scaling or
+communication robustness. It should be cited as a bounded audit rather than a
+validated deployment.
+
 ## Physical-team collection protocol
 
 [`experiments/physical_team/`](experiments/physical_team/README.md) contains a
-passive recorder, schemas, preflight checks, N=2/3/5 launch examples, and run and
-campaign diagnostics. It contains no simultaneous three- or five-robot physical
-dataset. The diagnostics explicitly set `claim_authorized` to `false`; they are
-collection aids, not certificates for a manuscript claim.
+passive recorder, schemas, preflight checks, N=2/3/4/5 launch examples, and run
+and campaign diagnostics. It contains no simultaneous three-, four- or
+five-robot physical dataset. The diagnostics explicitly set
+`claim_authorized` to `false`; they are collection aids, not certificates for a
+manuscript claim.
+
+The [prospective Tongfang 27F four-SenseBeetle campaign](experiments/physical_team/tongfang27_n4/README.md)
+publishes the immediate three-run field requirements and a separate optional
+N=4 factorial plan. Its exact 342,771-parameter recovered model candidate is
+identified and verified. Collection remains blocked until the full online
+stack, independent GT/reference, recording, synchronization, integration
+rehearsal and per-run audit evidence exist.
 
 ## Dataset loader format
 
@@ -248,7 +311,7 @@ The non-ROS evidence packages can be checked with:
 
 ```bash
 python3 repro_reconstructed/tools/verify_artifacts.py
-python3 -m pytest registration_replay/tests repro_reconstructed/tests -q
+python3 -m pytest registration_replay/tests repro_reconstructed/tests integrated_offline/tests -q
 ```
 
 ROS package tests additionally require the normal ROS 2 ament test plugins.

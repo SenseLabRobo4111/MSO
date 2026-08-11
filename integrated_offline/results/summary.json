@@ -1,0 +1,247 @@
+{
+  "arms": {
+    "observed_only": {
+      "candidate_returned_cluster_rate": {
+        "mean": 1.0,
+        "median": 1.0,
+        "n": 39,
+        "p90": 1.0
+      },
+      "clusters": 39,
+      "correct_positive_accept_cluster_rate": {
+        "mean": 0.9333333333333333,
+        "median": 1.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "coverage_gain_cells_cluster_mean": {
+        "mean": 27623.19444444444,
+        "median": 27591.5,
+        "n": 30,
+        "p90": 40943.0
+      },
+      "events": 100,
+      "false_accept_known_injection_cluster_rate": {
+        "mean": null,
+        "median": null,
+        "n": 0,
+        "p90": null
+      },
+      "incorrect_positive_accept_cluster_rate": {
+        "mean": 0.0,
+        "median": 0.0,
+        "n": 30,
+        "p90": 0.0
+      },
+      "indeterminate_challenge_accept_cluster_rate": {
+        "mean": 0.0,
+        "median": 0.0,
+        "n": 9,
+        "p90": 0.0
+      },
+      "indeterminate_challenge_clusters": 9,
+      "indeterminate_challenge_events": 50,
+      "known_error_injection_clusters": 0,
+      "known_error_injection_events": 0,
+      "known_recall_vs_oracle_cluster_mean": {
+        "mean": 0.970257395636422,
+        "median": 0.9964835717645582,
+        "n": 30,
+        "p90": 0.9983817200099755
+      },
+      "oracle_collision_route_cluster_rate": {
+        "mean": 0.23888888888888887,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_fully_known_free_cluster_rate": {
+        "mean": 0.28055555555555556,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_unknown_traversal_cluster_rate": {
+        "mean": 0.5805555555555555,
+        "median": 0.5833333333333333,
+        "n": 30,
+        "p90": 1.0
+      },
+      "positive_abstention_cluster_rate": {
+        "mean": 0.06666666666666667,
+        "median": 0.0,
+        "n": 30,
+        "p90": 0.0
+      },
+      "positive_clusters": 30,
+      "positive_events": 50,
+      "rejected_state_hash_violation_clusters": 0,
+      "route_length_m_cluster_mean": {
+        "mean": 23.10166666666667,
+        "median": 22.6125,
+        "n": 30,
+        "p90": 27.230000000000004
+      },
+      "translation_error_m_cluster_mean": {
+        "mean": 0.046254553651754536,
+        "median": 0.0393780711958414,
+        "n": 30,
+        "p90": 0.07982744296155003
+      },
+      "yaw_error_deg_cluster_mean": {
+        "mean": 0.05962890816379469,
+        "median": 0.039141845250284746,
+        "n": 30,
+        "p90": 0.08969768740182078
+      }
+    },
+    "predicted": {
+      "candidate_returned_cluster_rate": {
+        "mean": 1.0,
+        "median": 1.0,
+        "n": 39,
+        "p90": 1.0
+      },
+      "clusters": 39,
+      "correct_positive_accept_cluster_rate": {
+        "mean": 0.95,
+        "median": 1.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "coverage_gain_cells_cluster_mean": {
+        "mean": 29376.855555555558,
+        "median": 28367.75,
+        "n": 30,
+        "p90": 42091.200000000004
+      },
+      "events": 100,
+      "false_accept_known_injection_cluster_rate": {
+        "mean": null,
+        "median": null,
+        "n": 0,
+        "p90": null
+      },
+      "incorrect_positive_accept_cluster_rate": {
+        "mean": 0.016666666666666666,
+        "median": 0.0,
+        "n": 30,
+        "p90": 0.0
+      },
+      "indeterminate_challenge_accept_cluster_rate": {
+        "mean": 0.0,
+        "median": 0.0,
+        "n": 9,
+        "p90": 0.0
+      },
+      "indeterminate_challenge_clusters": 9,
+      "indeterminate_challenge_events": 50,
+      "known_error_injection_clusters": 0,
+      "known_error_injection_events": 0,
+      "known_recall_vs_oracle_cluster_mean": {
+        "mean": 0.9827988424173079,
+        "median": 0.996204137866963,
+        "n": 30,
+        "p90": 0.9983571529545163
+      },
+      "oracle_collision_route_cluster_rate": {
+        "mean": 0.19722222222222222,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_fully_known_free_cluster_rate": {
+        "mean": 0.26944444444444443,
+        "median": 0.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "oracle_unknown_traversal_cluster_rate": {
+        "mean": 0.575,
+        "median": 1.0,
+        "n": 30,
+        "p90": 1.0
+      },
+      "positive_abstention_cluster_rate": {
+        "mean": 0.03333333333333333,
+        "median": 0.0,
+        "n": 30,
+        "p90": 0.0
+      },
+      "positive_clusters": 30,
+      "positive_events": 50,
+      "rejected_state_hash_violation_clusters": 0,
+      "route_length_m_cluster_mean": {
+        "mean": 23.215416666666666,
+        "median": 22.61875,
+        "n": 30,
+        "p90": 27.1975
+      },
+      "translation_error_m_cluster_mean": {
+        "mean": 0.06366556707952216,
+        "median": 0.04924344819113924,
+        "n": 30,
+        "p90": 0.09695056343771818
+      },
+      "yaw_error_deg_cluster_mean": {
+        "mean": 0.0827517034588788,
+        "median": 0.07134716943422603,
+        "n": 30,
+        "p90": 0.1429661237350232
+      }
+    }
+  },
+  "cluster_aware_paired": {
+    "clusters": 39,
+    "collision_route_sign": {
+      "clusters": 30,
+      "exact_sign_p": 1.0,
+      "negative": 2,
+      "positive": 1,
+      "zero": 27
+    },
+    "correct_positive_accept_sign": {
+      "clusters": 30,
+      "exact_sign_p": 1.0,
+      "negative": 1,
+      "positive": 1,
+      "zero": 28
+    },
+    "events": 100,
+    "false_accept_known_injection_sign": {
+      "clusters": 0,
+      "exact_sign_p": 1.0,
+      "negative": 0,
+      "positive": 0,
+      "zero": 0
+    },
+    "incorrect_positive_accept_sign": {
+      "clusters": 30,
+      "exact_sign_p": 1.0,
+      "negative": 0,
+      "positive": 1,
+      "zero": 29
+    },
+    "indeterminate_challenge_accept_sign": {
+      "clusters": 9,
+      "exact_sign_p": 1.0,
+      "negative": 0,
+      "positive": 0,
+      "zero": 9
+    },
+    "indeterminate_challenge_clusters": 9,
+    "known_error_injection_clusters": 0,
+    "known_positive_clusters": 30,
+    "positive_coverage_gain_cluster_mean_difference_cells": {
+      "mean": 1753.6611111111113,
+      "median": 129.75,
+      "n": 30,
+      "p90": 833.25
+    }
+  },
+  "correctness_thresholds": {
+    "absolute_yaw_deg": 5.0,
+    "translation_m": 0.25
+  },
+  "scope": "reconstructed exploratory audit of saved probability maps on one archived A3 scene"
+}

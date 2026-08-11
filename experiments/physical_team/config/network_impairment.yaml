@@ -1,0 +1,35 @@
+schema_version: '1.0'
+profile_id: udp_pair_loss_disconnect_v1
+transport: udp
+rule_scope: output_only
+loss_definition: per_direction
+probe:
+  rate_hz: 20
+  payload_bytes: 256
+  minimum_send_fraction: 0.8
+measurement_tolerances:
+  baseline:
+    minimum_loss_fraction: 0.0
+    maximum_loss_fraction: 0.05
+  degraded:
+    minimum_loss_fraction: 0.15
+    maximum_loss_fraction: 0.25
+  disconnected:
+    minimum_loss_fraction: 0.95
+    maximum_loss_fraction: 1.0
+  recovery:
+    minimum_loss_fraction: 0.0
+    maximum_loss_fraction: 0.05
+phases:
+  - phase_id: baseline
+    duration_s: 30
+    loss_probability: 0.0
+  - phase_id: degraded
+    duration_s: 45
+    loss_probability: 0.2
+  - phase_id: disconnected
+    duration_s: 20
+    loss_probability: 1.0
+  - phase_id: recovery
+    duration_s: 45
+    loss_probability: 0.0

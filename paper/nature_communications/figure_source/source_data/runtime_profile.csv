@@ -1,0 +1,7 @@
+pathway,stage,latency_low_ms,latency_high_ms,hardware,schedule
+recurring,LiDAR raster,2,2,Cortex-A78AE,planner tick
+recurring,Prediction refresh,3,3,Ampere GPU,approximately 1 Hz
+encounter,ORB extraction,12,18,Cortex-A78AE,peer encounter
+encounter,Geometric verification,15,25,Cortex-A78AE,peer encounter
+encounter,Overlap blending,8,12,Cortex-A78AE,peer encounter
+encounter,Fusion event total,40,60,mixed,peer encounter

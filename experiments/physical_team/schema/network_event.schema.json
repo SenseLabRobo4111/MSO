@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Physical-team communication-impairment event",
+  "type": "object",
+  "required": [
+    "schema_version", "run_id", "session_id", "robot_id",
+    "peer_robot_id", "peer_ip", "interface", "profile_id", "rule_scope",
+    "loss_definition", "mode", "event", "timestamp_ns"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "run_id": {"type": "string", "minLength": 3},
+    "session_id": {"type": "string", "minLength": 1},
+    "robot_id": {"type": "integer", "minimum": 0},
+    "peer_robot_id": {"type": "integer", "minimum": 0},
+    "peer_ip": {"type": "string", "format": "ipv4"},
+    "interface": {"type": "string", "minLength": 1},
+    "profile_id": {"type": "string", "minLength": 1},
+    "rule_scope": {"const": "output_only"},
+    "loss_definition": {"const": "per_direction"},
+    "mode": {"enum": ["dry_run", "execute"]},
+    "event": {
+      "enum": [
+        "session_started", "phase_started", "phase_completed",
+        "cleanup_started", "cleanup_completed", "command_failed",
+        "session_completed"
+      ]
+    },
+    "timestamp_ns": {"type": "integer", "minimum": 1},
+    "scheduled_timestamp_ns": {"type": ["integer", "null"], "minimum": 1},
+    "phase_id": {"type": ["string", "null"]},
+    "loss_probability": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "duration_s": {"type": ["number", "null"], "minimum": 0},
+    "command_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["operation", "returncode"],
+        "properties": {
+          "operation": {"type": "string"},
+          "returncode": {"type": "integer"},
+          "stderr": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "planned_commands": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {"type": "string"}
+      }
+    },
+    "counter_snapshot": {
+      "type": "object",
+      "required": ["command", "returncode", "rules", "dry_run"],
+      "properties": {
+        "command": {"type": "array", "items": {"type": "string"}},
+        "returncode": {"type": ["integer", "null"]},
+        "dry_run": {"type": "boolean"},
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["packets", "bytes", "rule"],
+            "properties": {
+              "packets": {"type": "integer", "minimum": 0},
+              "bytes": {"type": "integer", "minimum": 0},
+              "rule": {"type": "string"}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"event": {"const": "phase_started"}}},
+      "then": {
+        "required": [
+          "scheduled_timestamp_ns", "phase_id", "loss_probability",
+          "duration_s", "command_results", "planned_commands"
+        ]
+      }
+    },
+    {
+      "if": {"properties": {"event": {"const": "phase_completed"}}},
+      "then": {
+        "required": [
+          "scheduled_timestamp_ns", "phase_id", "loss_probability",
+          "duration_s", "counter_snapshot"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": true
+}

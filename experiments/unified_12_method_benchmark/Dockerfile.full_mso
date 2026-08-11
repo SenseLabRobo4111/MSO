@@ -1,0 +1,6 @@
+FROM pytorch/pytorch@sha256:3d614dfd422b7e43647491cbf07d6acc516c032fc49c594a94afdebd52552fb9
+
+RUN pip install --no-cache-dir \
+    pandas==2.2.3 \
+    scipy==1.15.3 \
+    pytorch-lightning==2.5.1

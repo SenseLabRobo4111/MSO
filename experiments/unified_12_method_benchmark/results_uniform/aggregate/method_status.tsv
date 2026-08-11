@@ -1,0 +1,13 @@
+method	registered_seeds	completed_seeds	status	exclusion_from_complete_case_contrasts
+MSO	5	5	complete	0
+U-Net	5	5	complete	0
+LaMa-Fourier	5	5	complete	0
+MI-GAN	5	5	complete	0
+PartialConv	5	5	complete	0
+GatedConv	5	5	complete	0
+EdgeConnect	5	5	complete	0
+AOT-GAN	5	5	complete	0
+MAT	5	5	complete	0
+ZITS++	5	5	complete	0
+RePaint	5	0	incomplete	1
+HINT	5	5	complete	0

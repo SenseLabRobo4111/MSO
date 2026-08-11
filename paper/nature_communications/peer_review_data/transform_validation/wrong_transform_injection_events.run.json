@@ -1,0 +1,23 @@
+{
+  "scope": "offline gate injection; not deployed/online system evidence",
+  "source_manifest": "manifest.json",
+  "source_manifest_sha256": "47037e16c500977dd12e716d497423d6d2ddfb1dc3437765a323ac52b590b183",
+  "output_csv": "wrong_transform_injection_events.csv",
+  "events_n": 150,
+  "accepted_n": 0,
+  "rejected_n": 150,
+  "safe_rejected_n": 150,
+  "incorrect_commits_n": 0,
+  "translation_injection_m": 1.0,
+  "yaw_injection_deg": 15.0,
+  "gate_threshold": 0.2,
+  "analysis_correctness_limits": {
+    "translation_m": 0.25,
+    "yaw_deg": 5.0
+  },
+  "proposal_rule": "target-coordinate origin shift plus yaw; SHA256(event_id)-fixed signs",
+  "gate_rule": "proper rigid pixel transform (singular values within 2%, shear <= 0.01) and observed occupied-support overlap coefficient >= 0.2",
+  "atomic_commit": "rejected candidate preserves pre-state; accepted candidate OR-merges warped support",
+  "contaminated_cells_definition": "symmetric-difference cells between immediate wrong-transform state and counterfactual GT-transform state; zero when no wrong transform is committed",
+  "recovery_fields": "blank: no rollback/recovery sequence is present in the frozen snapshots"
+}

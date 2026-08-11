@@ -1,0 +1,13 @@
+display_label	implementation_label	implementation_scope	upstream_anchor
+MSO	MSO prospective student adapter	Exact 342771-parameter public student architecture; prospective retraining; teacher distillation handled separately	MSO public repository
+U-Net	U-Net common adapter	31.04M-parameter encoder-decoder under the common objective	Local prospective adapter
+LaMa-Fourier	LaMa-style Fourier adapter	U-Net with a Fourier bottleneck; not the full released LaMa training system	LaMa design family
+MI-GAN	MI-GAN-style mobile adapter	Depthwise-separable mobile encoder-decoder; not a reproduction of the historical GAN objective	MI-GAN design family
+PartialConv	PartialConv adapter	Partial-convolution measurement front-end plus common decoder; common objective	NVIDIA PartialConv 610d373f35257887d45adae84c86d0ce7ad808ec
+GatedConv	GatedConv adapter	PyTorch gated-convolution encoder-decoder; not the released TensorFlow training system	GatedConv 3a5324373ba52c68c79587ca183bc10b9e57b783
+EdgeConnect	EdgeConnect-style adapter	Measured-occupancy edge input plus residual completion generator; not the full two-stage GAN	EdgeConnect 3142579785c5c8cc92ad655616d40f4f52fc7ec1
+AOT-GAN	AOT-GAN adapter	AOT residual blocks under the common occupancy objective	AOT-GAN 2cd1afd8fdfabb101c678f6062d14bc7d302509e
+MAT	MAT-style transformer adapter	Convolutional encoder plus transformer bottleneck; not the released GAN training loop	MAT d273d891ecdad2e1df106516423a75bc45b2d800
+ZITS++	ZITS++-style structure adapter	Measured-edge branch plus transformer bottleneck; not the complete released pipeline	ZITS++ de8dd48b17aedd15824842adb7bcca7535daba84
+HINT	HINT-style gated transformer adapter	Gated input embedding plus transformer bottleneck; not the complete released pipeline	HINT 15e867d8c8689b9d5050383fc3884537ae876145
+RePaint	RePaint	Not adapted under v1; retained as an explicit protocol failure rather than an incomparable result	RePaint 8e2a0552a0cc306e623da807d353915f1af17726

@@ -1,0 +1,46 @@
+schema_version: '2.0'
+model_id: mso_deconv_342771_candidate_a
+collection_ready: true
+claim_authorized: false
+artifact_status: verified_recovered_deployment_candidate
+artifact_role: recovered_candidate_from_checkpoint_retained_in_deployment_copy
+historical_manuscript_checkpoint_claim: false
+artifact_path: ../../../../repro_reconstructed/checkpoints/recovered_candidate_deconv_a.pt
+artifact_sha256: da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8
+architecture_class: sensemap.explore_model.SenseMapNet.DistillMapNetDeconv(image_size=256, dim=4)
+architecture_loader_id: distill_map_net_deconv_raw_state_v1
+exact_trainable_parameter_count: 342771
+ffc_block_count: 4
+state_tensor_count: 594
+state_value_count: 347690
+input_contract: occupied_unknown_free_one_hot_256_v1
+output_contract: sigmoid_occupancy_probability_256_v1
+strict_load_verified: true
+missing_keys: []
+unexpected_keys: []
+fixed_fixture_output_fingerprint: 31e3cd4ec395b615a9d5dafd1024286fd9860f58acaffc1df09d23bc624778e0
+fixed_fixture_path: ../deployment_models/fixed_fixture_occ_unknown_free_v1.npy
+fixed_fixture_sha256: a653af98e3f3ab8e23e6a7d46c013668954fa22286ef64a8800d236a215071ef
+verifier_report_path: ../deployment_models/mso_deconv_342771_candidate_a.verification.json
+verifier_report_sha256: 8c3632e4fa1f87c243ebb1707b611d8777097ff8fc9226698f8644d03bc86fb3
+training_provenance_path: ../../../../repro_reconstructed/checkpoints/provenance.json
+training_provenance_sha256: 12f399e1f5492ba2627999affb95ffeaf5243ef422df47cabc0e54f5a7aaaa6e
+selection_record_path: ../deployment_models/selection_record.json
+selection_record_sha256: c79ec419309620d52fc3a6d353cb5622e23bb65d99d6add4753641f0f2788b41
+architecture_source_path: ../../../../sensemap/explore_model/SenseMapNet.py
+architecture_source_sha256: c84ff05fa168c2e856002f12a903e53896da70cd8854a152b85f407d176727b3
+ffc_source_path: ../../../../sensemap/explore_model/ffc.py
+ffc_source_sha256: 835fc0a0ccc67bf73c9f6317d3ecc0679a87730e26dcc622aa84e6f5c1c15454
+reference_runtime:
+  python: 3.12.6
+  torch: 2.12.0+cpu
+  device: cpu
+  output_fingerprint_scope: exact_reference_environment
+  deployment_requires_same_runtime_or_reviewed_equivalence: true
+note: >-
+  Candidate A is a byte-faithful generator-state extraction from a checkpoint
+  named model-epoch-deconv.ckpt that was retained in a preserved deployment
+  copy. The preserved online entry loaded a different bilinear checkpoint, so
+  this record does not claim historical runtime use. The owner prospectively
+  selected candidate A as the full-FFC target for this campaign. It is not an
+  authenticated manuscript-table checkpoint and authorizes no result claim.

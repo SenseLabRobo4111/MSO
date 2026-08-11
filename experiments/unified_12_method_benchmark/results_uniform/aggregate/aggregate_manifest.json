@@ -1,0 +1,11 @@
+{
+  "best_seed_selection_used": false,
+  "method_status_sha256": "4fdb9f42777ab10d00d792357ca5b00b608019f354328ca8cc5ed32e71cb2f47",
+  "method_summary_sha256": "191407e624f572c1c53e5c091baff91e84dbb66707f5d8ca551e591f0aa7175a",
+  "methods_complete": 11,
+  "methods_registered": 12,
+  "per_seed_results_sha256": "97f6e97633f375ec225cfbc534e16e1b1b0ac59e3077c3af4321f1c903581254",
+  "seed_level_uncertainty": "two-sided 95% t interval over five seed estimates",
+  "semantic_building_identity_available": false,
+  "status": "prospective_five_seed_aggregate"
+}

@@ -1,0 +1,19 @@
+{
+  "input": "events_manuscript_reference.csv",
+  "event_count": 300,
+  "tau_translation_m": 0.25,
+  "tau_yaw_deg": 5.0,
+  "cluster_field": "cluster_id",
+  "bootstrap_reps": 10000,
+  "bootstrap_seed": 20260807,
+  "confidence_interval": "cluster-bootstrap percentile 95%",
+  "transform_convention": "T_i<-j; E=inv(T_gt)@T_hat",
+  "outputs": [
+    "evaluated_events.csv",
+    "transform_accuracy.csv",
+    "selective_reliability.csv",
+    "report.md",
+    "tables.tex",
+    "manifest.json"
+  ]
+}

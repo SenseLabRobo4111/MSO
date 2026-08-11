@@ -1,0 +1,41 @@
+schema_version: '1.0'
+stack_id: mso_full_online_n4_v1
+collection_ready: false
+claim_authorized: false
+stack_status: missing_required_full_online_stack
+external_repository_path: SET_EXTERNAL_FULL_MSO_REPOSITORY_PATH
+external_repository_commit: SET_40_HEX_GIT_COMMIT
+launch_entrypoint: SET_FULL_MSO_N4_LAUNCH_ENTRYPOINT
+interface_contract_id: SET_ONLINE_INTERFACE_CONTRACT_ID
+predictor_model_id: mso_deconv_342771_candidate_a
+predictor_artifact_sha256: da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8
+predictor_loader_id: distill_map_net_deconv_raw_state_v1
+predictor_input_contract: occupied_unknown_free_one_hot_256_v1
+predictor_output_contract: sigmoid_occupancy_probability_256_v1
+predictor_architecture_source_sha256: c84ff05fa168c2e856002f12a903e53896da70cd8854a152b85f407d176727b3
+predictor_ffc_source_sha256: 835fc0a0ccc67bf73c9f6317d3ecc0679a87730e26dcc622aa84e6f5c1c15454
+verification_report_path: SET_ONLINE_STACK_VERIFICATION_REPORT_PATH
+verification_report_sha256: SET_64_HEX_SHA256
+required_stages:
+  predictor: false
+  registration: false
+  gate: false
+  commit: false
+  persistent_map: false
+  planner: false
+requirements:
+  four_robot_supported: false
+  full_pipeline_integration_test_passed: false
+  registration_event_interface_verified: false
+  persistent_map_revision_hash_verified: false
+  measured_only_collision_authority_verified: false
+  prediction_shadow_write_barrier_verified: false
+  predictor_model_binding_verified: false
+  predictor_strict_raw_state_load_verified: false
+  predictor_runtime_equivalence_verified: false
+note: >-
+  The public repository contains a predictor and passive logger, not the full
+  online registration-to-planner deployment. A separately recovered, clean and
+  commit-addressed full stack plus a machine-readable integration report is a
+  mandatory collection gate. The external stack must use the exact reviewed
+  raw-state loader, model bytes and source implementation locked above.

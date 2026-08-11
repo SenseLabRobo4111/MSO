@@ -42,7 +42,88 @@
       "additionalProperties": true
     },
     "map_revision_before": {"type": ["integer", "null"], "minimum": 0},
-    "map_revision_after": {"type": ["integer", "null"], "minimum": 0}
+    "map_revision_after": {"type": ["integer", "null"], "minimum": 0},
+    "map_hash_before": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "map_hash_after": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "recovery_verification": {
+      "type": ["object", "null"],
+      "required": [
+        "invalidated_commit_event_id", "invalidated_revision",
+        "invalidated_map_hash", "active_revision", "active_map_hash",
+        "method", "verified_by", "evidence_path", "evidence_sha256"
+      ],
+      "properties": {
+        "invalidated_commit_event_id": {"type": "string", "minLength": 1},
+        "invalidated_revision": {"type": "integer", "minimum": 0},
+        "invalidated_map_hash": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        },
+        "active_revision": {"type": "integer", "minimum": 0},
+        "active_map_hash": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        },
+        "method": {
+          "enum": ["rollback", "recompute", "pose_graph_reoptimisation"]
+        },
+        "verified_by": {"type": "string", "minLength": 1},
+        "evidence_path": {
+          "type": "string",
+          "pattern": "^evidence/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*\\.json$"
+        },
+        "evidence_sha256": {
+          "type": "string", "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": ["accepted", "rejected", "committed", "recovered"]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "map_revision_before", "map_revision_after",
+          "map_hash_before", "map_hash_after"
+        ]
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "accepted"}}},
+      "then": {
+        "properties": {
+          "gate": {"properties": {"decision": {"const": "accept"}}}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "rejected"}}},
+      "then": {
+        "properties": {
+          "gate": {"properties": {"decision": {"const": "reject"}}}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "recovered"}}},
+      "then": {
+        "required": ["parent_event_id", "recovery_verification"],
+        "properties": {
+          "parent_event_id": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  ],
   "additionalProperties": true
 }

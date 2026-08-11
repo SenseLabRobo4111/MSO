@@ -1,0 +1,44 @@
+schema_version: '1.0'
+pilot_plan_id: tf27_n4_mso_342771_integration_pilots_v1
+collection_ready: false
+results_status: not_collected
+claim_authorized: false
+permanently_excluded_from_confirmatory_analysis: true
+pilot_completion_status: not_run
+pilot_completion_report_path: SET_PILOT_COMPLETION_REPORT_PATH
+pilot_completion_report_sha256: SET_64_HEX_SHA256
+all_four_pilots_protocol_passed: false
+no_critical_safety_faults: false
+evidence_pipeline_verified: false
+purpose: integration_logging_network_and_safety_validation_only
+start_pose_set_id: SET_PILOT_SAFE_POSE_SET_ID
+run_duration_s: 300
+pilot_runs:
+  - pilot_order: 1
+    run_id: tf27_n4_pilot_A
+    treatment_label: A
+    predictor_mode: mso_342771
+    network_condition: nominal
+    isolated_robot_id: null
+    required_focus: full_pipeline_and_logging
+  - pilot_order: 2
+    run_id: tf27_n4_pilot_B
+    treatment_label: B
+    predictor_mode: observed_only
+    network_condition: nominal
+    isolated_robot_id: null
+    required_focus: prediction_shadow_write_barrier
+  - pilot_order: 3
+    run_id: tf27_n4_pilot_C
+    treatment_label: C
+    predictor_mode: mso_342771
+    network_condition: isolated_robot_impairment
+    isolated_robot_id: 0
+    required_focus: data_plane_impairment_and_recovery
+  - pilot_order: 4
+    run_id: tf27_n4_pilot_D
+    treatment_label: D
+    predictor_mode: observed_only
+    network_condition: isolated_robot_impairment
+    isolated_robot_id: 0
+    required_focus: combined_shadow_and_impairment_barriers

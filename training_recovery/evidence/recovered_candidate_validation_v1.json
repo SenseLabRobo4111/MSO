@@ -1,0 +1,59 @@
+{
+  "status": "recovered_candidate_validation_not_manuscript_checkpoint",
+  "protocol": "complete building-disjoint validation split; primary selection metric minimum unknown-region BCE; fixed 0.5 threshold for F1/IoU; full-image PSNR and skimage SSIM with data_range=1",
+  "manifest_sha256": "81818d2c5527ac02c247958b3c4ca4ba6699dc9a3876d6b08262e6993f48e492",
+  "split": "val",
+  "test_split_accessed": false,
+  "validation_samples_per_candidate": 1104,
+  "dataset_integrity": "verified_sha256",
+  "ranking_by_predeclared_validation_unknown_bce": [
+    "recovered_candidate_deconv_a.pt",
+    "recovered_candidate_deconv_label_b.pt"
+  ],
+  "suggested_candidate_by_predeclared_metric": "recovered_candidate_deconv_a.pt",
+  "suggestion_is_not_test_authorization": true,
+  "conclusion": "Both recovered candidates transfer poorly to the new validation distribution and are not suitable for test evaluation.",
+  "results": [
+    {
+      "candidate_filename": "recovered_candidate_deconv_a.pt",
+      "candidate_sha256": "da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8",
+      "parameter_count": 342771,
+      "state_tensor_count": 594,
+      "decision_threshold": 0.5,
+      "validation_unknown_bce": 4.610452246747866,
+      "validation_unknown_f1": 0.11580561394887524,
+      "validation_unknown_iou": 0.0614616065126802,
+      "validation_unknown_precision": 0.5987234450853578,
+      "validation_unknown_recall": 0.06410215444614294,
+      "validation_unknown_mse": 0.33733795073139927,
+      "validation_unknown_psnr": 4.719347976602202,
+      "validation_full_image_psnr_mean": 8.84816916223429,
+      "validation_full_image_psnr_std": 5.011029313861962,
+      "validation_full_image_ssim_mean": 0.7127678934953613,
+      "validation_full_image_ssim_std": 0.17673960884567042
+    },
+    {
+      "candidate_filename": "recovered_candidate_deconv_label_b.pt",
+      "candidate_sha256": "022689a97336b47fe0c3a39d85e120a4d07e99ba3cc34e4f2be5422c1e515e2c",
+      "parameter_count": 342771,
+      "state_tensor_count": 594,
+      "decision_threshold": 0.5,
+      "validation_unknown_bce": 4.649316252417733,
+      "validation_unknown_f1": 0.12665657382815795,
+      "validation_unknown_iou": 0.06760990646919414,
+      "validation_unknown_precision": 0.5682840259285372,
+      "validation_unknown_recall": 0.07127051157578754,
+      "validation_unknown_mse": 0.3390324215520963,
+      "validation_unknown_psnr": 4.697587683813072,
+      "validation_full_image_psnr_mean": 8.858428490633736,
+      "validation_full_image_psnr_std": 5.00731460801215,
+      "validation_full_image_ssim_mean": 0.7168215877306998,
+      "validation_full_image_ssim_std": 0.17808336164465716
+    }
+  ],
+  "remote_result_sha256": {
+    "recovered_candidate_deconv_a.json": "d7583a78b34ad8dd2526d19e93963d3a077fe1aea0819789aeae4fc289ff394c",
+    "recovered_candidate_deconv_label_b.json": "232646d5b4a8067ac6b8932d659911b5a48e0c1a6d9ddb99b3bf0473a242f121",
+    "validation_candidate_comparison.json": "3a324c31b183054396108b79284c8fe3f6f2e58022f5013b619ffc0d1542049c"
+  }
+}

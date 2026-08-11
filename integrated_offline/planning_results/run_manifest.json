@@ -1,0 +1,32 @@
+{
+  "base_frame_clusters": 30,
+  "claim_scope": "exploratory saved-probability-map provisional-planning audit on one archived scene",
+  "created_by": "integrated_offline/run_provisional_planning_ablation.py",
+  "exploratory_rules": {
+    "measured_cells_authoritative": true,
+    "observed_support_gate": 0.2,
+    "prediction_occupied_threshold": 128,
+    "prediction_persisted": false,
+    "prediction_unknown_value": 0,
+    "probability_overlap": "maximum on supported cells",
+    "registrar_input": "observed only",
+    "relative_asset_paths_supported": true,
+    "selection_lock_self_declaration_used_for_inference": false
+  },
+  "input_manifest_name": "manifest.json",
+  "input_manifest_sha256": "47037e16c500977dd12e716d497423d6d2ddfb1dc3437765a323ac52b590b183",
+  "limitations": [
+    "exploratory reconstruction from saved probability maps",
+    "single archived A3 scene with repeated synthetic perturbations",
+    "oracle is two-map measured union, not full environment ground truth",
+    "deterministic planner proxy; not historical MRPB planner",
+    "no online, physical, scaling, or communication claim"
+  ],
+  "numpy": "2.4.3",
+  "opencv": "4.13.0",
+  "output_rows": 100,
+  "pipeline_script_sha256": "11da2815cfa0db00a9e406afac47694ec4036e7b0f12c9f43a94f998c879d38f",
+  "python": "3.12.6",
+  "reference_registrar_sha256": "9abcbdee16dd96aff4e392fc3c2cc8dac24a694279cf035d3a0f8163061a15bf",
+  "selected_events": 50
+}
