@@ -21,7 +21,7 @@ MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研�
 | 保留数据归档清单 | 是 | 8,304 条样本与源文件哈希；不是论文划分 |
 | 历史双机器人配准回放 | 是 | 离线负面审计；不是部署验证 |
 | 重建式集成离线审计 | 是 | 可移植的单场景探索性审计；不是已部署闭环 |
-| 被动 N=2/3/5 采集协议 | 是 | 仅为采集工具；没有新的 N=3 或 N=5 实物结果 |
+| 被动 N=2/3/4/5 采集协议 | 是 | 仅为采集工具；没有新的 N=3、N=4 或 N=5 实物结果 |
 | 实物 rosbag | 外部提供 | [Google Drive 公开只读目录](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing)；18 个 bag 与 18 个 metadata 文件均已核验 |
 | 可移植同行评审数据 | 是 | [`paper/nature_communications/peer_review_data/`](paper/nature_communications/peer_review_data/) 及仓库级哈希清单 |
 
@@ -46,7 +46,7 @@ MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研�
 ```text
 MSO/
 |-- experiments/
-|   `-- physical_team/       # 被动 N=2/3/5 采集协议
+|   `-- physical_team/       # 被动 N=2/3/4/5 采集协议
 |-- integrated_offline/      # 重建式单场景探索性审计
 |-- registration_replay/     # 历史双机器人数据的离线审计
 |-- repro_reconstructed/     # 明确标注的训练重建与候选权重
@@ -54,6 +54,7 @@ MSO/
 |   |-- sensemap.launch.py
 |   |-- physical_team_capture.launch.py
 |   |-- physical_team_3.launch.py
+|   |-- physical_team_4.launch.py
 |   `-- physical_team_5.launch.py
 |-- sensemap/
 |   |-- explore_model/
@@ -159,7 +160,9 @@ python3 -m pytest repro_reconstructed/tests -q
 
 ## 实物团队采集协议
 
-[`experiments/physical_team/`](experiments/physical_team/README.md) 包含被动记录器、数据模式、预检、N=2/3/5 启动示例以及单次/整组诊断。它不包含同步三机器人或五机器人实物数据。诊断报告固定写入 `claim_authorized=false`；这些工具用于采集与检查，不是论文结论认证器。
+[`experiments/physical_team/`](experiments/physical_team/README.md) 包含被动记录器、数据模式、预检、N=2/3/4/5 启动示例以及单次/整组诊断。它不包含同步三、四或五机器人实物数据。诊断报告固定写入 `claim_authorized=false`；这些工具用于采集与检查，不是论文结论认证器。
+
+[同方 27 楼四台 SenseBeetle 前瞻性实验计划](experiments/physical_team/tongfang27_n4/README.md)进一步提供冻结的 N=4 析因设计以及失败即关闭的准备与分析工具。该计划当前明确禁止采集，直至 304K 模型、完整在线系统、独立参考、网络验证和预实验记录全部具备。
 
 ## 数据加载格式
 

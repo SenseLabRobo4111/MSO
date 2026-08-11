@@ -1,0 +1,33 @@
+schema_version: '1.0'
+network_lock_id: tf27_n4_isolate_one_robot_udp_v1
+collection_ready: false
+claim_authorized: false
+network_status: missing_required_n4_network_verification
+phase_schedule:
+  - {phase_id: baseline, start_s: 180, end_s: 210, loss_probability: 0.0}
+  - {phase_id: degraded, start_s: 210, end_s: 255, loss_probability: 0.2}
+  - {phase_id: disconnected, start_s: 255, end_s: 275, loss_probability: 1.0}
+  - {phase_id: recovery_monitor, start_s: 275, end_s: 320, loss_probability: 0.0}
+data_plane_interface_id: SET_DATA_PLANE_INTERFACE_ID
+safety_plane_interface_id: SET_INDEPENDENT_SAFETY_INTERFACE_ID
+dds_profile_path: SET_DDS_UNICAST_PROFILE_PATH
+dds_profile_sha256: SET_64_HEX_SHA256
+verification_report_path: SET_N4_NETWORK_VERIFICATION_REPORT_PATH
+verification_report_sha256: SET_64_HEX_SHA256
+topology_contract:
+  isolated_robot_peer_count: 3
+  required_directed_rule_count: 6
+  peer_addressed_unicast: false
+  multicast_data_path_disabled: false
+  independent_safety_plane: false
+evidence_contract:
+  probe_traffic_verified_all_six_directions: false
+  rule_packet_counters_verified_all_six_directions: false
+  phase_timing_verified: false
+  exact_rule_cleanup_verified: false
+  no_compounded_input_rules_verified: false
+note: >-
+  The existing pairwise network audit is insufficient for the four-robot
+  isolate-one-robot treatment. Collection remains disabled until actual MSO DDS
+  traffic, all three peers and all six directed rules are independently
+  verified, including cleanup and the out-of-band safety link.

@@ -1,0 +1,23 @@
+schema_version: '1.0'
+reference_id: tf27_overhead_tracking_v1
+collection_ready: false
+claim_authorized: false
+static_map_frame: tf27_gt
+pose_source: overhead_tracking
+pose_rate_hz: SET_REFERENCE_POSE_RATE_HZ
+maximum_event_join_tolerance_ms: 100.0
+calibration:
+  path: SET_REFERENCE_CALIBRATION_PATH
+  sha256: SET_64_HEX_SHA256
+  identifier: SET_CALIBRATION_ID
+  translation_uncertainty_m: SET_TRANSLATION_UNCERTAINTY_M
+  yaw_uncertainty_deg: SET_YAW_UNCERTAINTY_DEG
+robot_extrinsics:
+  path: SET_ROBOT_EXTRINSICS_PATH
+  sha256: SET_64_HEX_SHA256
+  identifier: SET_EXTRINSICS_ID
+requirements:
+  independent_from_mso: true
+  external_pose_not_consumed_by_planner: true
+  reference_for_every_registration_decision: true
+  frozen_gt_to_global_transform: true

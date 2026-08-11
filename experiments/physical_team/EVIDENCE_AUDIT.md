@@ -38,10 +38,10 @@ No additional bag was present in the searched remote workspaces.
   are simulation or common-canvas/public-floorplan replay evidence only.
 - The inspected deployment revision of `map_merge_node.py` explicitly
   subscribes to `robot_0` and `robot_1`, so it is not evidence of an N>2 online
-  fusion service. No synchronised three- or five-robot physical bag was found
-  in the available project records.
+  fusion service. No synchronised three-, four- or five-robot MSO physical bag
+  was found in the available project records.
 - The public repository has no hidden remote branch or large-file object with
-  three- or five-robot physical data.
+  three-, four- or five-robot physical data.
 - A separate local project contains five matched synchronous/asynchronous
   four-robot communication-scheduling groups (40 bags in total). Its protocol,
   software, and README identify it as a different value-of-information

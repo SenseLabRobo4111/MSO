@@ -30,7 +30,7 @@ every result in the manuscript.
 | Preserved-archive inventory | Yes | 8,304 sample records with source hashes; not the manuscript split |
 | Archived two-robot registration replay | Yes | Offline negative-result audit; not deployed validation |
 | Reconstructed integrated offline audit | Yes | Portable, one-scene exploratory audit; not a deployed closed loop |
-| Passive N=2/3/5 collection protocol | Yes | Instrumentation only; no new N=3 or N=5 physical results |
+| Passive N=2/3/4/5 collection protocol | Yes | Instrumentation only; no new N=3, N=4 or N=5 physical results |
 | Physical rosbags | External | [Public read-only Google Drive folder](https://drive.google.com/drive/folders/1mbCuIISidEy87mmWPbZTtiRKfW54Fhii?usp=sharing); 18 bags and 18 metadata files verified |
 | Portable peer-review data | Yes | [`paper/nature_communications/peer_review_data/`](paper/nature_communications/peer_review_data/) with repository-level hashes |
 
@@ -78,7 +78,7 @@ historical alias and is not the canonical entry point.
 ```text
 MSO/
 |-- experiments/
-|   `-- physical_team/       # passive N=2/3/5 collection protocol
+|   `-- physical_team/       # passive N=2/3/4/5 collection protocol
 |-- integrated_offline/      # reconstructed one-scene exploratory audit
 |-- registration_replay/     # offline audit of archived two-robot bags
 |-- repro_reconstructed/     # declared training reconstruction and candidates
@@ -86,6 +86,7 @@ MSO/
 |   |-- sensemap.launch.py
 |   |-- physical_team_capture.launch.py
 |   |-- physical_team_3.launch.py
+|   |-- physical_team_4.launch.py
 |   `-- physical_team_5.launch.py
 |-- sensemap/
 |   |-- explore_model/
@@ -240,10 +241,16 @@ validated deployment.
 ## Physical-team collection protocol
 
 [`experiments/physical_team/`](experiments/physical_team/README.md) contains a
-passive recorder, schemas, preflight checks, N=2/3/5 launch examples, and run and
-campaign diagnostics. It contains no simultaneous three- or five-robot physical
-dataset. The diagnostics explicitly set `claim_authorized` to `false`; they are
-collection aids, not certificates for a manuscript claim.
+passive recorder, schemas, preflight checks, N=2/3/4/5 launch examples, and run
+and campaign diagnostics. It contains no simultaneous three-, four- or
+five-robot physical dataset. The diagnostics explicitly set
+`claim_authorized` to `false`; they are collection aids, not certificates for a
+manuscript claim.
+
+The [prospective Tongfang 27F four-SenseBeetle campaign](experiments/physical_team/tongfang27_n4/README.md)
+adds a frozen N=4 factorial plan and fail-closed preparation and analysis tools.
+It is explicitly blocked from collection until the required 304K artifact,
+full online stack, reference, network verification, and pilot evidence exist.
 
 ## Dataset loader format
 
