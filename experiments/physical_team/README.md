@@ -20,9 +20,10 @@ messages. It never publishes motion commands, calls services, or opens action
 clients.
 
 The [prospective Tongfang 27F four-SenseBeetle campaign](tongfang27_n4/README.md)
-provides a separate frozen N=4 factorial plan. It remains explicitly blocked
-from collection until its model, online-stack, reference, network, and pilot
-gates all pass.
+provides a separate frozen N=4 factorial plan. Its exact 342,771-parameter
+recovered deployment candidate is identified and verified. It remains
+explicitly blocked from collection until the online-stack, independent
+GT/reference, network, and pilot gates pass.
 
 ## Minimum campaign for the present evidence gaps
 

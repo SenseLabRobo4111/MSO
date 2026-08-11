@@ -13,12 +13,20 @@ item was inspected; it does not by itself authorize a result claim.
   exists. This protocol-only branch remains source-gated even if every YAML
   field is changed to `collection_ready: true`; a reviewed executable verifier
   change is additionally required.
-- [ ] Strictly load the real `mso_304k` artifact, record the exact trainable
-  parameter count, and verify the fixed-fixture output fingerprint.
-- [ ] Confirm that no recovered 342,771-parameter candidate is labelled as the
-  requested 304K model.
+- [ ] Verify `mso_deconv_342771_candidate_a` against artifact SHA-256
+  `da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8`.
+- [ ] Strictly load the candidate into
+  `DistillMapNetDeconv(image_size=256, dim=4)`, confirm exactly 342,771
+  trainable parameters, and reproduce the fixed-fixture output fingerprint.
+- [ ] Confirm that all four robots use those exact portable-state bytes and
+  that no hardware conversion has become the sole model copy.
+- [ ] Preserve the label "recovered deployment candidate"; do not identify the
+  artifact as the manuscript checkpoint or the historical `w/o FFC` 304K row.
 - [ ] Verify one frozen software commit on all four robots and a clean deployed
   worktree.
+- [ ] Verify the locked architecture and FFC source hashes and either reproduce
+  the reference runtime exactly or retain a reviewed numeric-equivalence report
+  for the deployed Torch/device combination.
 - [ ] Survey the eight four-pose sets in `tf27_gt`; verify geofence membership
   and the minimum separation.
 - [ ] Freeze the GT occupancy image, accessible-free ROI, dynamic exclusion

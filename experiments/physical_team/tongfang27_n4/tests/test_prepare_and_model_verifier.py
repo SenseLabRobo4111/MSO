@@ -18,6 +18,7 @@ sys.path.insert(0, str(BASE))
 
 import prepare_n4_run as preparer  # noqa: E402
 import verify_model_artifact as model_verifier  # noqa: E402
+from build_model_fixture import build_fixture  # noqa: E402
 
 
 def config_paths():
@@ -82,7 +83,70 @@ class PreparationAndModelTests(unittest.TestCase):
             self.assertNotIn(str(root), report_path.read_text(encoding="utf-8"))
             self.assertIn("not explicitly supported", " ".join(stored["errors"]))
 
-    def test_current_no_model_package_cannot_prepare_a_run(self):
+    def test_selected_model_strict_load_and_forward_are_verified(self):
+        artifact = (
+            BASE.parents[2] / "repro_reconstructed" / "checkpoints" /
+            "recovered_candidate_deconv_a.pt"
+        )
+        fixture = (
+            BASE / "deployment_models" /
+            "fixed_fixture_occ_unknown_free_v1.npy"
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            report_path = Path(temporary) / "verification.json"
+            report, status = model_verifier.verify(
+                artifact, model_verifier.LOADER_ID, fixture, report_path)
+            self.assertEqual(status, 0)
+            self.assertTrue(report["verified"])
+            self.assertEqual(
+                report["trainable_parameter_count"], 342771)
+            self.assertEqual(report["missing_keys"], [])
+            self.assertEqual(report["unexpected_keys"], [])
+            self.assertTrue(report["finite_state"])
+            self.assertEqual(report["output_shape"], [1, 1, 256, 256])
+            self.assertTrue(report["all_outputs_finite"])
+            self.assertEqual(report["all_output_shapes"], [
+                [1, 1, 256, 256],
+                [1, 8, 128, 128],
+                [1, 16, 64, 64],
+                [1, 16, 64, 64],
+                [1, 8, 128, 128],
+            ])
+            self.assertEqual(len(report["all_output_fingerprints"]), 5)
+            self.assertEqual(
+                report["output_fingerprint"],
+                "31e3cd4ec395b615a9d5dafd1024286fd9860f58acaffc1df09d23bc624778e0")
+
+    def test_nonselected_candidate_is_rejected_by_identity_hash(self):
+        artifact = (
+            BASE.parents[2] / "repro_reconstructed" / "checkpoints" /
+            "recovered_candidate_deconv_label_b.pt"
+        )
+        fixture = (
+            BASE / "deployment_models" /
+            "fixed_fixture_occ_unknown_free_v1.npy"
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            report_path = Path(temporary) / "verification.json"
+            report, status = model_verifier.verify(
+                artifact, model_verifier.LOADER_ID, fixture, report_path)
+            self.assertEqual(status, 2)
+            self.assertFalse(report["verified"])
+            self.assertIn(
+                "does not identify the locked candidate A",
+                " ".join(report["errors"]),
+            )
+
+    def test_committed_fixture_matches_deterministic_builder(self):
+        import numpy as np
+
+        fixture = np.load(
+            BASE / "deployment_models" /
+            "fixed_fixture_occ_unknown_free_v1.npy",
+            allow_pickle=False)
+        self.assertTrue(np.array_equal(fixture, build_fixture()))
+
+    def test_current_source_gated_package_cannot_prepare_a_run(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "runs"
             report, status = preparer.prepare_run(
@@ -160,6 +224,17 @@ class PreparationAndModelTests(unittest.TestCase):
             self.assertEqual(status, 0)
             self.assertTrue(report["prepared"])
             self.assertTrue((final / "run_lock.json").is_file())
+            run_lock = json.loads(
+                (final / "run_lock.json").read_text(encoding="utf-8"))
+            self.assertEqual(
+                run_lock["model_loader_id"],
+                model_verifier.LOADER_ID)
+            self.assertEqual(
+                run_lock["model_selection_record_sha256"],
+                "c79ec419309620d52fc3a6d353cb5622e23bb65d99d6add4753641f0f2788b41")
+            self.assertEqual(
+                run_lock["model_architecture_source_sha256"],
+                "c84ff05fa168c2e856002f12a903e53896da70cd8854a152b85f407d176727b3")
             self.assertTrue((final / "PRECAPTURE_SHA256SUMS").is_file())
             self.assertTrue((final / "locks").is_dir())
             self.assertFalse((final / "bag").exists())

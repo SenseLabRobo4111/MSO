@@ -166,6 +166,15 @@ def prepare_run(
         "model_artifact_filename": artifact.name,
         "model_artifact_relpath": f"model/{artifact.name}",
         "model_artifact_sha256": artifact_hash,
+        "model_artifact_role": model["artifact_role"],
+        "model_loader_id": model["architecture_loader_id"],
+        "model_input_contract": model["input_contract"],
+        "model_output_contract": model["output_contract"],
+        "model_selection_record_sha256": model["selection_record_sha256"],
+        "model_verifier_report_sha256": model["verifier_report_sha256"],
+        "model_architecture_source_sha256": model[
+            "architecture_source_sha256"],
+        "model_ffc_source_sha256": model["ffc_source_sha256"],
         "exact_trainable_parameter_count": model[
             "exact_trainable_parameter_count"],
         "online_stack_id": online_stack["stack_id"],

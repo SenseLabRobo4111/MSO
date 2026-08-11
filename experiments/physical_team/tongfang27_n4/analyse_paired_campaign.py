@@ -23,11 +23,20 @@ except ImportError as error:  # pragma: no cover
 
 
 CELLS = (
-    ("mso_304k", "nominal"),
+    ("mso_342771", "nominal"),
     ("observed_only", "nominal"),
-    ("mso_304k", "isolated_robot_impairment"),
+    ("mso_342771", "isolated_robot_impairment"),
     ("observed_only", "isolated_robot_impairment"),
 )
+CAMPAIGN_ID = "tf27_n4_mso_342771_factorial_v1"
+MODEL_BINDING = {
+    "model_id": "mso_deconv_342771_candidate_a",
+    "artifact_sha256": (
+        "da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8"),
+    "loader_id": "distill_map_net_deconv_raw_state_v1",
+    "input_contract": "occupied_unknown_free_one_hot_256_v1",
+    "output_contract": "sigmoid_occupancy_probability_256_v1",
+}
 REQUIRED_COLUMNS = {
     "run_id", "block_id", "predictor_mode", "network_condition",
     "protocol_pass", "normalized_coverage_auc", "final_coverage",
@@ -220,6 +229,10 @@ def analyse(
         errors.append(str(error))
     rows, row_errors = read_results(results_path)
     errors.extend(row_errors)
+    if campaign.get("campaign_id") != CAMPAIGN_ID:
+        errors.append("campaign identity differs from the locked analysis")
+    if campaign.get("model_binding") != MODEL_BINDING:
+        errors.append("model binding differs from the locked analysis")
     planned = {
         run.get("run_id"): run
         for run in campaign.get("ordered_runs") or [] if isinstance(run, dict)
@@ -251,11 +264,12 @@ def analyse(
     report: dict[str, Any] = {
         "schema_version": "1.0",
         "campaign_id": campaign.get("campaign_id"),
+        "model_binding": campaign.get("model_binding"),
         "analysis_complete": False,
         "claim_authorized": False,
         "formal_primary_endpoint": "normalized_coverage_auc",
         "formal_primary_contrast": (
-            "mso_304k_minus_observed_only_under_nominal_network"),
+            "mso_342771_minus_observed_only_under_nominal_network"),
         "result_row_count": len(rows),
         "errors": errors,
         "input_sha256": {
@@ -299,9 +313,9 @@ def analyse(
         cells = by_block[block_id]
         row: dict[str, Any] = {"block_id": block_id}
         for endpoint in ("normalized_coverage_auc", "final_coverage"):
-            a = cells[("mso_304k", "nominal")][endpoint]
+            a = cells[("mso_342771", "nominal")][endpoint]
             b = cells[("observed_only", "nominal")][endpoint]
-            c = cells[("mso_304k", "isolated_robot_impairment")][endpoint]
+            c = cells[("mso_342771", "isolated_robot_impairment")][endpoint]
             d = cells[("observed_only", "isolated_robot_impairment")][endpoint]
             row[f"{endpoint}_prediction_nominal"] = a - b
             row[f"{endpoint}_prediction_impaired"] = c - d

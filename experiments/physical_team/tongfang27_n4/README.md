@@ -3,18 +3,23 @@
 ## Status
 
 This subtree is a prospective, fail-closed experiment package. It contains no
-physical result, no 304K model binary and no claim-authorized output.
+physical result and no claim-authorized output.
 
 - `collection_ready: false`
 - `results_status: not_collected`
 - `claim_authorized: false`
 
-The requested 304K model does not currently exist in the inspected local,
-remote or archived weight collections. The manuscript's `304K` entry is an
-aggregate row for the historical `w/o FFC` ablation, not a recovered artifact.
-The available 342,771-parameter candidates are explicitly rejected as
-substitutes. Do not rename, round or upload either candidate as this model.
-The byte-level search boundary and retained parameter-count evidence are in
+The corrected deployment target is the complete FFC student with exactly
+342,771 trainable parameters. This protocol locks recovered candidate A as
+`mso_deconv_342771_candidate_a` and uses `mso_342771` as the experimental
+factor value. The earlier 304K request was a category error: the manuscript's
+`304K` entry is a rounded aggregate row for the historical `w/o FFC` ablation,
+not the intended deployment model. Candidate A was extracted from
+`model-epoch-deconv.ckpt`, a checkpoint retained in a preserved deployment
+copy. The preserved online entry loaded a different bilinear checkpoint, so
+historical runtime use is not claimed. The owner selected candidate A as the
+prospective full-FFC experiment target; it is not identified as the manuscript
+checkpoint. Its identity and provenance boundary are recorded in
 `MODEL_ARTIFACT_AUDIT.md`.
 
 The public repository also lacks the complete deployed online chain. Its
@@ -59,9 +64,9 @@ The confirmatory campaign is a within-start-pose-block 2 x 2 factorial:
 
 | Label | `predictor_mode` | `network_condition` |
 |---|---|---|
-| A | `mso_304k` | `nominal` |
+| A | `mso_342771` | `nominal` |
 | B | `observed_only` | `nominal` |
-| C | `mso_304k` | `isolated_robot_impairment` |
+| C | `mso_342771` | `isolated_robot_impairment` |
 | D | `observed_only` | `isolated_robot_impairment` |
 
 Eight blocks each contain all four cells. Each cell therefore has eight runs
@@ -109,7 +114,7 @@ normalized_coverage_auc = integral from 0 to 600 s of C(t), divided by 600 s.
 ```
 
 The sole formal primary contrast is the block-paired difference
-`mso_304k - observed_only` under nominal networking.
+`mso_342771 - observed_only` under nominal networking.
 
 Secondary, effect-size-first endpoints are:
 
@@ -157,37 +162,49 @@ not unlock collection.
 
 ## Model identity gate
 
-`config/model_lock.yaml` deliberately describes a missing required artifact.
-Readiness requires all of the following:
+`config/model_lock.yaml` identifies the recovered deployment candidate by exact
+bytes rather than by a rounded parameter label. Its model-specific evidence
+requires all of the following:
 
 - an explicitly supported exact architecture loader;
 - strict state loading with empty missing/unexpected key lists;
-- an actual trainable-parameter count of exactly 304,000;
+- an actual trainable-parameter count of exactly 342,771;
+- four FFC blocks, 594 state tensors and 347,690 state values;
 - a finite forward pass for a fixed `[1, 3, 256, 256]` fixture;
 - artifact, fixture, training-provenance and selection-record files whose bytes
   match their lock-file SHA-256 values;
-- a deterministic output fingerprint;
+- locked architecture/FFC source hashes and a reference-runtime output
+  fingerprint;
 - a hashed machine-readable verifier report with all of the above fields.
 
-`verify_model_artifact.py` has an intentionally empty supported-loader registry
-because no matching architecture has been recovered. It currently produces
-only a failed report. Adding a loader requires a reviewed source change; an
-arbitrary module name from YAML is never imported. The verifier contains no
-fallback to either known 342,771-parameter candidate, and the campaign
-validator rejects their known artifact hashes.
+The exact model ID is `mso_deconv_342771_candidate_a`. The artifact is
+`repro_reconstructed/checkpoints/recovered_candidate_deconv_a.pt`, with
+SHA-256
+`da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8`.
+It strictly loads into
+`DistillMapNetDeconv(image_size=256, dim=4)`. The reviewed loader is fixed in
+source; an arbitrary module named in YAML is never imported. The fixture,
+selection record and verifier output are indexed in `deployment_models/`.
+The exact fingerprint is scoped to the locked Python 3.12/Torch 2.12 CPU
+reference environment. A different field runtime requires an explicitly
+reviewed numerical-equivalence record; changing frameworks silently is not
+permitted.
 
-Example diagnostic invocation, expected to fail until the architecture exists:
+Reproduce the model check with:
 
 ```bash
 python3 experiments/physical_team/tongfang27_n4/verify_model_artifact.py \
-  --artifact /models/actual_student.pt \
-  --loader-id reviewed_mso_304k_v1 \
-  --fixture /protocol/fixed_256_fixture.npy \
-  --output /protocol/model_verification.json
+  --artifact repro_reconstructed/checkpoints/recovered_candidate_deconv_a.pt \
+  --loader-id distill_map_net_deconv_raw_state_v1 \
+  --fixture experiments/physical_team/tongfang27_n4/deployment_models/fixed_fixture_occ_unknown_free_v1.npy \
+  --output experiments/physical_team/tongfang27_n4/deployment_models/mso_deconv_342771_candidate_a.verification.json
 ```
 
-Only the portable inference state should eventually be versioned. Do not add a
-large optimizer checkpoint or hardware-specific engine as the sole model copy.
+Only the portable inference state is used for deployment. The 570 MB source
+checkpoint is provenance evidence, not the field artifact, and a
+hardware-specific engine must not become the sole model copy. Model verification
+does not unlock collection: the online-stack, GT/reference, network, pilot and
+source-level collection gates below remain unresolved.
 
 ## Full online-stack gate
 
@@ -201,7 +218,11 @@ and a hashed JSON verification report establishing:
 - registration-event lifecycle output;
 - persistent map revision/hash transitions;
 - measured-only collision authority;
-- the `observed_only` prediction-shadow write barrier.
+- the `observed_only` prediction-shadow write barrier; and
+- predictor model ID, artifact SHA-256, raw-state loader, input/output contracts
+  and both architecture-source hashes exactly match `model_lock.yaml`; and
+- strict raw-state loading plus same-runtime reproduction or reviewed numerical
+  equivalence is verified on the actual robot compute stack.
 
 Merely setting six YAML booleans to true does not suffice: the report bytes,
 external repository HEAD, clean worktree and launch-file existence are checked.
@@ -422,7 +443,7 @@ python3 -m unittest discover \
   -p 'test_*.py' -v
 ```
 
-The tests use only temporary synthetic fixtures. They verify protocol
-balancing, the current NO-MODEL/NO-STACK/NO-NETWORK fail-closed state, rejection
-of 342,771-parameter substitutes, atomic run preparation and complete-block
-paired analysis. They are not physical evidence.
+The tests use temporary synthetic campaign fixtures and the locked model
+artifact check. They verify protocol balancing, exact candidate-A identity,
+the current NO-STACK/NO-NETWORK fail-closed state, atomic run preparation and
+complete-block paired analysis. They are not physical evidence.

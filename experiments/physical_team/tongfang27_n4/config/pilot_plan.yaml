@@ -1,5 +1,5 @@
 schema_version: '1.0'
-pilot_plan_id: tf27_n4_integration_pilots_v1
+pilot_plan_id: tf27_n4_mso_342771_integration_pilots_v1
 collection_ready: false
 results_status: not_collected
 claim_authorized: false
@@ -17,7 +17,7 @@ pilot_runs:
   - pilot_order: 1
     run_id: tf27_n4_pilot_A
     treatment_label: A
-    predictor_mode: mso_304k
+    predictor_mode: mso_342771
     network_condition: nominal
     isolated_robot_id: null
     required_focus: full_pipeline_and_logging
@@ -31,7 +31,7 @@ pilot_runs:
   - pilot_order: 3
     run_id: tf27_n4_pilot_C
     treatment_label: C
-    predictor_mode: mso_304k
+    predictor_mode: mso_342771
     network_condition: isolated_robot_impairment
     isolated_robot_id: 0
     required_focus: data_plane_impairment_and_recovery

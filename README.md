@@ -25,7 +25,7 @@ every result in the manuscript.
 | ROS 2 prediction node and launch file | Yes | Runtime interface is usable |
 | Historical manuscript trainer and exact 5,385/1,356 split | No | Not recovered |
 | Manuscript checkpoint and model-selection trace | No | Not recovered |
-| Two recovered generator candidates | Yes | Architecture-compatible; not identified as the manuscript checkpoint |
+| Two recovered generator candidates | Yes | Architecture-compatible; candidate A is locked for the prospective N=4 deployment experiment, not identified as the manuscript checkpoint |
 | Reconstructed training and evaluation workflow | Yes | Forward reconstruction, not historical reproduction |
 | Preserved-archive inventory | Yes | 8,304 sample records with source hashes; not the manuscript split |
 | Archived two-robot registration replay | Yes | Offline negative-result audit; not deployed validation |
@@ -139,9 +139,10 @@ ros2 run sensemap sensemap_predictor --ros-args \
 
 The default `deconv` model has 342,771 trainable parameters. Loading fails if
 the path is empty or the state dictionary does not match the selected
-architecture. The recovered candidates under `repro_reconstructed/` are
-research artifacts; they must not be presented as the checkpoint underlying a
-manuscript table.
+architecture. The prospective Tongfang 27F protocol locks recovered candidate
+A to this architecture as `mso_deconv_342771_candidate_a`. This is a deployment
+choice for a new experiment, not evidence that the artifact is the checkpoint
+underlying a manuscript table.
 
 ### ROS 2 interfaces
 
@@ -249,8 +250,9 @@ manuscript claim.
 
 The [prospective Tongfang 27F four-SenseBeetle campaign](experiments/physical_team/tongfang27_n4/README.md)
 adds a frozen N=4 factorial plan and fail-closed preparation and analysis tools.
-It is explicitly blocked from collection until the required 304K artifact,
-full online stack, reference, network verification, and pilot evidence exist.
+Its exact 342,771-parameter recovered deployment candidate is identified and
+verified. Collection remains blocked until the full online stack, independent
+GT/reference, network verification, and pilot evidence exist.
 
 ## Dataset loader format
 
