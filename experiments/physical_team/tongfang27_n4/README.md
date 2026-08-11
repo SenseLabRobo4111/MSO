@@ -81,6 +81,39 @@ residual alignment must be no more than one frame (33.3 ms at 30 fps). Missing
 markers, unexplained drift, a clock step/backward jump, or any threshold
 violation makes the repetition technical-invalid.
 
+### Delivery to the experiment owner through Baidu Netdisk
+
+After each repetition is sealed and its SHA-256 inventory is complete, deliver
+all five original bags and all four original third-person videos to the
+experiment owner. A private, access-controlled Baidu Netdisk folder is an
+accepted transfer channel. This requirement applies to all three planned IDs
+and to every technical-invalid or replacement run; no failed or unfavourable
+run may be omitted from delivery.
+
+Use an unambiguous per-run layout such as:
+
+```text
+tf27_n4_mso_three_run_v1/
+  tf27_n4_mso_repeat_01/
+    bags/{robot_0,robot_1,robot_2,robot_3,coordinator}/
+    videos/{robot_0_third_person,robot_1_third_person,
+            robot_2_third_person,robot_3_third_person}/
+    manifests/{run_manifest,topic_inventory,video_inventory,SHA256SUMS}
+```
+
+Lossless archives or multipart uploads are allowed only when the original
+files remain retained and both source-file and uploaded-part hashes are
+provided. Send the share URL, access/extraction information, expiry time,
+uploader identity, upload-completion time, total byte count, and top-level
+SHA-256 inventory to the experiment owner through a private channel. Do not
+commit any Baidu Netdisk share URL, access/extraction information, or
+credentials to this public repository. A separately approved public release
+must use a redacted package and a different public link. Delivery is complete
+only after the owner confirms access and verifies the inventory; keep a second
+local copy until that confirmation.
+Baidu Netdisk is the transfer channel, not a substitute for the original bags,
+videos, manifests, or checksum audit.
+
 ### Cold reset, safety, and replacements
 
 After each repetition, preserve and hash all evidence before clearing every
@@ -421,10 +454,12 @@ mandatory. The following named streams are only an audit minimum:
 The public branch contains templates, protocols, software and digests only. Do
 not commit the Tongfang 27F raw floor plan, accessible-free or exclusion masks,
 network addresses, hardware serial numbers, site video, site photographs or
-unredacted calibration files. Keep raw evidence in controlled storage and, if
-needed, a reviewer-only read-only package. Before any public release, obtain
-site/data authorization, remove identifiers and network details, and publish
-only an approved redacted derivative with its own licence and digest inventory.
+unredacted calibration files. Keep raw evidence in controlled storage and
+deliver the bags and videos privately to the experiment owner; the
+access-controlled Baidu Netdisk package defined above is an accepted channel.
+Before any public release, obtain site/data authorization, remove identifiers
+and network details, and publish only an approved redacted derivative with its
+own licence and digest inventory.
 
 ## Optional 32-run extension: validation and preparation
 

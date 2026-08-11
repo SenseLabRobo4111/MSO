@@ -27,8 +27,12 @@ recovered candidate is identified and verified. Its immediate field task is
 three cold-reset 600-second MSO-only repetitions, each with five all-topic
 bags, four synchronized robot-specific third-person videos, and one common
 ROS/video/GT time axis. Collection remains explicitly blocked until the
- online-stack, independent GT/reference, nominal-network, synchronization,
- integration-rehearsal, and per-run audit gates pass.
+online-stack, independent GT/reference, nominal-network, synchronization,
+integration-rehearsal, and per-run audit gates pass. After each run is sealed,
+the five raw bags and four raw videos must be delivered to the experiment owner
+with their SHA-256 inventory; a private, access-controlled Baidu Netdisk folder
+is an accepted transfer channel. That private delivery is not a public-data
+release.
 
 ## Minimum campaign for the present evidence gaps
 

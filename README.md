@@ -32,7 +32,9 @@ locked MSO model under nominal networking. Each repetition requires five
 all-topic rosbags (four robot-local plus one coordinator), four synchronized
 third-person videos (one per robot), and a common ROS/video/GT time axis. The
 existing 32-run factorial is an optional later extension, not the immediate
-field task.
+field task. The complete raw bags and videos must be delivered to the experiment
+owner; a private, access-controlled Baidu Netdisk folder is an accepted transfer
+channel. The public repository retains only approved metadata and digests.
 
 This is currently a protocol package, not a physical-result release:
 `collection_ready: false`, `results_status: not_collected`, and
