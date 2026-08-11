@@ -1,0 +1,30 @@
+schema_version: '1.0'
+arena_id: tongfang_27f_office_roi_v1
+site_id: tongfang_27f_office
+collection_ready: false
+claim_authorized: false
+coordinate_frame: tf27_gt
+run_duration_s: 600
+environment_lock:
+  roi_id: SET_ROI_ID
+  door_state_id: SET_DOOR_STATE_ID
+  furniture_state_id: SET_FURNITURE_STATE_ID
+  dynamic_exclusion_mask_id: SET_DYNAMIC_EXCLUSION_MASK_ID
+  geofence_id: SET_GEOFENCE_ID
+  site_photo_path: SET_SITE_PHOTO_PATH
+ground_truth_map:
+  occupancy_image_path: SET_GT_OCCUPANCY_IMAGE_PATH
+  occupancy_metadata_path: SET_GT_OCCUPANCY_METADATA_PATH
+  accessible_free_mask_path: SET_GT_ACCESSIBLE_FREE_MASK_PATH
+  dynamic_exclusion_mask_path: SET_GT_DYNAMIC_EXCLUSION_MASK_PATH
+  occupancy_image_sha256: SET_64_HEX_SHA256
+  occupancy_metadata_sha256: SET_64_HEX_SHA256
+  accessible_free_mask_sha256: SET_64_HEX_SHA256
+  dynamic_exclusion_mask_sha256: SET_64_HEX_SHA256
+  resolution_m: SET_GT_RESOLUTION_M
+safety:
+  maximum_linear_velocity_m_s: 0.25
+  maximum_angular_velocity_rad_s: 0.60
+  minimum_robot_separation_m: 0.35
+  independent_emergency_stop_required: true
+  observers_required: 3

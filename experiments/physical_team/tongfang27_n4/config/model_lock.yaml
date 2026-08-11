@@ -1,0 +1,28 @@
+schema_version: '1.0'
+model_id: mso_304k
+collection_ready: false
+claim_authorized: false
+artifact_status: missing_required_artifact
+artifact_path: SET_MODEL_ARTIFACT_PATH
+artifact_sha256: SET_64_HEX_SHA256
+architecture_class: SET_EXACT_ARCHITECTURE_CLASS
+architecture_loader_id: SET_EXPLICITLY_SUPPORTED_LOADER_ID
+exact_trainable_parameter_count: 304000
+input_contract: SET_INPUT_CONTRACT_ID
+output_contract: SET_OUTPUT_CONTRACT_ID
+strict_load_verified: false
+missing_keys: SET_STRICT_LOAD_MISSING_KEYS
+unexpected_keys: SET_STRICT_LOAD_UNEXPECTED_KEYS
+fixed_fixture_output_fingerprint: SET_64_HEX_OUTPUT_FINGERPRINT
+fixed_fixture_path: SET_FIXED_256X256_FIXTURE_PATH
+fixed_fixture_sha256: SET_64_HEX_SHA256
+verifier_report_path: SET_MODEL_VERIFIER_REPORT_PATH
+verifier_report_sha256: SET_64_HEX_SHA256
+training_provenance_path: SET_TRAINING_PROVENANCE_PATH
+training_provenance_sha256: SET_64_HEX_SHA256
+selection_record_path: SET_MODEL_SELECTION_RECORD_PATH
+selection_record_sha256: SET_64_HEX_SHA256
+note: >-
+  No verified 304K artifact exists in this worktree. The recovered 342,771
+  parameter candidates are not substitutes. Field collection must remain
+  disabled until the exact architecture and artifact pass strict verification.

@@ -1,0 +1,30 @@
+schema_version: '1.0'
+stack_id: mso_full_online_n4_v1
+collection_ready: false
+claim_authorized: false
+stack_status: missing_required_full_online_stack
+external_repository_path: SET_EXTERNAL_FULL_MSO_REPOSITORY_PATH
+external_repository_commit: SET_40_HEX_GIT_COMMIT
+launch_entrypoint: SET_FULL_MSO_N4_LAUNCH_ENTRYPOINT
+interface_contract_id: SET_ONLINE_INTERFACE_CONTRACT_ID
+verification_report_path: SET_ONLINE_STACK_VERIFICATION_REPORT_PATH
+verification_report_sha256: SET_64_HEX_SHA256
+required_stages:
+  predictor: false
+  registration: false
+  gate: false
+  commit: false
+  persistent_map: false
+  planner: false
+requirements:
+  four_robot_supported: false
+  full_pipeline_integration_test_passed: false
+  registration_event_interface_verified: false
+  persistent_map_revision_hash_verified: false
+  measured_only_collision_authority_verified: false
+  prediction_shadow_write_barrier_verified: false
+note: >-
+  The public repository contains a predictor and passive logger, not the full
+  online registration-to-planner deployment. A separately recovered, clean and
+  commit-addressed full stack plus a machine-readable integration report is a
+  mandatory collection gate.

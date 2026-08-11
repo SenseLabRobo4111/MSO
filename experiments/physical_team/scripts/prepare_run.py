@@ -189,7 +189,7 @@ def main() -> int:
         raise SystemExit('replace all placeholders before preparing a run')
     team_size = int(config.get('team_size', 0))
     robots = config.get('robots', [])
-    if team_size not in (2, 3, 5) or len(robots) != team_size:
+    if team_size not in (2, 3, 4, 5) or len(robots) != team_size:
         raise SystemExit('config team_size and robot roster are inconsistent')
 
     campaign_plan_hash = None

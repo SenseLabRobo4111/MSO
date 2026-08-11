@@ -12,7 +12,7 @@
     "schema_version": {"const": "1.0"},
     "run_id": {"type": "string", "minLength": 3},
     "method": {"type": "string", "minLength": 1},
-    "team_size": {"enum": [2, 3, 5]},
+    "team_size": {"enum": [2, 3, 4, 5]},
     "site_id": {"type": "string", "minLength": 1},
     "arena_id": {"type": "string", "minLength": 1},
     "trial_id": {"type": "integer", "minimum": 1},

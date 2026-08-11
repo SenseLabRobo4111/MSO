@@ -1,23 +1,28 @@
-# Physical N=2/3/5 team evidence protocol
+# Physical N=2/3/4/5 team evidence protocol
 
 ## Status and evidence boundary
 
 This directory contains collection, integrity, network-impairment, and analysis
 tooling. It does not contain matched repeated MSO team results, a live
-communication-impairment result, or a three- or five-robot result. The inspected
-evidence is summarised in [EVIDENCE_AUDIT.md](EVIDENCE_AUDIT.md).
+communication-impairment result, or a three-, four- or five-robot result. The
+inspected evidence is summarised in [EVIDENCE_AUDIT.md](EVIDENCE_AUDIT.md).
 
 The protocol is designed to collect evidence relevant to two questions after
 data collection:
 
 1. whether the online registrar estimates correct relative transforms, rejects
    wrong candidates before map mutation, and records any recovery; and
-2. whether exploration behaviour is measured on simultaneous physical teams of two,
-   three, and five robots under matched conditions.
+2. whether exploration behaviour is measured on simultaneous physical teams of
+   two, three, four, and five robots under matched conditions.
 
 The capture node is passive. It subscribes to audit topics and records ROS 2
 messages. It never publishes motion commands, calls services, or opens action
 clients.
+
+The [prospective Tongfang 27F four-SenseBeetle campaign](tongfang27_n4/README.md)
+provides a separate frozen N=4 factorial plan. It remains explicitly blocked
+from collection until its model, online-stack, reference, network, and pilot
+gates all pass.
 
 ## Minimum campaign for the present evidence gaps
 
@@ -45,6 +50,11 @@ physical bag start times follow that sequence and always sets
 `claim_authorized` to `false` pending independent review.
 
 ## Optional full N=2/3/5 scaling campaign
+
+The generic capture, preparation, preflight and run-level audit paths also
+accept N=4. The existing scaling aggregator remains intentionally locked to its
+original matched N=2/3/5 contract; an N=4 study requires its own frozen campaign
+plan and analysis rather than being added implicitly to that comparison.
 
 For a separate physical scaling claim, use the same arena geometry, robot pool,
 checkpoint, motion limits, sensing range, communication policy, and stopping
@@ -117,9 +127,9 @@ identifiers. The committed files are intentionally non-runnable templates;
 cp experiments/physical_team/config/team_3.yaml /data/protocols/arena_a_team3.yaml
 ```
 
-Use `team_2_reference.yaml` for the matched N=2 reference. Topic names in the
-templates are the required canonical interface; remap the existing robot stack
-to those names before collection.
+Use `team_2_reference.yaml` for the matched N=2 reference and `team_4.yaml` for
+a four-robot run. Topic names in the templates are the required canonical
+interface; remap the existing robot stack to those names before collection.
 
 Create a pre-capture run skeleton with hashed inputs. It is not described as
 immutable: the completed capture becomes tamper-evident only after the final
@@ -262,7 +272,7 @@ topic traffic. Missing probe logs, zero attempted traffic, duplicated endpoint
 rules, wrong phase order/duration, or absent drop counters can never become
 `physical_impairment_evidence`.
 
-## Three- and five-robot launch examples
+## Three-, four- and five-robot launch examples
 
 Build and source the ROS 2 workspace, then launch the passive recorder. Both
 arguments are required so a large bag cannot silently land on the system disk.
@@ -270,6 +280,12 @@ arguments are required so a large bag cannot silently land on the system disk.
 ```bash
 ros2 launch sensemap physical_team_3.launch.py \
   run_id:=arena_a_t3_trial01 \
+  output_root:=/data/mso_physical
+```
+
+```bash
+ros2 launch sensemap physical_team_4.launch.py \
+  run_id:=arena_a_t4_trial01 \
   output_root:=/data/mso_physical
 ```
 
