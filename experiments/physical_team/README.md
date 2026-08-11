@@ -20,10 +20,15 @@ messages. It never publishes motion commands, calls services, or opens action
 clients.
 
 The [prospective Tongfang 27F four-SenseBeetle campaign](tongfang27_n4/README.md)
-provides a separate frozen N=4 factorial plan. Its exact 342,771-parameter
-recovered deployment candidate is identified and verified. It remains
-explicitly blocked from collection until the online-stack, independent
-GT/reference, network, and pilot gates pass.
+provides a separate frozen N=4 factorial plan; a concise
+[中文说明](tongfang27_n4/README.zh.md) is also available. Its canonical physical
+experiment branch is `sensebeetle-n4-tongfang27`. The exact 342,771-parameter
+recovered candidate is identified and verified. Its immediate field task is
+three cold-reset 600-second MSO-only repetitions, each with five all-topic
+bags, four synchronized robot-specific third-person videos, and one common
+ROS/video/GT time axis. Collection remains explicitly blocked until the
+ online-stack, independent GT/reference, nominal-network, synchronization,
+ integration-rehearsal, and per-run audit gates pass.
 
 ## Minimum campaign for the present evidence gaps
 

@@ -1,5 +1,111 @@
 # Tongfang 27F four-SenseBeetle MSO campaign
 
+[中文说明](README.zh.md)
+
+## Canonical branch and entry point
+
+The only canonical branch for field-readiness review and future commits from
+this physical campaign is `sensebeetle-n4-tongfang27`. Check out that branch
+before preparing a pilot or confirmatory run:
+
+```bash
+git fetch origin
+git switch --track origin/sensebeetle-n4-tongfang27
+```
+
+The immediate campaign identifier is `tf27_n4_mso_three_run_v1`. Manuscript,
+integration, historical preparation, and already merged model branches are not
+run authorities. This subtree currently contains a protocol and readiness
+gates, not an N=4 physical result.
+
+## Immediate field task: three full-MSO autonomous runs
+
+Four SenseBeetles (`robot_0` through `robot_3`) must simultaneously explore the
+frozen accessible ROI of the Tongfang 27F office. Every robot must strictly
+load and causally use `mso_deconv_342771_candidate_a`; shadow-only or
+`observed_only` execution does not satisfy this task. Networking is nominal.
+After the synchronized T0 barrier, human navigation is forbidden; operators
+may only use the independent emergency stop.
+
+The three pre-registered repetitions are:
+
+1. `tf27_n4_mso_repeat_01`;
+2. `tf27_n4_mso_repeat_02`;
+3. `tf27_n4_mso_repeat_03`.
+
+Each has a fixed 600-second formal window after a 30-second recording pre-roll.
+If frontiers are exhausted early, the robots stop safely but recording
+continues to 600 seconds. Low coverage never justifies extending or selectively
+repeating a run. A separately declared completion tail may continue mapping,
+but it is excluded from every formal 0--600 s endpoint.
+
+### All-topic rosbag requirement
+
+Each repetition must produce five complete all-topic bags:
+
+- one robot-local bag on each of `robot_0` through `robot_3`; and
+- one coordinator bag covering the complete distributed graph.
+
+The receiving field team must provide and preflight the five record-all
+processes, including hidden and late-discovered topics. The recorder currently
+present in this repository is a topic-whitelist audit tool and does not satisfy
+this requirement by itself. Start all five field recorders at least 30 seconds
+before T0; stop them only after the robots are stationary, the end marker is
+written, storage is flushed, and the 10-second post-roll has elapsed. Save
+pre/mid/post topic inventories, type/QoS metadata, per-topic message counts and
+time ranges, bag metadata, command line, exit status, file sizes, and SHA-256.
+A whitelist is only an audit minimum and never substitutes for all-topic
+recording.
+
+### Four synchronized third-person videos
+
+Each repetition must also produce four uncut external videos, one continuously
+showing each robot: `robot_0_third_person` through
+`robot_3_third_person`. A single overview or overhead video cannot replace the
+four robot-specific views. Record camera ID/serial, robot ID, resolution, frame
+rate, time base, first/last frame, dropped frames, raw filename, and SHA-256.
+Video starts at least 30 seconds before T0 and ends after the 10-second
+post-roll. Cameras and operators must remain outside the geofence.
+
+### One synchronized ROS, video, and GT timeline
+
+All four robot computers, the coordinator, the independent GT/reference
+system, and all four video streams share one UTC/PTP or verified NTP time base.
+`use_sim_time` is false and `/clock` is forbidden. Host absolute clock offset
+must stay at or below 5 ms and clock RTT at or below 20 ms, with measurements
+saved before, during, and after each run. GT joins must be within 100 ms.
+
+At T=0, 300, and 600 s, write `/experiment/sync_marker` into every visible bag
+and trigger the same physical LED/flash marker in all four videos. Video-to-ROS
+residual alignment must be no more than one frame (33.3 ms at 30 fps). Missing
+markers, unexplained drift, a clock step/backward jump, or any threshold
+violation makes the repetition technical-invalid.
+
+### Cold reset, safety, and replacements
+
+After each repetition, preserve and hash all evidence before clearing every
+local/merged/persistent map, MSO cache, registration graph, planner/frontier
+history, and DDS transient state. Restart the runtime, remove all network fault
+rules and prove nominal networking, restore the locked office state, return the
+robots to their pre-registered poses, and repeat model, software, clock,
+storage, topic, camera, and emergency-stop preflight. No state from a previous
+repetition may be loaded.
+
+Wrong model identity, manual navigation, absent cold reset, wrong start or
+environment, missing/corrupt bag or video, incomplete time window, or failed
+sync/GT evidence is technical-invalid. Retain the original ID and every byte;
+a replacement receives a new suffix such as `_r1` and records
+`replacement_for`. Low coverage, weak MSO behaviour, frontier exhaustion, or a
+fully logged safety outcome is a result and may not be silently replaced.
+
+This README and `EVIDENCE_CHECKLIST.md` are the published field requirements.
+This delivery intentionally supplies the verified model and requirements, not
+the recipient's recorder/video/time-sync implementation. Before field use, the
+receiving team must turn these requirements into its own reviewed run manifest,
+capture commands, clock report and per-run acceptance audit. No existing
+whitelist recorder or single overview video may be treated as evidence that
+the requirements were met.
+
 ## Status
 
 This subtree is a prospective, fail-closed experiment package. It contains no
@@ -33,14 +139,16 @@ system. A clean, commit-addressed external full-stack repository and a hashed
 machine-readable integration report are mandatory collection gates.
 
 The shared generic capture, N=4 wrapper and preflight are usable for passive
-four-robot topic and host checks. The shared minimum-campaign preparer/auditor,
-however, uses a different `condition_id` argument and manifest contract and is
-not the lock authority for this factorial. This subtree uses `predictor_mode`
-and `network_condition` and therefore provides its own validator and run-lock
-entry point. Do not translate the factors back into the old field or declare a
-five-robot run with one missing robot.
+four-robot topic and host checks, but they do not implement the immediate
+three-run all-topic, video, or synchronization requirements. The shared
+minimum-campaign preparer/auditor uses a different `condition_id` argument and
+manifest contract and is not an authority for the immediate task. The existing
+factorial validator and run-lock entry point apply only to the optional 32-run
+extension below. Do not use them to authorize the three MSO-only repetitions,
+translate factors back into an old field, or declare a five-robot run with one
+missing robot.
 
-## Research questions
+## Optional follow-up research questions (32-run extension)
 
 The campaign asks three bounded questions in one office ROI:
 
@@ -58,9 +166,10 @@ the model still executes and its outputs are logged in a shadow namespace to
 hold compute load constant, but no registration or planner subscriber may use
 them.
 
-## Experimental design
+## Optional follow-up 32-run factorial design
 
-The confirmatory campaign is a within-start-pose-block 2 x 2 factorial:
+The separate follow-up campaign is a within-start-pose-block 2 x 2 factorial.
+It is not the immediate three-run task, and the two datasets must not be pooled:
 
 | Label | `predictor_mode` | `network_condition` |
 |---|---|---|
@@ -162,7 +271,7 @@ not unlock collection.
 
 ## Model identity gate
 
-`config/model_lock.yaml` identifies the recovered deployment candidate by exact
+`config/model_lock.yaml` identifies the recovered model candidate by exact
 bytes rather than by a rounded parameter label. Its model-specific evidence
 requires all of the following:
 
@@ -289,7 +398,9 @@ endpoint cannot be audited because evidence or calibration failed is
 
 ## Evidence contract
 
-`EVIDENCE_CHECKLIST.md` is the operator-facing checklist. At minimum record:
+`EVIDENCE_CHECKLIST.md` is the operator-facing checklist. For the immediate
+three-run task, the all-topic, four-video, and synchronization rules above are
+mandatory. The following named streams are only an audit minimum:
 
 - each robot's raw LiDAR, odometry, measured map, provisional prediction,
   probability/logit output, prediction-shadow output, command, goal, path,
@@ -299,8 +410,8 @@ endpoint cannot be audited because evidence or calibration failed is
 - every registration candidate, decision and commit with one event identity;
 - independent coverage and all safety events;
 - all network rules, counters, probes, DDS configuration and cleanup results;
-- local bags on all robots, coordinator bag, continuous overhead video, site
-  photographs and system telemetry;
+- all-topic local bags on all four robots, one all-topic coordinator bag, four
+  robot-specific third-person videos, site photographs and system telemetry;
 - map snapshots at 0, 120, 240, 360, 480 and 600 seconds and before/after every
   commit;
 - preflight report, run audit, network audit and complete SHA-256 inventory.
@@ -315,17 +426,23 @@ needed, a reviewer-only read-only package. Before any public release, obtain
 site/data authorization, remove identifiers and network details, and publish
 only an approved redacted derivative with its own licence and digest inventory.
 
-## Validation and preparation workflow
+## Optional 32-run extension: validation and preparation
 
-Validate the static 32-run design. This succeeds while clearly reporting that
-collection is blocked:
+This workflow applies only to the optional 32-run factorial. It does not
+validate, prepare, or authorize any of the three immediate MSO-only runs. The
+receiving field team must instead implement and independently review a run
+manifest, all-topic capture plan, four-video plan, synchronization report, and
+per-run acceptance audit against the requirements at the top of this README.
+
+The optional static plan can be checked separately while collection remains
+blocked:
 
 ```bash
 python3 experiments/physical_team/tongfang27_n4/validate_campaign.py
 ```
 
-The mandatory field gate must fail until every required artifact, full stack,
-GT/reference item, network report and pilot lock is resolved:
+The optional-extension field gate must fail until every required artifact, full
+stack, GT/reference item, network report and pilot lock is resolved:
 
 ```bash
 python3 experiments/physical_team/tongfang27_n4/validate_campaign.py \
@@ -335,14 +452,12 @@ python3 experiments/physical_team/tongfang27_n4/validate_campaign.py \
 Exit status 2 means the plan is structurally valid but collection is not
 authorized. Exit status 1 means the plan itself is invalid.
 
-This branch also contains an unconditional source-level collection gate. It
-cannot be unlocked by editing a self-authored JSON report. A later reviewed
-change must implement trusted executable checks for the model, full online
-stack, N=4 network impairment and per-run evidence audit before any field run
-can be prepared.
+This branch also contains an unconditional source-level gate for that optional
+extension. It cannot be unlocked by editing a self-authored JSON report. These
+commands and their status do not authorize the immediate three-run task.
 
-After all gates genuinely pass, prepare one exact confirmatory run through the
-dedicated entry point:
+For a future optional 32-run campaign only, after all of its gates genuinely
+pass, prepare one exact confirmatory run through the dedicated entry point:
 
 ```bash
 python3 experiments/physical_team/tongfang27_n4/prepare_n4_run.py \
@@ -368,11 +483,11 @@ python3 experiments/physical_team/scripts/preflight.py \
   --report /data/tf27_n4/tf27_n4_b01_B/evidence/preflight.json
 ```
 
-Only after that report passes and an operator supervises all four robots may
-the passive recorder be launched. The current protocol-only branch cannot
-reach this step.
+Only after that optional-extension report passes and an operator supervises all
+four robots may its passive recorder be launched. This is not the capture path
+for the immediate three MSO-only repetitions.
 
-## Paired analysis
+## Optional 32-run extension: paired analysis
 
 `analyse_paired_campaign.py` accepts exactly one pre-audited endpoint row for
 each frozen confirmatory run. It does not inspect bags, reconstruct GT coverage
@@ -418,7 +533,7 @@ paired block differences; it is not described as a generated randomization
 test. Endpoints listed elsewhere but not present in the required CSV are
 planned only and remain unimplemented collection gates.
 
-## Planned visual outputs
+## Optional 32-run extension: planned visual outputs
 
 No result graphic is included now. After collection, preserve the source table
 for every panel and generate at least:

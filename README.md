@@ -17,6 +17,35 @@ offline audit of archived two-robot registration, and tooling for future
 physical-team data collection. It is not an exact historical reproduction of
 every result in the manuscript.
 
+## Four-robot physical experiment branch
+
+The canonical branch for the prospective four-SenseBeetle experiment at
+Tongfang 27F is
+[`sensebeetle-n4-tongfang27`](https://github.com/SenseLabRobo4111/MSO/tree/sensebeetle-n4-tongfang27).
+Use that branch for field-readiness review and every future N=4 run commit.
+Start with the [English experiment guide](experiments/physical_team/tongfang27_n4/README.md)
+or the [中文实验说明](experiments/physical_team/tongfang27_n4/README.zh.md).
+
+The immediate field task is three independent 600-second repetitions in the
+frozen Tongfang 27F ROI. All four robots must autonomously explore with the
+locked MSO model under nominal networking. Each repetition requires five
+all-topic rosbags (four robot-local plus one coordinator), four synchronized
+third-person videos (one per robot), and a common ROS/video/GT time axis. The
+existing 32-run factorial is an optional later extension, not the immediate
+field task.
+
+This is currently a protocol package, not a physical-result release:
+`collection_ready: false`, `results_status: not_collected`, and
+`claim_authorized: false`. The 342,771-parameter model identity is verified;
+the complete online stack, independent GT/reference system, network
+ verification, the integration rehearsal/pilot gates, and per-run auditor still block
+collection. `main` remains the manuscript and general-software review branch.
+
+```bash
+git fetch origin
+git switch --track origin/sensebeetle-n4-tongfang27
+```
+
 ## Read this first
 
 | Component | Included | Evidence status |
@@ -57,8 +86,9 @@ paper snapshot's `SHA256SUMS` records every included byte.
 
 ## Reviewed version
 
-The canonical development and review branch is `main`. The immutable snapshot
-prepared for the current manuscript is tagged `nc-submission-2026-08-07`.
+The canonical manuscript and general-software review branch is `main`. The
+immutable snapshot prepared for the current manuscript is tagged
+`nc-submission-2026-08-07`.
 Retrieve and verify that snapshot with:
 
 ```bash
@@ -249,10 +279,11 @@ five-robot physical dataset. The diagnostics explicitly set
 manuscript claim.
 
 The [prospective Tongfang 27F four-SenseBeetle campaign](experiments/physical_team/tongfang27_n4/README.md)
-adds a frozen N=4 factorial plan and fail-closed preparation and analysis tools.
-Its exact 342,771-parameter recovered deployment candidate is identified and
-verified. Collection remains blocked until the full online stack, independent
-GT/reference, network verification, and pilot evidence exist.
+publishes the immediate three-run field requirements and a separate optional
+N=4 factorial plan. Its exact 342,771-parameter recovered model candidate is
+identified and verified. Collection remains blocked until the full online
+stack, independent GT/reference, recording, synchronization, integration
+rehearsal and per-run audit evidence exist.
 
 ## Dataset loader format
 

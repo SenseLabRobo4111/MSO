@@ -4,6 +4,31 @@
 
 [English](README.md)
 
+## 四机实机实验分支
+
+同方 27 楼四台 SenseBeetle 前瞻性实验的规范分支是
+[`sensebeetle-n4-tongfang27`](https://github.com/SenseLabRobo4111/MSO/tree/sensebeetle-n4-tongfang27)。
+实机准备审查和后续 N=4 运行提交均以该分支为准。入口见
+[中文实验说明](experiments/physical_team/tongfang27_n4/README.zh.md)和
+[英文完整协议](experiments/physical_team/tongfang27_n4/README.md)。
+
+当前立即执行的任务是在冻结的同方 27 楼 ROI 内，用四台车和同一个锁定
+MSO 模型完成 3 次相互冷重置的 600 秒自主探索。每次必须产生 5 份全 topic
+rosbag（四车各一份本地 bag，加一份 coordinator bag）和 4 份同步的逐车
+第三人称视频，并把 ROS、视频和 GT/参考系统对齐到同一时间轴。既有 32 次
+因子设计只是后续可选扩展，不是当前现场任务。
+
+当前只是协议包，不是实机结果发布：`collection_ready: false`、
+`results_status: not_collected`、`claim_authorized: false`。342,771 参数模型
+ 身份已经核验，但完整在线系统、独立 GT/位姿参考、网络验证、集成演练/
+ 预实验门禁和逐次运行审计仍未通过，因此现在不得开始正式采集。`main` 仍是
+论文与通用软件的评审分支。
+
+```bash
+git fetch origin
+git switch --track origin/sensebeetle-n4-tongfang27
+```
+
 MSO（Make Sense at Once）是一个面向二维室内多机器人探索的研究系统，结合轻量局部占据地图预测、成对地图配准和观测约束规划。预测结构可以辅助配准和目标排序，但碰撞检查与持久地图更新仍以真实观测为准。
 
 本仓库对应论文 **“Design and Audit of Resource-Constrained Predictive Multirobot Exploration”**。当前版本包含可运行的 ROS 2 预测节点、明确标注为“重建”的训练流程、对历史双机器人配准数据的离线审计，以及用于未来实物团队采集的工具。它不是论文所有结果的完整历史复现包。
