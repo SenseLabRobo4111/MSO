@@ -133,6 +133,24 @@ Global streams:
 - [ ] Pre/mid/post topic inventories, clock samples, sync-marker joins, video
   metadata and cold-reset attestation
 
+## Private delivery through Baidu Netdisk
+
+- [ ] Deliver all five original bags and all four original third-person videos
+  for every planned, technical-invalid, and replacement run to the experiment
+  owner; an access-controlled Baidu Netdisk package is an accepted channel.
+- [ ] Preserve a campaign/run hierarchy that unambiguously maps every bag,
+  video, manifest and checksum inventory to its original run ID.
+- [ ] If compression or multipart transfer is used, retain the originals and
+  provide SHA-256 values for both original files and uploaded parts.
+- [ ] Privately provide the share URL, access/extraction information, expiry,
+  uploader, completion time, total bytes, and top-level SHA-256 inventory; do
+  not commit any Baidu Netdisk URL, access information, or credentials to public
+  Git.
+- [ ] Keep a second local copy until the experiment owner confirms access and
+  verifies the delivered checksum inventory.
+- [ ] Treat cloud upload only as transport: it does not replace raw evidence,
+  local retention, manifests, or the per-run acceptance audit.
+
 ## Run acceptance
 
 - [ ] The run lasted for the locked 600-second recording horizon, including any
