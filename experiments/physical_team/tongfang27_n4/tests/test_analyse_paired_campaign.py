@@ -38,7 +38,7 @@ def synthetic_rows():
         observed_nominal = 0.55 + 0.005 * block
         if predictor == "observed_only" and network == "nominal":
             auc = observed_nominal
-        elif predictor == "mso_304k" and network == "nominal":
+        elif predictor == "mso_342771" and network == "nominal":
             auc = observed_nominal + 0.10
         elif predictor == "observed_only":
             auc = observed_nominal - 0.03
@@ -110,7 +110,7 @@ class PairedAnalysisTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             rows = synthetic_rows()
-            rows[0]["predictor_mode"] = "mso_304k"
+            rows[0]["predictor_mode"] = "mso_342771"
             results = root / "runs.csv"
             write_rows(results, rows)
             report, status = analysis.analyse(
@@ -120,6 +120,25 @@ class PairedAnalysisTests(unittest.TestCase):
             self.assertTrue(any(
                 "differs from frozen campaign" in item
                 for item in report["errors"]))
+
+    def test_model_binding_mismatch_fails(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            campaign = yaml.safe_load(
+                (BASE / "config/campaign.yaml").read_text(encoding="utf-8"))
+            campaign["model_binding"]["artifact_sha256"] = "0" * 64
+            campaign_path = root / "campaign.yaml"
+            campaign_path.write_text(
+                yaml.safe_dump(campaign, sort_keys=False), encoding="utf-8")
+            results = root / "runs.csv"
+            write_rows(results, synthetic_rows())
+            report, status = analysis.analyse(
+                campaign_path, results, root / "analysis",
+                bootstrap_resamples=20)
+            self.assertEqual(status, 2)
+            self.assertIn(
+                "model binding differs from the locked analysis",
+                report["errors"])
 
     def test_logged_safety_stop_can_remain_protocol_valid(self):
         with tempfile.TemporaryDirectory() as temporary:

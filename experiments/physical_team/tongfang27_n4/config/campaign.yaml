@@ -1,9 +1,15 @@
 schema_version: '1.0'
-campaign_id: tf27_n4_mso_304k_factorial_v1
+campaign_id: tf27_n4_mso_342771_factorial_v1
 site_id: tongfang_27f_office
 arena_id: tongfang_27f_office_roi_v1
 method: mso
 team_size: 4
+model_binding:
+  model_id: mso_deconv_342771_candidate_a
+  artifact_sha256: da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8
+  loader_id: distill_map_net_deconv_raw_state_v1
+  input_contract: occupied_unknown_free_one_hot_256_v1
+  output_contract: sigmoid_occupancy_probability_256_v1
 collection_ready: false
 results_status: not_collected
 claim_authorized: false
@@ -12,10 +18,10 @@ required_complete_blocks: 8
 primary_endpoint:
   name: normalized_coverage_auc
   definition: integral_of_independent_measured_only_gt_coverage_divided_by_600_s
-  primary_contrast: mso_304k_minus_observed_only_under_nominal_network
+  primary_contrast: mso_342771_minus_observed_only_under_nominal_network
 factors:
   predictor_mode:
-    - mso_304k
+    - mso_342771
     - observed_only
   network_condition:
     - nominal
@@ -25,13 +31,13 @@ balanced_allocation:
   frozen_before_collection: true
   sequence_labels:
     A:
-      predictor_mode: mso_304k
+      predictor_mode: mso_342771
       network_condition: nominal
     B:
       predictor_mode: observed_only
       network_condition: nominal
     C:
-      predictor_mode: mso_304k
+      predictor_mode: mso_342771
       network_condition: isolated_robot_impairment
     D:
       predictor_mode: observed_only
@@ -76,41 +82,41 @@ locks:
   reference: config/reference.yaml
 ordered_runs:
   - {order: 1, run_id: tf27_n4_b01_B, block_id: 1, trial_id: 1, sequence_position: 1, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P01, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: null, duration_s: 600}
-  - {order: 2, run_id: tf27_n4_b01_C, block_id: 1, trial_id: 1, sequence_position: 2, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P01, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: 0, duration_s: 600}
-  - {order: 3, run_id: tf27_n4_b01_A, block_id: 1, trial_id: 1, sequence_position: 3, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P01, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: null, duration_s: 600}
+  - {order: 2, run_id: tf27_n4_b01_C, block_id: 1, trial_id: 1, sequence_position: 2, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P01, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: 0, duration_s: 600}
+  - {order: 3, run_id: tf27_n4_b01_A, block_id: 1, trial_id: 1, sequence_position: 3, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P01, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: null, duration_s: 600}
   - {order: 4, run_id: tf27_n4_b01_D, block_id: 1, trial_id: 1, sequence_position: 4, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P01, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: 0, duration_s: 600}
 
   - {order: 5, run_id: tf27_n4_b02_D, block_id: 2, trial_id: 2, sequence_position: 1, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P02, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: 1, duration_s: 600}
-  - {order: 6, run_id: tf27_n4_b02_A, block_id: 2, trial_id: 2, sequence_position: 2, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P02, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: null, duration_s: 600}
-  - {order: 7, run_id: tf27_n4_b02_C, block_id: 2, trial_id: 2, sequence_position: 3, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P02, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: 1, duration_s: 600}
+  - {order: 6, run_id: tf27_n4_b02_A, block_id: 2, trial_id: 2, sequence_position: 2, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P02, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: null, duration_s: 600}
+  - {order: 7, run_id: tf27_n4_b02_C, block_id: 2, trial_id: 2, sequence_position: 3, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P02, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: 1, duration_s: 600}
   - {order: 8, run_id: tf27_n4_b02_B, block_id: 2, trial_id: 2, sequence_position: 4, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P02, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: null, duration_s: 600}
 
-  - {order: 9, run_id: tf27_n4_b03_A, block_id: 3, trial_id: 3, sequence_position: 1, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P03, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: null, duration_s: 600}
+  - {order: 9, run_id: tf27_n4_b03_A, block_id: 3, trial_id: 3, sequence_position: 1, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P03, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: null, duration_s: 600}
   - {order: 10, run_id: tf27_n4_b03_B, block_id: 3, trial_id: 3, sequence_position: 2, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P03, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: null, duration_s: 600}
   - {order: 11, run_id: tf27_n4_b03_D, block_id: 3, trial_id: 3, sequence_position: 3, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P03, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: 2, duration_s: 600}
-  - {order: 12, run_id: tf27_n4_b03_C, block_id: 3, trial_id: 3, sequence_position: 4, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P03, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: 2, duration_s: 600}
+  - {order: 12, run_id: tf27_n4_b03_C, block_id: 3, trial_id: 3, sequence_position: 4, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P03, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: 2, duration_s: 600}
 
-  - {order: 13, run_id: tf27_n4_b04_C, block_id: 4, trial_id: 4, sequence_position: 1, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P04, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: 3, duration_s: 600}
+  - {order: 13, run_id: tf27_n4_b04_C, block_id: 4, trial_id: 4, sequence_position: 1, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P04, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: 3, duration_s: 600}
   - {order: 14, run_id: tf27_n4_b04_D, block_id: 4, trial_id: 4, sequence_position: 2, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P04, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: 3, duration_s: 600}
   - {order: 15, run_id: tf27_n4_b04_B, block_id: 4, trial_id: 4, sequence_position: 3, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P04, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: null, duration_s: 600}
-  - {order: 16, run_id: tf27_n4_b04_A, block_id: 4, trial_id: 4, sequence_position: 4, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P04, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: null, duration_s: 600}
+  - {order: 16, run_id: tf27_n4_b04_A, block_id: 4, trial_id: 4, sequence_position: 4, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P04, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: null, duration_s: 600}
 
   - {order: 17, run_id: tf27_n4_b05_D, block_id: 5, trial_id: 5, sequence_position: 1, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P05, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: 3, duration_s: 600}
-  - {order: 18, run_id: tf27_n4_b05_A, block_id: 5, trial_id: 5, sequence_position: 2, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P05, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: null, duration_s: 600}
-  - {order: 19, run_id: tf27_n4_b05_C, block_id: 5, trial_id: 5, sequence_position: 3, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P05, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: 3, duration_s: 600}
+  - {order: 18, run_id: tf27_n4_b05_A, block_id: 5, trial_id: 5, sequence_position: 2, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P05, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: null, duration_s: 600}
+  - {order: 19, run_id: tf27_n4_b05_C, block_id: 5, trial_id: 5, sequence_position: 3, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P05, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: 3, duration_s: 600}
   - {order: 20, run_id: tf27_n4_b05_B, block_id: 5, trial_id: 5, sequence_position: 4, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P05, hardware_pose_assignment: [0, 1, 2, 3], isolated_robot_id: null, duration_s: 600}
 
   - {order: 21, run_id: tf27_n4_b06_B, block_id: 6, trial_id: 6, sequence_position: 1, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P06, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: null, duration_s: 600}
-  - {order: 22, run_id: tf27_n4_b06_C, block_id: 6, trial_id: 6, sequence_position: 2, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P06, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: 2, duration_s: 600}
-  - {order: 23, run_id: tf27_n4_b06_A, block_id: 6, trial_id: 6, sequence_position: 3, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P06, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: null, duration_s: 600}
+  - {order: 22, run_id: tf27_n4_b06_C, block_id: 6, trial_id: 6, sequence_position: 2, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P06, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: 2, duration_s: 600}
+  - {order: 23, run_id: tf27_n4_b06_A, block_id: 6, trial_id: 6, sequence_position: 3, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P06, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: null, duration_s: 600}
   - {order: 24, run_id: tf27_n4_b06_D, block_id: 6, trial_id: 6, sequence_position: 4, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P06, hardware_pose_assignment: [1, 2, 3, 0], isolated_robot_id: 2, duration_s: 600}
 
-  - {order: 25, run_id: tf27_n4_b07_C, block_id: 7, trial_id: 7, sequence_position: 1, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P07, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: 1, duration_s: 600}
+  - {order: 25, run_id: tf27_n4_b07_C, block_id: 7, trial_id: 7, sequence_position: 1, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P07, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: 1, duration_s: 600}
   - {order: 26, run_id: tf27_n4_b07_D, block_id: 7, trial_id: 7, sequence_position: 2, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P07, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: 1, duration_s: 600}
   - {order: 27, run_id: tf27_n4_b07_B, block_id: 7, trial_id: 7, sequence_position: 3, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P07, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: null, duration_s: 600}
-  - {order: 28, run_id: tf27_n4_b07_A, block_id: 7, trial_id: 7, sequence_position: 4, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P07, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: null, duration_s: 600}
+  - {order: 28, run_id: tf27_n4_b07_A, block_id: 7, trial_id: 7, sequence_position: 4, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P07, hardware_pose_assignment: [2, 3, 0, 1], isolated_robot_id: null, duration_s: 600}
 
-  - {order: 29, run_id: tf27_n4_b08_A, block_id: 8, trial_id: 8, sequence_position: 1, treatment_label: A, predictor_mode: mso_304k, network_condition: nominal, start_pose_set_id: P08, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: null, duration_s: 600}
+  - {order: 29, run_id: tf27_n4_b08_A, block_id: 8, trial_id: 8, sequence_position: 1, treatment_label: A, predictor_mode: mso_342771, network_condition: nominal, start_pose_set_id: P08, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: null, duration_s: 600}
   - {order: 30, run_id: tf27_n4_b08_B, block_id: 8, trial_id: 8, sequence_position: 2, treatment_label: B, predictor_mode: observed_only, network_condition: nominal, start_pose_set_id: P08, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: null, duration_s: 600}
   - {order: 31, run_id: tf27_n4_b08_D, block_id: 8, trial_id: 8, sequence_position: 3, treatment_label: D, predictor_mode: observed_only, network_condition: isolated_robot_impairment, start_pose_set_id: P08, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: 0, duration_s: 600}
-  - {order: 32, run_id: tf27_n4_b08_C, block_id: 8, trial_id: 8, sequence_position: 4, treatment_label: C, predictor_mode: mso_304k, network_condition: isolated_robot_impairment, start_pose_set_id: P08, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: 0, duration_s: 600}
+  - {order: 32, run_id: tf27_n4_b08_C, block_id: 8, trial_id: 8, sequence_position: 4, treatment_label: C, predictor_mode: mso_342771, network_condition: isolated_robot_impairment, start_pose_set_id: P08, hardware_pose_assignment: [3, 0, 1, 2], isolated_robot_id: 0, duration_s: 600}

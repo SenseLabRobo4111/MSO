@@ -1,0 +1,20 @@
+{
+  "artifact_filename": "recovered_candidate_deconv_a.pt",
+  "artifact_role": "recovered_candidate_from_checkpoint_retained_in_deployment_copy",
+  "artifact_sha256": "da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8",
+  "campaign_id": "tf27_n4_mso_342771_factorial_v1",
+  "candidate_status": "owner_selected_prospective_full_ffc_candidate_not_manuscript_checkpoint",
+  "decision_date": "2026-08-11",
+  "ffc_block_count": 4,
+  "frozen_before_pilot_or_physical_outcomes": true,
+  "historical_manuscript_checkpoint_claim": false,
+  "model_id": "mso_deconv_342771_candidate_a",
+  "no_result_based_selection": true,
+  "parameter_count": 342771,
+  "selection_basis": "The experiment owner confirmed the 342771-parameter full-FFC student as the prospective experiment target. Candidate A was extracted from model-epoch-deconv.ckpt retained in a preserved deployment copy and was selected before pilot or physical outcomes, without validation- or test-outcome selection. The preserved online entry loaded a different bilinear checkpoint; historical runtime use is not claimed.",
+  "selection_metric": "not_used",
+  "source_checkpoint_filename": "model-epoch-deconv.ckpt",
+  "source_checkpoint_sha256": "0e7f949925b9f6310f93e36b10152e9729a8cacef15c9061d9e361f1b7c649ad",
+  "state_tensor_count": 594,
+  "state_value_count": 347690
+}

@@ -20,12 +20,12 @@ except ImportError as error:  # pragma: no cover - exercised only without depend
     raise SystemExit("PyYAML is required") from error
 
 
-PREDICTOR_MODES = {"mso_304k", "observed_only"}
+PREDICTOR_MODES = {"mso_342771", "observed_only"}
 NETWORK_CONDITIONS = {"nominal", "isolated_robot_impairment"}
 LABEL_TO_CELL = {
-    "A": ("mso_304k", "nominal"),
+    "A": ("mso_342771", "nominal"),
     "B": ("observed_only", "nominal"),
-    "C": ("mso_304k", "isolated_robot_impairment"),
+    "C": ("mso_342771", "isolated_robot_impairment"),
     "D": ("observed_only", "isolated_robot_impairment"),
 }
 ALLOWED_SEQUENCES = {
@@ -66,9 +66,31 @@ EXPECTED_NETWORK_PHASES = [
         "loss_probability": 0.0,
     },
 ]
-KNOWN_342771_CANDIDATE_HASHES = {
-    "da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8",
-    "022689a97336b47fe0c3a39d85e120a4d07e99ba3cc34e4f2be5422c1e515e2c",
+SELECTED_MODEL_ARTIFACT_SHA256 = (
+    "da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8"
+)
+MODEL_ID = "mso_deconv_342771_candidate_a"
+MODEL_LOADER_ID = "distill_map_net_deconv_raw_state_v1"
+MODEL_ARCHITECTURE = (
+    "sensemap.explore_model.SenseMapNet."
+    "DistillMapNetDeconv(image_size=256, dim=4)"
+)
+MODEL_PARAMETERS = 342771
+REFERENCE_RUNTIME = {
+    "python": "3.12.6",
+    "torch": "2.12.0+cpu",
+    "device": "cpu",
+    "output_fingerprint_scope": "exact_reference_environment",
+    "deployment_requires_same_runtime_or_reviewed_equivalence": True,
+}
+CAMPAIGN_ID = "tf27_n4_mso_342771_factorial_v1"
+PILOT_PLAN_ID = "tf27_n4_mso_342771_integration_pilots_v1"
+MODEL_BINDING = {
+    "model_id": MODEL_ID,
+    "artifact_sha256": SELECTED_MODEL_ARTIFACT_SHA256,
+    "loader_id": MODEL_LOADER_ID,
+    "input_contract": "occupied_unknown_free_one_hot_256_v1",
+    "output_contract": "sigmoid_occupancy_probability_256_v1",
 }
 
 
@@ -136,6 +158,8 @@ def validate_pilot_plan(
 ) -> list[dict[str, Any]]:
     """Validate four fixed pilots that can never enter confirmatory analysis."""
     errors: list[dict[str, Any]] = []
+    if pilot.get("pilot_plan_id") != PILOT_PLAN_ID:
+        _error(errors, "pilot plan identity", pilot.get("pilot_plan_id"))
     if pilot.get("permanently_excluded_from_confirmatory_analysis") is not True:
         _error(errors, "pilot exclusion lock", None)
     result_status = pilot.get("results_status")
@@ -177,12 +201,21 @@ def validate_campaign_structure(
 ) -> list[dict[str, Any]]:
     """Validate the frozen 32-run factorial and its balancing properties."""
     errors: list[dict[str, Any]] = []
+    if campaign.get("campaign_id") != CAMPAIGN_ID:
+        _error(errors, "campaign identity", campaign.get("campaign_id"))
+    if campaign.get("model_binding") != MODEL_BINDING:
+        _error(errors, "campaign model binding", campaign.get("model_binding"))
     if campaign.get("team_size") != 4:
         _error(errors, "team_size", campaign.get("team_size"))
     if campaign.get("run_duration_s") != 600:
         _error(errors, "run duration", campaign.get("run_duration_s"))
     if campaign.get("required_complete_blocks") != 8:
         _error(errors, "required blocks", campaign.get("required_complete_blocks"))
+    primary = campaign.get("primary_endpoint") or {}
+    if primary.get("primary_contrast") != (
+            "mso_342771_minus_observed_only_under_nominal_network"):
+        _error(errors, "primary contrast identity", primary.get(
+            "primary_contrast"))
     if campaign.get("results_status") != "not_collected":
         _error(errors, "results status", campaign.get("results_status"))
     if campaign.get("claim_authorized") is not False:
@@ -405,7 +438,8 @@ def validate_team(team: dict[str, Any]) -> list[dict[str, Any]]:
     errors: list[dict[str, Any]] = []
     robots = team.get("robots") or []
     if team.get("team_size") != 4 or len(robots) != 4:
-        _error(errors, "four-robot roster", {"team_size": team.get("team_size"), "count": len(robots)})
+        _error(errors, "four-robot roster", {
+            "team_size": team.get("team_size"), "count": len(robots)})
         return errors
     if [robot.get("id") for robot in robots] != [0, 1, 2, 3]:
         _error(errors, "robot IDs", [robot.get("id") for robot in robots])
@@ -514,7 +548,9 @@ def readiness_blockers(
         })
     for name, document in documents.items():
         if document.get("collection_ready") is not True:
-            blockers.append({"check": f"{name}.collection_ready", "detail": document.get("collection_ready")})
+            blockers.append({
+                "check": f"{name}.collection_ready",
+                "detail": document.get("collection_ready")})
         unresolved = placeholder_paths(document)
         if unresolved:
             blockers.append({"check": f"{name} unresolved placeholders", "detail": unresolved})
@@ -540,7 +576,7 @@ def readiness_blockers(
         required_pilot_values = {
             "schema_version": "mso_n4_pilot_completion_v1",
             "verified": True,
-            "pilot_plan_id": "tf27_n4_integration_pilots_v1",
+            "pilot_plan_id": PILOT_PLAN_ID,
             "pilot_run_ids": expected_pilot_ids,
             "all_four_pilots_protocol_passed": True,
             "no_critical_safety_faults": True,
@@ -562,8 +598,10 @@ def readiness_blockers(
     for path_field, hash_field, label in (
         ("occupancy_image_path", "occupancy_image_sha256", "GT occupancy image"),
         ("occupancy_metadata_path", "occupancy_metadata_sha256", "GT occupancy metadata"),
-        ("accessible_free_mask_path", "accessible_free_mask_sha256", "GT accessible-free mask"),
-        ("dynamic_exclusion_mask_path", "dynamic_exclusion_mask_sha256", "GT dynamic exclusion mask"),
+        ("accessible_free_mask_path", "accessible_free_mask_sha256",
+         "GT accessible-free mask"),
+        ("dynamic_exclusion_mask_path", "dynamic_exclusion_mask_sha256",
+         "GT dynamic exclusion mask"),
     ):
         require_hashed_file(
             gt, paths["arena"], path_field, hash_field, label, blockers)
@@ -600,29 +638,70 @@ def readiness_blockers(
         "finite positive maximum clock RTT", blockers)
 
     model = documents["model"]
+    if model.get("schema_version") != "2.0":
+        blockers.append({
+            "check": "model lock schema",
+            "detail": model.get("schema_version")})
     artifact = resolve_artifact(model.get("artifact_path"), paths["model"])
     if artifact is None or not artifact.is_file():
-        blockers.append({"check": "verified 304K artifact exists", "detail": str(artifact) if artifact else None})
+        blockers.append({
+            "check": "verified 342771-parameter artifact exists",
+            "detail": str(artifact) if artifact else None})
     else:
         expected_hash = model.get("artifact_sha256")
         if not isinstance(expected_hash, str) or not HEX64.fullmatch(expected_hash):
             blockers.append({"check": "model SHA-256 format", "detail": expected_hash})
         elif sha256(artifact) != expected_hash:
             blockers.append({"check": "model SHA-256 match", "detail": str(artifact)})
-    if model.get("model_id") != "mso_304k":
+    if model.get("model_id") != MODEL_ID:
         blockers.append({"check": "model identity", "detail": model.get("model_id")})
-    if model.get("artifact_status") != "verified":
-        blockers.append({"check": "model provenance status", "detail": model.get("artifact_status")})
-    parameters = model.get("exact_trainable_parameter_count")
-    if not isinstance(parameters, int) or isinstance(parameters, bool) or parameters != 304000:
-        blockers.append({"check": "exact model parameter count", "detail": parameters})
-    artifact_hash = model.get("artifact_sha256")
-    if artifact_hash in KNOWN_342771_CANDIDATE_HASHES:
+    if model.get("artifact_status") != (
+            "verified_recovered_deployment_candidate"):
         blockers.append({
-            "check": "reject known recovered candidate artifact",
+            "check": "model provenance status",
+            "detail": model.get("artifact_status")})
+    if model.get("artifact_role") != (
+            "recovered_candidate_from_checkpoint_retained_in_deployment_copy"):
+        blockers.append({"check": "model artifact role", "detail": model.get(
+            "artifact_role")})
+    if model.get("historical_manuscript_checkpoint_claim") is not False:
+        blockers.append({
+            "check": "model historical-claim boundary",
+            "detail": model.get("historical_manuscript_checkpoint_claim")})
+    if model.get("architecture_loader_id") != MODEL_LOADER_ID:
+        blockers.append({
+            "check": "model loader identity",
+            "detail": model.get("architecture_loader_id")})
+    if model.get("architecture_class") != MODEL_ARCHITECTURE:
+        blockers.append({
+            "check": "model architecture identity",
+            "detail": model.get("architecture_class")})
+    parameters = model.get("exact_trainable_parameter_count")
+    if (not isinstance(parameters, int) or isinstance(parameters, bool)
+            or parameters != MODEL_PARAMETERS):
+        blockers.append({"check": "exact model parameter count", "detail": parameters})
+    for field, expected in (
+        ("ffc_block_count", 4),
+        ("state_tensor_count", 594),
+        ("state_value_count", 347690),
+    ):
+        if model.get(field) != expected:
+            blockers.append({
+                "check": f"model {field}",
+                "detail": model.get(field)})
+    if model.get("reference_runtime") != REFERENCE_RUNTIME:
+        blockers.append({
+            "check": "model reference runtime",
+            "detail": model.get("reference_runtime")})
+    artifact_hash = model.get("artifact_sha256")
+    if artifact_hash != SELECTED_MODEL_ARTIFACT_SHA256:
+        blockers.append({
+            "check": "selected model artifact identity",
             "detail": artifact_hash})
     if model.get("strict_load_verified") is not True:
-        blockers.append({"check": "strict model load", "detail": model.get("strict_load_verified")})
+        blockers.append({
+            "check": "strict model load",
+            "detail": model.get("strict_load_verified")})
     if model.get("missing_keys") != [] or model.get("unexpected_keys") != []:
         blockers.append({"check": "strict-load key sets", "detail": {
             "missing_keys": model.get("missing_keys"),
@@ -639,6 +718,12 @@ def readiness_blockers(
     require_hashed_file(
         model, paths["model"], "selection_record_path",
         "selection_record_sha256", "model selection record", blockers)
+    require_hashed_file(
+        model, paths["model"], "architecture_source_path",
+        "architecture_source_sha256", "model architecture source", blockers)
+    require_hashed_file(
+        model, paths["model"], "ffc_source_path",
+        "ffc_source_sha256", "model FFC source", blockers)
 
     model_report = verified_json_report(
         model, paths["model"], "verifier_report_path",
@@ -647,22 +732,47 @@ def readiness_blockers(
         verifier_script = Path(__file__).resolve().parent.joinpath(
             "verify_model_artifact.py")
         required_model_values = {
-            "schema_version": "mso_model_verification_v1",
+            "schema_version": "mso_model_verification_v2",
             "verified": True,
-            "model_id": "mso_304k",
+            "model_id": MODEL_ID,
+            "artifact_role": (
+                "recovered_candidate_from_checkpoint_retained_in_deployment_copy"),
+            "historical_manuscript_checkpoint_claim": False,
+            "artifact_filename": Path(
+                str(model.get("artifact_path"))).name,
             "artifact_sha256": model.get("artifact_sha256"),
             "loader_id": model.get("architecture_loader_id"),
             "architecture_class": model.get("architecture_class"),
             "strict_state_load": True,
             "missing_keys": [],
             "unexpected_keys": [],
-            "trainable_parameter_count": 304000,
+            "trainable_parameter_count": MODEL_PARAMETERS,
+            "state_tensor_count": 594,
+            "state_value_count": 347690,
+            "finite_state": True,
+            "ffc_block_count": 4,
             "input_shape": [1, 3, 256, 256],
+            "output_shape": [1, 1, 256, 256],
+            "output_count": 5,
+            "all_output_shapes": [
+                [1, 1, 256, 256],
+                [1, 8, 128, 128],
+                [1, 16, 64, 64],
+                [1, 16, 64, 64],
+                [1, 8, 128, 128],
+            ],
+            "all_outputs_finite": True,
             "finite_forward": True,
+            "python_version": REFERENCE_RUNTIME["python"],
+            "torch_version": REFERENCE_RUNTIME["torch"],
+            "device": REFERENCE_RUNTIME["device"],
             "fixture_sha256": model.get("fixed_fixture_sha256"),
             "output_fingerprint": model.get(
                 "fixed_fixture_output_fingerprint"),
             "verifier_implementation_sha256": sha256(verifier_script),
+            "architecture_source_sha256": model.get(
+                "architecture_source_sha256"),
+            "ffc_source_sha256": model.get("ffc_source_sha256"),
         }
         for field, expected in required_model_values.items():
             if model_report.get(field) != expected:
@@ -673,6 +783,21 @@ def readiness_blockers(
                         "actual": model_report.get(field)}})
 
     stack = documents["online_stack"]
+    stack_model_binding = {
+        "predictor_model_id": model.get("model_id"),
+        "predictor_artifact_sha256": model.get("artifact_sha256"),
+        "predictor_loader_id": model.get("architecture_loader_id"),
+        "predictor_input_contract": model.get("input_contract"),
+        "predictor_output_contract": model.get("output_contract"),
+        "predictor_architecture_source_sha256": model.get(
+            "architecture_source_sha256"),
+        "predictor_ffc_source_sha256": model.get("ffc_source_sha256"),
+    }
+    for field, expected in stack_model_binding.items():
+        if stack.get(field) != expected:
+            blockers.append({
+                "check": f"online stack model binding {field}",
+                "detail": {"expected": expected, "actual": stack.get(field)}})
     if stack.get("stack_status") != "verified":
         blockers.append({
             "check": "full online stack status",
@@ -729,6 +854,24 @@ def readiness_blockers(
             stages.get(stage) is not True for stage in required_stages):
         blockers.append({
             "check": "complete online pipeline stages", "detail": stages})
+    stack_requirements = stack.get("requirements") or {}
+    required_stack_requirements = {
+        "four_robot_supported",
+        "full_pipeline_integration_test_passed",
+        "registration_event_interface_verified",
+        "persistent_map_revision_hash_verified",
+        "measured_only_collision_authority_verified",
+        "prediction_shadow_write_barrier_verified",
+        "predictor_model_binding_verified",
+        "predictor_strict_raw_state_load_verified",
+        "predictor_runtime_equivalence_verified",
+    }
+    if set(stack_requirements) != required_stack_requirements or any(
+            stack_requirements.get(item) is not True
+            for item in required_stack_requirements):
+        blockers.append({
+            "check": "complete online stack requirements",
+            "detail": stack_requirements})
     stack_report = verified_json_report(
         stack, paths["online_stack"], "verification_report_path",
         "verification_report_sha256", "online stack verifier", blockers)
@@ -745,7 +888,11 @@ def readiness_blockers(
             "persistent_map_revision_hash_verified": True,
             "measured_only_collision_authority_verified": True,
             "prediction_shadow_write_barrier_verified": True,
+            "predictor_model_binding_verified": True,
+            "predictor_strict_raw_state_load_verified": True,
+            "predictor_runtime_equivalence_verified": True,
             "pipeline_stages": sorted(required_stages),
+            **stack_model_binding,
         }
         for field, expected in required_stack_values.items():
             if stack_report.get(field) != expected:

@@ -54,7 +54,10 @@ class CampaignValidationTests(unittest.TestCase):
         self.assertEqual(report["planned_block_count"], 8)
         checks = {item["check"] for item in report["readiness_blockers"]}
         self.assertIn("trusted collection enablement implementation", checks)
-        self.assertIn("verified 304K artifact exists", checks)
+        self.assertNotIn(
+            "verified 342771-parameter artifact exists", checks)
+        self.assertNotIn("model SHA-256 match", checks)
+        self.assertNotIn("model verifier report verified", checks)
         self.assertIn("full online stack status", checks)
         self.assertIn("N4 network impairment status", checks)
 
@@ -109,22 +112,50 @@ class CampaignValidationTests(unittest.TestCase):
             self.assertTrue(any(
                 "condition_id" in item["check"] for item in report["errors"]))
 
-    def test_342771_parameter_substitute_is_explicitly_blocked(self):
+    def test_nonselected_342771_candidate_is_explicitly_blocked(self):
         with tempfile.TemporaryDirectory() as temporary:
             config = Path(temporary) / "config"
             shutil.copytree(BASE / "config", config)
             model = yaml.safe_load(
                 (config / "model_lock.yaml").read_text(encoding="utf-8"))
-            model["exact_trainable_parameter_count"] = 342771
-            model["artifact_sha256"] = next(iter(
-                validator.KNOWN_342771_CANDIDATE_HASHES))
+            model["artifact_path"] = str(
+                BASE.parents[2] / "repro_reconstructed" / "checkpoints" /
+                "recovered_candidate_deconv_a.pt")
+            model["artifact_sha256"] = (
+                "022689a97336b47fe0c3a39d85e120a4d07e99ba3cc34e4f2be5422c1e515e2c"
+            )
             (config / "model_lock.yaml").write_text(
                 yaml.safe_dump(model, sort_keys=False), encoding="utf-8")
             report = validator.validate_package(*self.paths(config))
             checks = {item["check"] for item in report["readiness_blockers"]}
-            self.assertIn("exact model parameter count", checks)
-            self.assertIn("reject known recovered candidate artifact", checks)
+            self.assertIn("model SHA-256 match", checks)
+            self.assertIn("selected model artifact identity", checks)
             self.assertFalse(report["collection_ready"])
+
+    def test_campaign_and_online_stack_model_bindings_are_locked(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            config = Path(temporary) / "config"
+            shutil.copytree(BASE / "config", config)
+            campaign_path = config / "campaign.yaml"
+            stack_path = config / "online_stack_lock.yaml"
+            campaign = yaml.safe_load(
+                campaign_path.read_text(encoding="utf-8"))
+            stack = yaml.safe_load(stack_path.read_text(encoding="utf-8"))
+            campaign["model_binding"]["artifact_sha256"] = "0" * 64
+            stack["predictor_model_id"] = "wrong_model"
+            campaign_path.write_text(
+                yaml.safe_dump(campaign, sort_keys=False), encoding="utf-8")
+            stack_path.write_text(
+                yaml.safe_dump(stack, sort_keys=False), encoding="utf-8")
+            report = validator.validate_package(*self.paths(config))
+            self.assertFalse(report["plan_valid"])
+            self.assertTrue(any(
+                item["check"] == "campaign model binding"
+                for item in report["errors"]))
+            self.assertTrue(any(
+                item["check"] == (
+                    "online stack model binding predictor_model_id")
+                for item in report["readiness_blockers"]))
 
     def test_each_williams_sequence_occurs_twice(self):
         campaign = validator.load_yaml(BASE / "config/campaign.yaml")

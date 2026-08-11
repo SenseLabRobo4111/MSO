@@ -1,0 +1,84 @@
+{
+  "all_output_fingerprints": [
+    "31e3cd4ec395b615a9d5dafd1024286fd9860f58acaffc1df09d23bc624778e0",
+    "d1b2d8b137fc29649ef708cc5f6b25c71883780ea7763b6a48e0224807d49388",
+    "b989ab4095632ee71c30df4c9d49753ae6b4e70762e57fa00b7d5db5fdeed459",
+    "63190be6a9de4b120fb30bcca16dddb88d5f008833c0a6e4262a3f7d59bea2e3",
+    "f5c77e80b0ba75fece291881734e6a043f560793d00bc39529abe359eac9d3c0"
+  ],
+  "all_output_shapes": [
+    [
+      1,
+      1,
+      256,
+      256
+    ],
+    [
+      1,
+      8,
+      128,
+      128
+    ],
+    [
+      1,
+      16,
+      64,
+      64
+    ],
+    [
+      1,
+      16,
+      64,
+      64
+    ],
+    [
+      1,
+      8,
+      128,
+      128
+    ]
+  ],
+  "all_outputs_finite": true,
+  "architecture_class": "sensemap.explore_model.SenseMapNet.DistillMapNetDeconv(image_size=256, dim=4)",
+  "architecture_source_sha256": "c84ff05fa168c2e856002f12a903e53896da70cd8854a152b85f407d176727b3",
+  "artifact_filename": "recovered_candidate_deconv_a.pt",
+  "artifact_role": "recovered_candidate_from_checkpoint_retained_in_deployment_copy",
+  "artifact_sha256": "da4458514656d41fba0e0ce6d4f4967997ff0a97f2e905a458757609edf3a3a8",
+  "device": "cpu",
+  "errors": [],
+  "ffc_block_count": 4,
+  "ffc_source_sha256": "835fc0a0ccc67bf73c9f6317d3ecc0679a87730e26dcc622aa84e6f5c1c15454",
+  "finite_forward": true,
+  "finite_state": true,
+  "fixture_sha256": "a653af98e3f3ab8e23e6a7d46c013668954fa22286ef64a8800d236a215071ef",
+  "historical_manuscript_checkpoint_claim": false,
+  "input_shape": [
+    1,
+    3,
+    256,
+    256
+  ],
+  "loader_id": "distill_map_net_deconv_raw_state_v1",
+  "missing_keys": [],
+  "model_id": "mso_deconv_342771_candidate_a",
+  "output_count": 5,
+  "output_fingerprint": "31e3cd4ec395b615a9d5dafd1024286fd9860f58acaffc1df09d23bc624778e0",
+  "output_max": 1.0,
+  "output_min": 0.0,
+  "output_shape": [
+    1,
+    1,
+    256,
+    256
+  ],
+  "python_version": "3.12.6",
+  "schema_version": "mso_model_verification_v2",
+  "state_tensor_count": 594,
+  "state_value_count": 347690,
+  "strict_state_load": true,
+  "torch_version": "2.12.0+cpu",
+  "trainable_parameter_count": 342771,
+  "unexpected_keys": [],
+  "verified": true,
+  "verifier_implementation_sha256": "844a59e484124bc2875312f232768b5529aee5736157b0497a3bf6d41fce13d3"
+}
